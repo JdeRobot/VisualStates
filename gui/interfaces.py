@@ -20,22 +20,31 @@
 
 import os
 # a class to discover JdeRobot and ROS interfaces
-from gui.cmakevars import CMAKE_INSTALL_PREFIX
+from os import listdir
+from os.path import isfile, join
 
 class Interfaces:
 
     interfaces = None
 
     @staticmethod
-    def getInterfaces():
+    def getInterfaces(jderobot_install_prefix='/opt/jderobot/'):
         if Interfaces.interfaces is None:
-            os.system(CMAKE_INSTALL_PREFIX + '/bin/getinterfaces.sh ' + CMAKE_INSTALL_PREFIX + '/include/jderobot/comm/interfaces > /tmp/allInterfaces.txt')
-            fp = open('/tmp/allInterfaces.txt')
             Interfaces.interfaces = {}
-            for line in fp:
-                data = line.strip("\n").split(' ')
-                Interfaces.interfaces[data[0]] = data[1]
-
+            interfaces_path = jderobot_install_prefix + '/include/jderobot/comm/interfaces/'
+            from os import listdir
+            from os.path import isfile, join
+            onlyfiles = [f for f in listdir(interfaces_path) if isfile(join(interfaces_path, f))]
+            for interface_file in onlyfiles:
+                fp = open(interfaces_path+interface_file)
+                for line in fp:
+                    class_index = line.find('class')
+                    class_name_index = line.find('Client')
+                    if class_index >= 0 and class_name_index >= 0 and class_index < class_name_index:
+                        line[class_index:class_name_index].find(' ')
+                        class_name = line[class_index+5:class_name_index+6].strip()
+                        class_short_name = line[class_index+5:class_name_index].strip()
+                        Interfaces.interfaces[class_short_name] = class_name
         return Interfaces.interfaces
 
     @staticmethod
@@ -63,6 +72,9 @@ class Interfaces:
 
 
 if __name__ == '__main__':
-    types = Interfaces.getRosMessageTypes()
-    for type in types:
-        print(type['typeDir'] + '::' + type['type'])
+    interfaces = Interfaces.getInterfaces()
+    print(str(interfaces))
+
+    #types = Interfaces.getRosMessageTypes()
+    #for type in types:
+    #    print(type['typeDir'] + '::' + type['type'])

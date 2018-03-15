@@ -324,7 +324,7 @@ class VisualStates(QMainWindow):
         self.treeView.setModel(self.treeModel)
 
         self.logo = QLabel()
-        logoPixmap = QPixmap(CMAKE_INSTALL_PREFIX + '/share/jderobot/resources/jderobot.png')
+        logoPixmap = QPixmap(CMAKE_INSTALL_PREFIX + '/share/resources/jderobot.png')
         self.logo.setPixmap(logoPixmap)
 
         self.upButton = QPushButton()
