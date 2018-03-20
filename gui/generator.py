@@ -21,7 +21,7 @@ import yaml
 class Generator(object):
 
     def __init__(self):
-        pass
+        self.jderobot_installation_path = '/opt/jderobot/'
 
     def generateAndSaveCfgYaml(self, projectPath, projectName):
         cfgYaml = {}

@@ -19,8 +19,8 @@
   '''
 from gui.transitiontype import TransitionType
 from gui.generator import Generator
-from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.cppparser import CPPParser
+from gui.cmakevars import CMAKE_INSTALL_PREFIX
 import os, stat
 
 class CppGenerator(Generator):
@@ -347,7 +347,7 @@ void readArgs(int *argc, char* argv[]) {
         guiStr.append('#!/usr/bin/python\n')
         guiStr.append('# -*- coding: utf-8 -*-\n')
         guiStr.append('import sys\n')
-        guiStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n\n')
+        guiStr.append('sys.path.append("' + self.jderobot_installation_path + '/lib/python2.7/")\n\n')
 
         guiStr.append('from PyQt5.QtWidgets import QApplication\n')
         guiStr.append('from codegen.python.runtimegui import RunTimeGui\n\n')
@@ -396,17 +396,12 @@ void readArgs(int *argc, char* argv[]) {
         cmakeStr.append('.cpp')
         cmakeStr.append(')\n\n')
 
-        cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + CMAKE_INSTALL_PREFIX + ')\n')
-
-        mystr = '''
-        
-SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)
-SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/visualstates_py)
-
-SET(JDEROBOT_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib)
-SET(VISUALSTATE_RUNTIME_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib/visualstates_py)
-
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+        cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + self.jderobot_installation_path + ')\n')
+        cmakeStr.append('SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)\n')
+        cmakeStr.append('SET(VISUALSTATE_RUNTIME_INCLUDE_DIR '+CMAKE_INSTALL_PREFIX+'/include)\n')
+        cmakeStr.append('SET(JDEROBOT_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib)\n')
+        cmakeStr.append('SET(VISUALSTATE_RUNTIME_LIBS_DIR '+CMAKE_INSTALL_PREFIX+'/lib)\n')
+        mystr = '''SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
         
 include_directories(
     ${JDEROBOT_INCLUDE_DIR}
