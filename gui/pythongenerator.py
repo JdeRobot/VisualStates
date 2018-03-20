@@ -86,8 +86,8 @@ class PythonGenerator(Generator):
 import sys, threading, time, signal
 '''
         headerStr.append(mystr)
-        headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7")\n')
-        headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n')
+        headerStr.append('sys.path.append("' + self.jderobot_installation_path + '/lib/python2.7/")\n')
+        headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/")\n')
         mystr = '''from codegen.python.state import State
 from codegen.python.temporaltransition import TemporalTransition
 from codegen.python.conditionaltransition import ConditionalTransition
