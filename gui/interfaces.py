@@ -51,23 +51,24 @@ class Interfaces:
     @staticmethod
     def getRosMessageTypes(rosDir = '/opt/ros/kinetic'):
         messageDir = rosDir + '/include'
-        allContents = os.listdir(messageDir)
-        messages = []
-        for entry in allContents:
-            if os.path.isdir(messageDir + '/' + entry):
-                if entry.find('_msgs') >= 0:
-                    messages.append(entry)
+        if os.path.exists(messageDir):
+            allContents = os.listdir(messageDir)
+            messages = []
+            for entry in allContents:
+                if os.path.isdir(messageDir + '/' + entry):
+                    if entry.find('_msgs') >= 0:
+                        messages.append(entry)
 
-        types = []
-        for msg in messages:
-            typeDir = msg
-            for entry in os.listdir(messageDir + '/' + msg):
-                if os.path.isfile(messageDir + '/' + msg + '/' + entry):
-                    if entry.find('.h') >= 0 and entry[0].isupper():
-                        type = {}
-                        type['typeDir'] = typeDir
-                        type['type'] = entry[:entry.find('.h')]
-                        types.append(type)
+            types = []
+            for msg in messages:
+                typeDir = msg
+                for entry in os.listdir(messageDir + '/' + msg):
+                    if os.path.isfile(messageDir + '/' + msg + '/' + entry):
+                        if entry.find('.h') >= 0 and entry[0].isupper():
+                            type = {}
+                            type['typeDir'] = typeDir
+                            type['type'] = entry[:entry.find('.h')]
+                            types.append(type)
 
         return types
 
