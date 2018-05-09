@@ -34,39 +34,41 @@ class Interfaces:
             interfaces_path = jderobot_install_prefix + '/include/jderobot/comm/interfaces/'
             from os import listdir
             from os.path import isfile, join
-            onlyfiles = [f for f in listdir(interfaces_path) if isfile(join(interfaces_path, f))]
-            for interface_file in onlyfiles:
-                fp = open(interfaces_path+interface_file)
-                for line in fp:
-                    class_index = line.find('class')
-                    class_name_index = line.find('Client')
-                    if class_index >= 0 and class_name_index >= 0 and class_index < class_name_index:
-                        line[class_index:class_name_index].find(' ')
-                        class_name = line[class_index+5:class_name_index+6].strip()
-                        class_short_name = line[class_index+5:class_name_index].strip()
-                        Interfaces.interfaces[class_short_name] = class_name
+            if os.path.exists(interfaces_path):
+                onlyfiles = [f for f in listdir(interfaces_path) if isfile(join(interfaces_path, f))]
+                for interface_file in onlyfiles:
+                    fp = open(interfaces_path+interface_file)
+                    for line in fp:
+                        class_index = line.find('class')
+                        class_name_index = line.find('Client')
+                        if class_index >= 0 and class_name_index >= 0 and class_index < class_name_index:
+                            line[class_index:class_name_index].find(' ')
+                            class_name = line[class_index+5:class_name_index+6].strip()
+                            class_short_name = line[class_index+5:class_name_index].strip()
+                            Interfaces.interfaces[class_short_name] = class_name
         return Interfaces.interfaces
 
     @staticmethod
     def getRosMessageTypes(rosDir = '/opt/ros/kinetic'):
         messageDir = rosDir + '/include'
-        allContents = os.listdir(messageDir)
-        messages = []
-        for entry in allContents:
-            if os.path.isdir(messageDir + '/' + entry):
-                if entry.find('_msgs') >= 0:
-                    messages.append(entry)
+        if os.path.exists(messageDir):
+            allContents = os.listdir(messageDir)
+            messages = []
+            for entry in allContents:
+                if os.path.isdir(messageDir + '/' + entry):
+                    if entry.find('_msgs') >= 0:
+                        messages.append(entry)
 
-        types = []
-        for msg in messages:
-            typeDir = msg
-            for entry in os.listdir(messageDir + '/' + msg):
-                if os.path.isfile(messageDir + '/' + msg + '/' + entry):
-                    if entry.find('.h') >= 0 and entry[0].isupper():
-                        type = {}
-                        type['typeDir'] = typeDir
-                        type['type'] = entry[:entry.find('.h')]
-                        types.append(type)
+            types = []
+            for msg in messages:
+                typeDir = msg
+                for entry in os.listdir(messageDir + '/' + msg):
+                    if os.path.isfile(messageDir + '/' + msg + '/' + entry):
+                        if entry.find('.h') >= 0 and entry[0].isupper():
+                            type = {}
+                            type['typeDir'] = typeDir
+                            type['type'] = entry[:entry.find('.h')]
+                            types.append(type)
 
         return types
 
