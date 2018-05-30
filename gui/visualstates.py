@@ -366,7 +366,8 @@ class VisualStates(QMainWindow):
 
     def stateRemoved(self, state):
         if self.activeState != self.rootState:
-            self.treeModel.removeState(state.stateData, self.activeState)
+            parent = self.treeModel.getByDataId(self.activeState.id)
+            self.treeModel.removeState(state.stateData, parent)
         else:
             self.treeModel.removeState(state.stateData)
 
