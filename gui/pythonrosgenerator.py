@@ -75,7 +75,7 @@ class PythonRosGenerator(Generator):
         fp = open(projectPath + os.sep + projectName + '.py', 'w')
         fp.write(sourceCode)
         fp.close()
-        os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
+        os.system('chmod +x "' +projectPath+ '"' + os.sep + projectName + '.py')
 
         stringList = []
         self.generateCmake(stringList, projectName)
