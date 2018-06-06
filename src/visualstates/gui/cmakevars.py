@@ -17,4 +17,4 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-CMAKE_INSTALL_PREFIX = '/opt/VisualStates/'
+CMAKE_INSTALL_PREFIX = '/media/okan/depo/jderobot/catkin_ws/install'

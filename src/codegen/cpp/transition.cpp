@@ -17,7 +17,7 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
 */
-#include "transition.h"
+#include <visualstates/transition.h>
 
 Transition::Transition(int id, int destinationId) {
     this->id = id;

@@ -17,11 +17,11 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
 */
-#include "test.h"
+#include <visualstates/test.h>
 #include <iostream>
 #include <easyiceconfig/EasyIce.h>
 #include <string>
-#include "runtimegui.h"
+#include <visualstates/runtimegui.h>
 
 void State0::runCode() {
     std::cout << " runcode for state0" << std::endl;
