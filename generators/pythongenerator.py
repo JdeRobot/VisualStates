@@ -17,9 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.generator import Generator
+from generators.generator import Generator
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
-from gui.transitiontype import TransitionType
+from gui.transition.transitiontype import TransitionType
 import os
 
 class PythonGenerator(Generator):

@@ -21,9 +21,9 @@ from PyQt5.QtWidgets import QGraphicsObject, QGraphicsLineItem, QGraphicsPolygon
 from PyQt5.QtGui import QBrush, QPolygonF
 from PyQt5.QtCore import Qt, QPointF, QLineF, pyqtSignal
 
-from gui.guistate import StateGraphicsItem
-from gui.idtextboxgraphicsitem import IdTextBoxGraphicsItem
-from gui.recthandlegraphicsitem import RectHandleGraphicsItem
+from gui.state.guistate import StateGraphicsItem
+from gui.state.idtextboxgraphicsitem import IdTextBoxGraphicsItem
+from gui.transition.recthandlegraphicsitem import RectHandleGraphicsItem
 import math
 
 class TransitionGraphicsItem(QGraphicsObject):

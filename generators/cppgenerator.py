@@ -17,9 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.transitiontype import TransitionType
-from gui.generator import Generator
-from gui.cppparser import CPPParser
+from gui.transition.transitiontype import TransitionType
+from generators.generator import Generator
+from parsers.cppparser import CPPParser
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 import os, stat
 

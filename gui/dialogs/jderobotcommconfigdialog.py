@@ -18,14 +18,14 @@
 
   '''
 import sys
-from gui.interfaces import Interfaces
+from configs.interfaces import Interfaces
 from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
     QWidget, QApplication, QLabel, QGridLayout, QComboBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase
-from gui.config import JdeRobotConfig
-from gui.config import Config
+from configs.config import JdeRobotConfig
+from configs.config import Config
 
 class JdeRobotCommConfigDialog(QDialog):
     configChanged = pyqtSignal()

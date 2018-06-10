@@ -17,10 +17,10 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.transitiontype import TransitionType
-from gui.cppgenerator import CppGenerator
+from gui.transition.transitiontype import TransitionType
+from generators.cppgenerator import CppGenerator
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
-from gui.cppparser import CPPParser
+from parsers.cppparser import CPPParser
 from xml.dom import minidom
 import os, stat
 
@@ -390,7 +390,7 @@ void signalCallback(int signum)
         guiStr.append('#!/usr/bin/python\n')
         guiStr.append('# -*- coding: utf-8 -*-\n')
         guiStr.append('import sys\n')
-        guiStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n\n')
+        guiStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/")\n\n')
 
         guiStr.append('from PyQt5.QtWidgets import QApplication\n')
         guiStr.append('from codegen.python.runtimegui import RunTimeGui\n\n')
@@ -440,9 +440,9 @@ void signalCallback(int signum)
         cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + CMAKE_INSTALL_PREFIX + ')\n')
         myStr = '''
 SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)
-SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/visualstates_py)
+SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/)
 SET(JDEROBOT_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib)
-SET(VISUALSTATE_RUNTIME_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib/visualstates_py)
+SET(VISUALSTATE_RUNTIME_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib/)
 
 include_directories(
     ${catkin_INCLUDE_DIRS}
