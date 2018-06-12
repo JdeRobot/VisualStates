@@ -22,7 +22,7 @@ from configs.interfaces import Interfaces
 from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
     QWidget, QApplication, QLabel, QGridLayout, QComboBox, \
-    QFormLayout, QTabWidget, QPlainTextEdit
+    QFormLayout, QTabWidget, QPlainTextEdit, QInputDialog
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase
 from configs.config import RosConfig
@@ -95,7 +95,6 @@ class PackageTab(QWidget):
         self.runDependencies.setPlainText(self.config.getRunDependenciesAsText())
 
 
-
 class TopicsTab(QWidget):
     configChanged = pyqtSignal()
     def __init__(self):
@@ -125,13 +124,11 @@ class TopicsTab(QWidget):
         self.mainLayout.addWidget(rowContainer)
         self.setLayout(self.mainLayout)
 
-
     def fillDataTypes(self):
         rosTypes = Interfaces.getRosMessageTypes()
         for type in rosTypes:
             concatType = type['typeDir'] + '/' + type['type']
             self.dataTypeComboBox.addItem(concatType, concatType)
-
 
     def addTopicRow(self, name, type, opType):
         rowLayout = QHBoxLayout()
@@ -141,7 +138,11 @@ class TopicsTab(QWidget):
         removeButton = QPushButton('Remove')
         removeButton.clicked.connect(self.removeTopicClicked)
         removeButton.setObjectName(str(self.count))
+        editButton = QPushButton('Edit Topic')
+        editButton.clicked.connect(self.editTopicClicked)
+        editButton.setObjectName(str(self.count))
         rowLayout.addWidget(removeButton)
+        rowLayout.addWidget(editButton)
         rowContainer = QWidget()
         rowContainer.setLayout(rowLayout)
         rowContainer.setObjectName('row' + str(self.count))
@@ -149,9 +150,8 @@ class TopicsTab(QWidget):
         self.topicRows[self.count] = rowContainer
         self.count += 1
 
-
     def addClicked(self):
-        if self.config is not None:
+        if self.config and self.config.isTopicByName(self.nameEdit.text()):
             self.config.addTopic(self.count, self.nameEdit.text(), self.dataTypeComboBox.currentData(), self.opTypeComboBox.currentData())
             self.addTopicRow(self.nameEdit.text(), self.dataTypeComboBox.currentData(), self.opTypeComboBox.currentData())
             self.nameEdit.setText('')
@@ -172,6 +172,20 @@ class TopicsTab(QWidget):
             self.config.removeTopic(int(self.sender().objectName()))
             del self.topicRows[int(self.sender().objectName())]
 
+    def editTopicClicked(self):
+        if self.config:
+            itemToEdit = None
+            for i in range(self.mainLayout.count()):
+                if self.mainLayout.itemAt(i).widget().objectName() == 'row' + self.sender().objectName():
+                    itemToEdit = self.mainLayout.itemAt(i)
+                    break
+            if itemToEdit:
+                text, ok = QInputDialog.getText(self, 'Topic Edit', 'Enter New Topic Name:')
+                if ok:
+                    itemToEdit.widget().findChildren(QLabel)[0].setText(text)
+                    self.config.editTopic(int(self.sender().objectName()), str(text))
+                    self.mainLayout.update()
+                    self.configChanged.emit()
 
     def clearAllRows(self):
         clearList = []

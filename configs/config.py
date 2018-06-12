@@ -45,6 +45,13 @@ class RosConfig(Config):
     def getTopics(self):
         return self.topics
 
+    def isTopicByName(self, topicName):
+        topicNames = map(lambda x: x['name'], self.topics)
+        if topicName in topicNames:
+            return False
+        else:
+            return True
+
     def addTopic(self, id, name, type, opType):
         topic = {}
         topic['id'] = id
@@ -70,6 +77,12 @@ class RosConfig(Config):
                 topicToDelete = t
                 break
         self.topics.remove(topicToDelete)
+
+    def editTopic(self, id, name):
+        for topic in self.topics:
+            if topic['id'] == id:
+                topic['name'] = name
+                break
 
     def setBuildDependencies(self, dependencies):
         """Dependencies coming as strings"""
