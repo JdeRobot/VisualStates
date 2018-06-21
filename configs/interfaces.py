@@ -69,7 +69,6 @@ class Interfaces:
                             type['typeDir'] = typeDir
                             type['type'] = entry[:entry.find('.h')]
                             types.append(type)
-
         return types
 
 

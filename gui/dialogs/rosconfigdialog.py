@@ -22,7 +22,7 @@ from configs.interfaces import Interfaces
 from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
     QWidget, QApplication, QLabel, QGridLayout, QComboBox, \
-    QFormLayout, QTabWidget, QPlainTextEdit, QInputDialog
+    QFormLayout, QTabWidget, QPlainTextEdit, QInputDialog, QFileDialog
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase
 from configs.config import RosConfig
@@ -110,7 +110,9 @@ class TopicsTab(QWidget):
         self.opTypeComboBox.addItem('sub', 'Subscribe')
         self.opTypeComboBox.addItem('pub', 'Publish')
         self.addButton = QPushButton('Add')
+        self.addWorkspaceButton = QPushButton('Add ROS Workspace')
         self.addButton.clicked.connect(self.addClicked)
+        self.addWorkspaceButton.clicked.connect(self.addWorkspaceClicked)
 
         self.mainLayout = QVBoxLayout()
         rowLayout = QHBoxLayout()
@@ -118,14 +120,18 @@ class TopicsTab(QWidget):
         rowLayout.addWidget(self.dataTypeComboBox)
         rowLayout.addWidget(self.opTypeComboBox)
         rowLayout.addWidget(self.addButton)
+        rowLayout.addWidget(self.addWorkspaceButton)
         rowContainer = QWidget()
         rowContainer.setLayout(rowLayout)
         rowContainer.setObjectName('titleRow')
         self.mainLayout.addWidget(rowContainer)
         self.setLayout(self.mainLayout)
 
-    def fillDataTypes(self):
-        rosTypes = Interfaces.getRosMessageTypes()
+    def fillDataTypes(self, rosDir=None):
+        if rosDir:
+            rosTypes = Interfaces.getRosMessageTypes(rosDir)
+        else:
+            rosTypes = Interfaces.getRosMessageTypes()
         for type in rosTypes:
             concatType = type['typeDir'] + '/' + type['type']
             self.dataTypeComboBox.addItem(concatType, concatType)
@@ -156,6 +162,15 @@ class TopicsTab(QWidget):
             self.addTopicRow(self.nameEdit.text(), self.dataTypeComboBox.currentData(), self.opTypeComboBox.currentData())
             self.nameEdit.setText('')
             self.configChanged.emit()
+
+    def addWorkspaceClicked(self):
+        fileDialog = QFileDialog(self)
+        fileDialog.setWindowTitle("Select ROS Workspace")
+        fileDialog.setViewMode(QFileDialog.Detail)
+        fileDialog.setFileMode(QFileDialog.DirectoryOnly)
+        fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
+        if fileDialog.exec_():
+            self.fillDataTypes(fileDialog.selectedFiles()[0])
 
     def removeTopicClicked(self):
         if self.config is not None:
