@@ -56,7 +56,7 @@ class ImportManager():
         if functions == newFunctions:
             return functions
         else:
-            return functions+newFunctions
+            return functions+ "\n" + newFunctions
 
     def updateVariables(self, newVariables, variables):
         """Updates existing variables with imported variables"""
