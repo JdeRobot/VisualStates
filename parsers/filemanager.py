@@ -119,6 +119,9 @@ class FileManager():
     def hasFile(self):
         return len(self.fullPath) > 0
 
+    def setPath(self, path):
+        self.fullPath = path
+
     def getFileName(self):
         name = ''
         if self.fullPath.rfind(os.sep) >= 0:

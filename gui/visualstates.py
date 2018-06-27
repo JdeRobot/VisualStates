@@ -64,6 +64,8 @@ class VisualStates(QMainWindow):
         self.fileManager = FileManager()
         self.importManager = ImportManager()
 
+        self.automataPath = None
+
         self.libraries = []
         self.config = None
         self.functions = ''
@@ -212,6 +214,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             (self.rootState, self.config, self.libraries, self.functions, self.variables) = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.automataPath = self.fileManager.fullPath
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
@@ -258,6 +261,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.fileManager.setPath(self.automataPath)
             importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
             self.automataScene.displayState(self.activeState)
