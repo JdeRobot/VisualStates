@@ -17,9 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.generator import Generator
+from generators.generator import Generator
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
-from gui.transitiontype import TransitionType
+from gui.transition.transitiontype import TransitionType
 from xml.dom import minidom
 import os
 import shutil
@@ -75,7 +75,7 @@ class PythonRosGenerator(Generator):
         fp = open(projectPath + os.sep + projectName + '.py', 'w')
         fp.write(sourceCode)
         fp.close()
-        os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
+        os.system('chmod +x "' +projectPath+ '"' + os.sep + projectName + '.py')
 
         stringList = []
         self.generateCmake(stringList, projectName)
@@ -362,6 +362,11 @@ def runGui():
             rdepElement.appendChild(doc.createTextNode(rdep))
             root.appendChild(rdepElement)
 
+        # system dependencies
+        rdepElement = doc.createElement('run_depend')
+        rdepElement.appendChild(doc.createTextNode('python-qt5-bindings'))
+        root.appendChild(rdepElement)
+
         exportElement = doc.createElement('export')
         root.appendChild(exportElement)
         doc.appendChild(root)
@@ -374,8 +379,8 @@ def runGui():
         if os.path.exists(projectPath + '/gui'):
             shutil.rmtree(projectPath + '/gui')
 
-        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/codegen', projectPath + '/codegen')
-        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/gui', projectPath + '/gui')
+        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/codegen', projectPath + '/codegen')
+        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/gui', projectPath + '/gui')
 
 
     def getVarName(self, varName):

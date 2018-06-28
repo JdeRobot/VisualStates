@@ -22,9 +22,9 @@ from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, \
     QWidget, QLabel, QVBoxLayout, QPushButton, QGraphicsItem, \
     QGraphicsScene
-from gui.treemodel import TreeModel
-from gui.state import State
-from gui.transition import Transition
+from tree.treemodel import TreeModel
+from core.state import State
+from core.transition import Transition
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 
 from threading import Thread

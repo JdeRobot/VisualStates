@@ -20,7 +20,7 @@
 from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsObject, QGraphicsItem
 from PyQt5.QtCore import Qt, pyqtSignal, QRectF
 from PyQt5.QtGui import QBrush, QPen
-from gui.idtextboxgraphicsitem import IdTextBoxGraphicsItem
+from gui.state.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
 class StateGraphicsItem(QGraphicsObject):
     # constant values

@@ -21,9 +21,9 @@ import sys
 from PyQt5.QtWidgets import QDialog, QApplication, QGroupBox, QComboBox,\
     QVBoxLayout, QFormLayout, QGridLayout, QHBoxLayout, QWidget
 from PyQt5.QtGui import QFontDatabase
-from gui.jderobotcommconfigdialog import JdeRobotCommConfigDialog
-from gui.rosconfigdialog import RosConfigDialog
-from gui.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
+from gui.dialogs.jderobotcommconfigdialog import JdeRobotCommConfigDialog
+from gui.dialogs.rosconfigdialog import RosConfigDialog
+from configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
 from PyQt5.QtCore import pyqtSignal
 
 class ConfigDialog(QDialog):
