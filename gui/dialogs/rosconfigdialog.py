@@ -24,7 +24,6 @@ from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QWidget, QApplication, QLabel, QGridLayout, QComboBox, \
     QFormLayout, QTabWidget, QPlainTextEdit, QInputDialog, QFileDialog, QMessageBox
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QFontDatabase
 from configs.config import RosConfig
 
 class RosConfigDialog(QDialog):
@@ -132,6 +131,7 @@ class TopicsTab(QWidget):
             rosTypes = Interfaces.getRosMessageTypes(rosDir)
         else:
             rosTypes = Interfaces.getRosMessageTypes()
+
         if rosTypes:
             for type in rosTypes:
                 concatType = type['typeDir'] + '/' + type['type']
@@ -174,7 +174,11 @@ class TopicsTab(QWidget):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             self.fillDataTypes(fileDialog.selectedFiles()[0])
+<<<<<<< HEAD:gui/dialogs/rosconfigdialog.py
 
+=======
+            
+>>>>>>> aed862bb39d479ff838ed77b03fe18112ce07557:gui/dialogs/rosconfigdialog.py
     def removeTopicClicked(self):
         if self.config is not None:
             itemToRemove = None
