@@ -395,10 +395,13 @@ class AutomataScene(QGraphicsScene):
                     tran.resetGraphicsItem()
 
     def resetIndexes(self):
+        """Reset Indices of Automata
+        Helper Funtion for creating new AutomataScene"""
         self.stateIndex = 0
         self.transitionIndex = 0
 
     def setLastIndexes(self, rootState):
+        """Updates AutomataScene's Largest State and Transition ID"""
         if rootState.id > self.stateIndex:
             self.stateIndex = rootState.id
 

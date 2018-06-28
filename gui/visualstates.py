@@ -63,8 +63,9 @@ class VisualStates(QMainWindow):
 
         self.fileManager = FileManager()
         self.importManager = ImportManager()
-
+        
         self.automataPath = None
+
 
         self.libraries = []
         self.config = None
