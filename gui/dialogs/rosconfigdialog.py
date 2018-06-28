@@ -174,11 +174,7 @@ class TopicsTab(QWidget):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             self.fillDataTypes(fileDialog.selectedFiles()[0])
-<<<<<<< HEAD:gui/dialogs/rosconfigdialog.py
 
-=======
-            
->>>>>>> aed862bb39d479ff838ed77b03fe18112ce07557:gui/dialogs/rosconfigdialog.py
     def removeTopicClicked(self):
         if self.config is not None:
             itemToRemove = None
