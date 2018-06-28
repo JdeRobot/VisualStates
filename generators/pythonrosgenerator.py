@@ -378,9 +378,10 @@ def runGui():
             shutil.rmtree(projectPath + '/codegen')
         if os.path.exists(projectPath + '/gui'):
             shutil.rmtree(projectPath + '/gui')
+
         if os.path.exists(projectPath + '/core'):
             shutil.rmtree(projectPath + '/core')
-
+            
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/codegen', projectPath + '/codegen')
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/gui', projectPath + '/gui')
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/core', projectPath + '/core')

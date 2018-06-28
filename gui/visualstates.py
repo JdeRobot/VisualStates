@@ -66,7 +66,6 @@ class VisualStates(QMainWindow):
         
         self.automataPath = None
 
-
         self.libraries = []
         self.config = None
         self.functions = ''

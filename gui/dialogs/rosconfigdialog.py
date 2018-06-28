@@ -22,7 +22,7 @@ from configs.interfaces import Interfaces
 from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
     QWidget, QApplication, QLabel, QGridLayout, QComboBox, \
-    QFormLayout, QTabWidget, QPlainTextEdit, QInputDialog, QFileDialog
+    QFormLayout, QTabWidget, QPlainTextEdit, QInputDialog, QFileDialog, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase
 from configs.config import RosConfig
@@ -132,9 +132,12 @@ class TopicsTab(QWidget):
             rosTypes = Interfaces.getRosMessageTypes(rosDir)
         else:
             rosTypes = Interfaces.getRosMessageTypes()
-        for type in rosTypes:
-            concatType = type['typeDir'] + '/' + type['type']
-            self.dataTypeComboBox.addItem(concatType, concatType)
+        if rosTypes:
+            for type in rosTypes:
+                concatType = type['typeDir'] + '/' + type['type']
+                self.dataTypeComboBox.addItem(concatType, concatType)
+        else:
+            QMessageBox.warning(self, "Error Adding Workspace", "Please select a valid ROS Workspace")
 
     def addTopicRow(self, name, type, opType):
         rowLayout = QHBoxLayout()
@@ -171,7 +174,7 @@ class TopicsTab(QWidget):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             self.fillDataTypes(fileDialog.selectedFiles()[0])
-            
+
     def removeTopicClicked(self):
         if self.config is not None:
             itemToRemove = None
