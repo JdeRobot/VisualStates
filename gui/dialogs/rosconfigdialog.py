@@ -132,14 +132,12 @@ class TopicsTab(QWidget):
             rosTypes = Interfaces.getRosMessageTypes(rosDir)
         else:
             rosTypes = Interfaces.getRosMessageTypes()
-
         if rosTypes:
             for type in rosTypes:
                 concatType = type['typeDir'] + '/' + type['type']
                 self.dataTypeComboBox.addItem(concatType, concatType)
         else:
             QMessageBox.warning(self, "Error Adding Workspace", "Please select a valid ROS Workspace")
-
 
     def addTopicRow(self, name, type, opType):
         rowLayout = QHBoxLayout()

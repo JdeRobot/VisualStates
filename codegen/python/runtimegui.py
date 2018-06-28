@@ -22,7 +22,7 @@ from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, \
     QWidget, QLabel, QVBoxLayout, QPushButton, QGraphicsItem, \
     QGraphicsScene
-from tree.treemodel import TreeModel
+from gui.tree.treemodel import TreeModel
 from core.state import State
 from core.transition import Transition
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
@@ -244,8 +244,3 @@ class RunTimeGui(QMainWindow):
         self.semaphore.acquire()
         data = self.memory.read().decode()
         return data
-
-
-
-
-

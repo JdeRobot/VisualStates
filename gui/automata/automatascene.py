@@ -366,25 +366,24 @@ class AutomataScene(QGraphicsScene):
         self.stateTextEditingStarted = True
 
     def setActiveState(self, state):
-        """Displays the Active State in AutomataScene
-        Helper Function to Display Child and State Functionality"""
         if state != self.activeState:
             self.clearScene()
             self.activeState = state
-            transitions = []
-            for child in self.activeState.getChildren():
-                self.addStateItem(child.getGraphicsItem(), False)
-                transitions = transitions + child.getOriginTransitions()
+            self.displayState(self.activeState)
 
-            for tran in transitions:
-                self.addTransitionItem(tran.getGraphicsItem(), False)
+    def displayState(self, state):
+        transitions = []
+        for child in state.getChildren():
+            self.addStateItem(child.getGraphicsItem(), False)
+            transitions = transitions + child.getOriginTransitions()
 
-            # print('set active state:' + self.activeState.name)
-            self.activeStateChanged.emit()
+        for tran in transitions:
+            self.addTransitionItem(tran.getGraphicsItem(), False)
+
+        # print('set active state:' + self.activeState.name)
+        self.activeStateChanged.emit()
 
     def clearScene(self):
-        """Clears Graphics for AutomataScene
-        Helper Function for creating new AutomataScene"""
         # clear scene
         self.clear()
         if self.activeState != None:

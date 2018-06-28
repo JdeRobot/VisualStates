@@ -63,6 +63,8 @@ class VisualStates(QMainWindow):
 
         self.fileManager = FileManager()
         self.importManager = ImportManager()
+        
+        self.automataPath = None
 
         self.libraries = []
         self.config = None
@@ -212,6 +214,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             (self.rootState, self.config, self.libraries, self.functions, self.variables) = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.automataPath = self.fileManager.fullPath
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
@@ -250,13 +253,6 @@ class VisualStates(QMainWindow):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
     def importAction(self):
-        """
-        Step 1 - Get Updated IDs
-        Step 2 - Add imported root state as children of the activeState
-        Step 3 - Set parent of imported root states as activeState
-        Step 4 - Load Complex States into tree model to display all in tree model.
-        Step 5 - Update Indexs.
-        """
         fileDialog = QFileDialog(self)
         fileDialog.setWindowTitle("Import VisualStates File")
         fileDialog.setViewMode(QFileDialog.Detail)
@@ -265,10 +261,10 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.fileManager.setPath(self.automataPath)
             importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
-
-            self.automataScene.setActiveState(self.rootState)
+            self.automataScene.displayState(self.activeState)
             self.automataScene.setLastIndexes(self.rootState)
 
     def timerAction(self):
