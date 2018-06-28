@@ -171,7 +171,7 @@ class TopicsTab(QWidget):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             self.fillDataTypes(fileDialog.selectedFiles()[0])
-
+            
     def removeTopicClicked(self):
         if self.config is not None:
             itemToRemove = None
