@@ -18,8 +18,8 @@
 
   '''
 from xml.dom import minidom
-from gui.state import State
-from gui.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
+from core.state import State
+from configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
 import os
 
 class FileManager():
@@ -119,6 +119,9 @@ class FileManager():
     def hasFile(self):
         return len(self.fullPath) > 0
 
+    def setPath(self, path):
+        self.fullPath = path
+
     def getFileName(self):
         name = ''
         if self.fullPath.rfind(os.sep) >= 0:
@@ -135,9 +138,3 @@ class FileManager():
         if self.fullPath.rfind(os.sep) >= 0:
             path = self.fullPath[0:self.fullPath.rfind(os.sep)]
         return path
-
-
-
-
-
-

@@ -17,8 +17,8 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.guistate import StateGraphicsItem
-from gui.transition import Transition
+from gui.state.guistate import StateGraphicsItem
+from core.transition import Transition
 from xml.dom.minidom import Node
 
 class State:
@@ -38,9 +38,18 @@ class State:
         self.graphicsItem = None
         self.isRunning = False
 
+    def setID(self, id):
+        self.id = id
+
+    def getID(self):
+        return self.id
+
     def setPos(self, x, y):
         self.x = x
         self.y = y
+
+    def setParent(self, parent):
+        self.parent = parent
 
     def addChild(self, child):
         if child not in self.children:
@@ -105,7 +114,6 @@ class State:
                 return elements[0].childNodes[0].nodeValue
         return ''
 
-
     def parse(self, stateElement):
         # parse attributes of the state
         for (name, value) in stateElement.attributes.items():
@@ -145,7 +153,6 @@ class State:
 
         # return transitions of the state to be able to wire after all states are created
         return stateTransitions
-
 
     def createElement(self, doc, parentElement=None):
         stateElement = doc.createElement('state')

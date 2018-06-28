@@ -17,8 +17,8 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.transitiontype import TransitionType
-from gui.guitransition import TransitionGraphicsItem
+from gui.transition.transitiontype import TransitionType
+from gui.transition.guitransition import TransitionGraphicsItem
 from PyQt5.QtCore import QPointF
 
 class Transition:

@@ -21,7 +21,7 @@ import sys
 from PyQt5.QtWidgets import QDialog, QTextEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QApplication, QRadioButton, QGroupBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase, QFontMetrics, QColor
-from gui.transitiontype import TransitionType
+from gui.transition.transitiontype import TransitionType
 from PyQt5.Qsci import QsciScintilla, QsciLexerPython, QsciLexerCPP
 
 class TransitionCodeDialog(QDialog):

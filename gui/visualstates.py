@@ -23,21 +23,22 @@ from PyQt5.QtGui import QPainter, QColor, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, \
     QWidget, QFileDialog, QLabel, QVBoxLayout, QPushButton, QMessageBox
 
-from gui.automatascene import AutomataScene, OpType
-from gui.filemanager import FileManager
-from gui.treemodel import TreeModel
-from gui.state import State
-from gui.timerdialog import TimerDialog
-from gui.codedialog import CodeDialog
-from gui.librariesdialog import LibrariesDialog
-from gui.configdialog import ConfigDialog
-from gui.cppgenerator import CppGenerator
-from gui.pythongenerator import PythonGenerator
-from gui.interfaces import Interfaces
+from gui.automata.automatascene import AutomataScene, OpType
+from parsers.filemanager import FileManager
+from parsers.importmanager import ImportManager
+from gui.tree.treemodel import TreeModel
+from core.state import State
+from gui.transition.timerdialog import TimerDialog
+from gui.state.codedialog import CodeDialog
+from gui.dialogs.librariesdialog import LibrariesDialog
+from gui.dialogs.configdialog import ConfigDialog
+from generators.cppgenerator import CppGenerator
+from generators.pythongenerator import PythonGenerator
+from configs.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
-from gui.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
-from gui.cpprosgenerator import CppRosGenerator
-from gui.pythonrosgenerator import PythonRosGenerator
+from configs.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
+from generators.cpprosgenerator import CppRosGenerator
+from generators.pythonrosgenerator import PythonRosGenerator
 
 class VisualStates(QMainWindow):
     def __init__(self, parent=None):
@@ -61,6 +62,9 @@ class VisualStates(QMainWindow):
         self.show()
 
         self.fileManager = FileManager()
+        self.importManager = ImportManager()
+        
+        self.automataPath = None
 
         self.libraries = []
         self.config = None
@@ -79,6 +83,11 @@ class VisualStates(QMainWindow):
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open Visual States')
         openAction.triggered.connect(self.openAction)
+
+        importAction = QAction('&Import', self)
+        openAction.setShortcut('Ctrl+I')
+        importAction.setStatusTip('Import A State')
+        importAction.triggered.connect(self.importAction)
 
         saveAction = QAction('&Save', self)
         saveAction.setShortcut('Ctrl+S')
@@ -157,6 +166,7 @@ class VisualStates(QMainWindow):
         archieveMenu = menubar.addMenu('&File')
         archieveMenu.addAction(newAction)
         archieveMenu.addAction(openAction)
+        archieveMenu.addAction(importAction)
         archieveMenu.addAction(saveAction)
         archieveMenu.addAction(saveAsAction)
         archieveMenu.addAction(quitAction)
@@ -204,6 +214,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             (self.rootState, self.config, self.libraries, self.functions, self.variables) = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.automataPath = self.fileManager.fullPath
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
@@ -212,8 +223,6 @@ class VisualStates(QMainWindow):
             # print(str(self.config))
         # else:
         #     print('open is canceled')
-
-
 
     def saveAction(self):
         if len(self.fileManager.getFileName()) == 0:
@@ -233,7 +242,6 @@ class VisualStates(QMainWindow):
         # else:
         #     print('file dialog canceled')
 
-
     def quitAction(self):
         # print('Quit')
         self.close()
@@ -243,6 +251,21 @@ class VisualStates(QMainWindow):
 
     def transitionAction(self):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
+
+    def importAction(self):
+        fileDialog = QFileDialog(self)
+        fileDialog.setWindowTitle("Import VisualStates File")
+        fileDialog.setViewMode(QFileDialog.Detail)
+        fileDialog.setNameFilters(['VisualStates File (*.xml)'])
+        fileDialog.setDefaultSuffix('.xml')
+        fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
+        if fileDialog.exec_():
+            file = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.fileManager.setPath(self.automataPath)
+            importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(file, self)
+            self.treeModel.loadFromRoot(importedState, self.activeState)
+            self.automataScene.displayState(self.activeState)
+            self.automataScene.setLastIndexes(self.rootState)
 
     def timerAction(self):
         if self.activeState is not None:
@@ -269,7 +292,6 @@ class VisualStates(QMainWindow):
         self.configDialog = ConfigDialog('Config', self.config)
         self.configDialog.configChanged.connect(self.configChanged)
         self.configDialog.exec_()
-
 
     def showWarning(self, title, msg):
         QMessageBox.warning(self, title, msg)
@@ -393,9 +415,8 @@ class VisualStates(QMainWindow):
     def upButtonClicked(self):
         if self.activeState != None:
             if self.activeState.parent != None:
-                # print('parent name:' + self.activeState.parent.name)
+                #print(self.activeState.parent.id)
                 self.automataScene.setActiveState(self.activeState.parent)
-
 
     def getStateById(self,state, id):
         if state.id == id:
@@ -420,7 +441,7 @@ class VisualStates(QMainWindow):
             self.activeState.setTimeStep(duration)
 
     def variablesChanged(self, variables):
-            self.variables = variables
+        self.variables = variables
 
     def functionsChanged(self, functions):
         self.functions = functions

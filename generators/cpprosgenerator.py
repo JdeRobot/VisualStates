@@ -17,10 +17,10 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.transitiontype import TransitionType
-from gui.cppgenerator import CppGenerator
+from gui.transition.transitiontype import TransitionType
+from generators.cppgenerator import CppGenerator
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
-from gui.cppparser import CPPParser
+from parsers.cppparser import CPPParser
 from xml.dom import minidom
 import os, stat
 

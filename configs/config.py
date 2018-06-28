@@ -37,8 +37,20 @@ class RosConfig(Config):
         self.buildDependencies = []
         self.runDependencies = []
 
+    def updateROSConfig(self, newConfig):
+        self.updateTopics(newConfig.topics)
+        self.updateBuildDependencies(newConfig.buildDependencies)
+        self.updateRunDependencies(newConfig.runDependencies)
+
     def getTopics(self):
         return self.topics
+
+    def isTopicByName(self, topicName):
+        topicNames = map(lambda x: x['name'], self.topics)
+        if topicName in topicNames:
+            return False
+        else:
+            return True
 
     def addTopic(self, id, name, type, opType):
         topic = {}
@@ -48,6 +60,16 @@ class RosConfig(Config):
         topic['opType'] = opType
         self.topics.append(topic)
 
+    def updateTopics(self, topics):
+        for topic in topics:
+            if topic not in self.topics:
+                self.addTopic(self.getTopicID(), topic['name'], topic['type'], topic['opType'])
+
+    def getTopicID(self):
+        if self.topics:
+            return max(map(lambda x: x['id'], self.topics)) + 1
+        else: return 0
+
     def removeTopic(self, id):
         topicToDelete = None
         for t in self.topics:
@@ -56,8 +78,14 @@ class RosConfig(Config):
                 break
         self.topics.remove(topicToDelete)
 
+    def editTopic(self, id, name):
+        for topic in self.topics:
+            if topic['id'] == id:
+                topic['name'] = name
+                break
 
     def setBuildDependencies(self, dependencies):
+        """Dependencies coming as strings"""
         self.buildDependencies = []
         dependStrs = dependencies.split('\n')
         for dStr in dependStrs:
@@ -75,7 +103,14 @@ class RosConfig(Config):
                 myStr += '\n'
         return myStr
 
+    def updateBuildDependencies(self, dependencies):
+        """Dependencies coming as List"""
+        for dep in dependencies:
+            if dep not in self.buildDependencies:
+                self.buildDependencies.append(dep)
+
     def setRunDependencies(self, dependencies):
+        """Dependencies coming as strings"""
         self.runDependencies = []
         dependStrs = dependencies.split('\n')
         for dStr in dependStrs:
@@ -92,6 +127,12 @@ class RosConfig(Config):
             if i < len(self.runDependencies):
                 myStr += '\n'
         return myStr
+
+    def updateRunDependencies(self, dependencies):
+        """Dependencies coming as List"""
+        for dep in dependencies:
+            if dep not in self.runDependencies:
+                self.runDependencies.append(dep)
 
     def createNode(self, doc):
         cfgElement = doc.createElement('config')
@@ -163,6 +204,11 @@ class JdeRobotConfig(Config):
         self.type = JDEROBOTCOMM
         self.interfaces = []
 
+    def updateJDERobotCommConfig(self, config):
+        for interface in config.interfaces:
+            if interface not in self.interfaces:
+                self.interfaces.append(interface)
+
     def getInterfaces(self):
         return self.interfaces
 
@@ -174,7 +220,6 @@ class JdeRobotConfig(Config):
                 break
         if deleteItem is not None:
             self.interfaces.remove(deleteItem)
-
 
     def addInterface(self, interface):
         self.interfaces.append(interface)
@@ -254,5 +299,3 @@ class JdeRobotConfig(Config):
             return element.childNodes[0].nodeValue
         else:
             return ''
-
-
