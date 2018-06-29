@@ -320,6 +320,9 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
+            if self.config is None:
+                self.config = JdeRobotConfig()
+
             if self.config.type == ROS:
                 generator = PythonRosGenerator(self.libraries, self.config, stateList, self.functions, self.variables)
             elif self.config.type == JDEROBOTCOMM:
