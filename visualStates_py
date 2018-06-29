@@ -1,3 +1,0 @@
-#!/bin/bash
-
-python /opt/VisualStates/lib/python2.7/visualStates.py $*
