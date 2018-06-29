@@ -17,16 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from visualstates.codegen.python.runtimegui import RunTimeGui
-from PyQt5.QtWidgets import QApplication
-import sys
+class OpType():
+    ADDSTATE = 0
+    ADDTRANSITION = 1
+    OPENAUTOMATA = 2
+    IMPORTSTATE = 3
 
-def runGui():
-    app = QApplication(sys.argv)
-    gui = RunTimeGui()
-    gui.activateIPC()
-    gui.show()
-    app.exec_()
-
-if __name__ == '__main__':
-    runGui()

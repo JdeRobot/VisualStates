@@ -17,7 +17,7 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from codegen.python.transition import Transition
+from visualstates.codegen.python.transition import Transition
 from time import time
 
 class TemporalTransition(Transition):

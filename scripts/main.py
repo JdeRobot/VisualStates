@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 '''
    Copyright (C) 1997-2017 JDERobot Developers Team
 
@@ -17,16 +19,11 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from visualstates.codegen.python.runtimegui import RunTimeGui
-from PyQt5.QtWidgets import QApplication
 import sys
-
-def runGui():
-    app = QApplication(sys.argv)
-    gui = RunTimeGui()
-    gui.activateIPC()
-    gui.show()
-    app.exec_()
+from PyQt5.QtWidgets import QApplication
+from visualstates.gui.visualstates import VisualStates
 
 if __name__ == '__main__':
-    runGui()
+    app = QApplication(sys.argv)
+    mainWindow = VisualStates()
+    sys.exit(app.exec_())

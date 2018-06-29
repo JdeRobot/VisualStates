@@ -17,9 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from codegen.python.state import State
-from codegen.python.temporaltransition import TemporalTransition
-from codegen.python.transition import Transition
+from visualstates.codegen.python.state import State
+from visualstates.codegen.python.temporaltransition import TemporalTransition
+from visualstates.codegen.python.transition import Transition
 import easyiceconfig as EasyIce
 import sys
 from jderobot import MotorsPrx

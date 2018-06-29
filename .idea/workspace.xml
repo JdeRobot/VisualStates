@@ -2,63 +2,63 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e21685f-adb9-4dd3-8639-54032b40c9d4" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/__init__.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/conditionaltransition.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/runtimegui.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/runtimegui.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/state.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/state.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/temporaltransition.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/temporaltransition.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/test.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/test.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/transition.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/cpp/transition.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/conditionaltransition.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/runtimegui.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/state.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/temporaltransition.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/test.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/testipc.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/codegen/python/transition.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/automatascene.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/cmakevars.py.in" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/codedialog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/config.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/configdialog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/cppgenerator.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/cppparser.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/cpprosgenerator.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/filemanager.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/generator.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/guistate.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/guitransition.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/idtextboxgraphicsitem.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/interfaces.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/jderobotcommconfigdialog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/librariesdialog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/optype.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/pythongenerator.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/pythonrosgenerator.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/recthandlegraphicsitem.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/renamediaolog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/rosconfigdialog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/state.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/timerdialog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/transition.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/transitioncodedialog.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/transitiontype.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/treemodel.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/treenode.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gui/visualstates.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/visualStates.py" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/gui-states.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/ros/BumpAndGoPython/BumpAndGoPython.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/ros/BumpAndGoPython/README.md" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/cpptest" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/install_manifest.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/automatascene.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/cmakevars.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/cmakevars.py.in" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/codedialog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/config.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/configdialog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/cppgenerator.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/cppparser.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/cpprosgenerator.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/filemanager.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/generator.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/guistate.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/guitransition.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/idtextboxgraphicsitem.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/interfaces.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/jderobotcommconfigdialog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/librariesdialog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/optype.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/pythongenerator.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/pythonrosgenerator.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/recthandlegraphicsitem.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/renamediaolog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/rosconfigdialog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/state.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/timerdialog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/transition.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/transitioncodedialog.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/transitiontype.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/treemodel.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/treenode.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/visualstates/gui/visualstates.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/visualstates.in" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/codegen/cpp/runtimegui.cpp" afterPath="$PROJECT_DIR$/src/visualstates/codegen/cpp/runtimegui.cpp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/codegen/cpp/state.cpp" afterPath="$PROJECT_DIR$/src/visualstates/codegen/cpp/state.cpp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/codegen/cpp/temporaltransition.cpp" afterPath="$PROJECT_DIR$/src/visualstates/codegen/cpp/temporaltransition.cpp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/codegen/cpp/test.cpp" afterPath="$PROJECT_DIR$/src/visualstates/codegen/cpp/test.cpp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/codegen/cpp/transition.cpp" afterPath="$PROJECT_DIR$/src/visualstates/codegen/cpp/transition.cpp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/visualstates/main.py" afterPath="$PROJECT_DIR$/scripts/main.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/visualStates_py" afterPath="$PROJECT_DIR$/visualStates_py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/visualStates_py.iml" afterPath="$PROJECT_DIR$/.idea/visualStates_py.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/visualStates_py" afterPath="$PROJECT_DIR$/visualStates_py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.xml" afterPath="$PROJECT_DIR$/package.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/visualstates/codegen/python/conditionaltransition.py" afterPath="$PROJECT_DIR$/src/visualstates/codegen/python/conditionaltransition.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/visualstates/codegen/python/runtimegui.py" afterPath="$PROJECT_DIR$/src/visualstates/codegen/python/runtimegui.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/visualstates/codegen/python/temporaltransition.py" afterPath="$PROJECT_DIR$/src/visualstates/codegen/python/temporaltransition.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/visualstates/codegen/python/test.py" afterPath="$PROJECT_DIR$/src/visualstates/codegen/python/test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/visualstates/codegen/python/testipc.py" afterPath="$PROJECT_DIR$/src/visualstates/codegen/python/testipc.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -100,11 +100,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="rosconfigdialog.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/rosconfigdialog.py">
+      <file leaf-file-name="configdialog.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/gui/dialogs/configdialog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="32" column="6" lean-forward="false" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
+            <state relative-caret-position="-578">
+              <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
               <folding>
                 <element signature="e#759#769#0" expanded="true" />
               </folding>
@@ -112,81 +112,81 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="state.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/state.py">
+      <file leaf-file-name="runtimegui.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/codegen/python/runtimegui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1632">
-              <caret line="98" column="19" lean-forward="false" selection-start-line="98" selection-start-column="19" selection-end-line="98" selection-end-column="19" />
+            <state relative-caret-position="272">
+              <caret line="79" column="34" lean-forward="true" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
               <folding>
-                <element signature="e#759#801#0" expanded="true" />
+                <element signature="e#759#798#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="timerdialog.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/timerdialog.py">
+      <file leaf-file-name="package_path.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/configs/package_path.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1088">
-              <caret line="69" column="56" lean-forward="false" selection-start-line="69" selection-start-column="56" selection-end-line="69" selection-end-column="56" />
-              <folding>
-                <element signature="e#759#769#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="391">
+              <caret line="23" column="30" lean-forward="false" selection-start-line="23" selection-start-column="30" selection-end-line="23" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="33" lean-forward="true" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="33" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="cppgenerator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/cppgenerator.py">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/generators/cppgenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3774">
-              <caret line="226" column="32" lean-forward="false" selection-start-line="226" selection-start-column="32" selection-end-line="226" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="generator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/generator.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="901">
-              <caret line="53" column="50" lean-forward="false" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="treemodel.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/gui/treemodel.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="124" column="34" lean-forward="true" selection-start-line="124" selection-start-column="34" selection-end-line="124" selection-end-column="34" />
+            <state relative-caret-position="247">
+              <caret line="408" column="20" lean-forward="true" selection-start-line="408" selection-start-column="20" selection-end-line="408" selection-end-column="20" />
               <folding>
-                <element signature="e#760#820#0" expanded="true" />
+                <element signature="e#759#768#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="visualStates.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/visualStates.py">
+      <file leaf-file-name="cpprosgenerator.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/generators/cpprosgenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="28" column="25" lean-forward="false" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
+            <state relative-caret-position="-280">
+              <caret line="447" column="63" lean-forward="true" selection-start-line="447" selection-start-column="63" selection-end-line="447" selection-end-column="63" />
               <folding>
-                <element signature="e#801#811#0" expanded="true" />
+                <element signature="e#759#768#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="visualstates.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/visualstates.py">
+      <file leaf-file-name="pythongenerator.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/generators/pythongenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6273">
-              <caret line="369" column="13" lean-forward="false" selection-start-line="369" selection-start-column="13" selection-end-line="369" selection-end-column="13" />
+            <state relative-caret-position="-365">
+              <caret line="94" column="70" lean-forward="true" selection-start-line="94" selection-start-column="70" selection-end-line="94" selection-end-column="70" />
               <folding>
-                <element signature="e#783#810#0" expanded="true" />
+                <element signature="e#759#768#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pythonrosgenerator.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/generators/pythonrosgenerator.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1150">
+              <caret line="394" column="0" lean-forward="true" selection-start-line="394" selection-start-column="0" selection-end-line="394" selection-end-column="0" />
+              <folding>
+                <element signature="e#759#768#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -195,19 +195,21 @@
       <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state relative-caret-position="425">
+              <caret line="25" column="58" lean-forward="true" selection-start-line="25" selection-start-column="58" selection-end-line="25" selection-end-column="58" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="automatascene.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/automatascene.py">
+      <file leaf-file-name="visualstates.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visualstates/gui/visualstates.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="27" column="29" lean-forward="false" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
-              <folding />
+            <state relative-caret-position="1160">
+              <caret line="374" column="0" lean-forward="true" selection-start-line="374" selection-start-column="0" selection-end-line="374" selection-end-column="0" />
+              <folding>
+                <element signature="e#778#805#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -223,17 +225,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>cmake</find>
-      <find>std::cout</find>
-      <find>cout</find>
-      <find>print</find>
-      <find>print(</find>
-      <find>print('</find>
-      <find>print('t</find>
-      <find>print('type</find>
-      <find>interfaceHeaders</find>
-      <find>getFunction</find>
-      <find>functions</find>
       <find>signal</find>
       <find>varName[0]</find>
       <find>parseFunctions</find>
@@ -245,14 +236,25 @@
       <find>.</find>
       <find>.png</find>
       <find>package</find>
-      <find>CMAKE_INSTALL</find>
-      <find>CMAKE_INSTALL_PREFIX</find>
       <find>Interfaces</find>
       <find>Inter</find>
       <find>interface</find>
       <find>use this for editable filtering of message type</find>
       <find>stateRemoved</find>
       <find>stateInserted</find>
+      <find>CM</find>
+      <find>CMAK</find>
+      <find>CMAKE</find>
+      <find>CMAKE_</find>
+      <find>CMAKE_I</find>
+      <find>CMAKE_IN</find>
+      <find>CMAKE_INST</find>
+      <find>CMAKE_INSTAL</find>
+      <find>CMAKE_INSTALL</find>
+      <find>CMAKE_INSTALL_</find>
+      <find>CMAKE_INSTALL_PRE</find>
+      <find>CMAKE_INSTALL_PREF</find>
+      <find>CMAKE_INSTALL_PREFIX</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -268,32 +270,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/codegen/cpp/state.cpp" />
-        <option value="$PROJECT_DIR$/codegen/cpp/test.cpp" />
-        <option value="$PROJECT_DIR$/codegen/cpp/test.h" />
-        <option value="$PROJECT_DIR$/codegen/python/testipc.py" />
-        <option value="$PROJECT_DIR$/gui/optype.py" />
-        <option value="$PROJECT_DIR$/gui/transitiontype.py" />
-        <option value="$PROJECT_DIR$/codegen/python/test.py" />
-        <option value="$PROJECT_DIR$/gui/codedialog.py" />
-        <option value="$PROJECT_DIR$/gui/guitransition.py" />
-        <option value="$PROJECT_DIR$/gui/librariesdialog.py" />
-        <option value="$PROJECT_DIR$/gui/renamediaolog.py" />
-        <option value="$PROJECT_DIR$/gui/timerdialog.py" />
-        <option value="$PROJECT_DIR$/gui/recthandlegraphicsitem.py" />
-        <option value="$PROJECT_DIR$/gui/idtextboxgraphicsitem.py" />
-        <option value="$PROJECT_DIR$/gui/guistate.py" />
-        <option value="$PROJECT_DIR$/gui/transition.py" />
-        <option value="$PROJECT_DIR$/codegen/python/conditionaltransition.py" />
-        <option value="$PROJECT_DIR$/codegen/python/state.py" />
-        <option value="$PROJECT_DIR$/gui/transitioncodedialog.py" />
-        <option value="$PROJECT_DIR$/gui/treemodel.py" />
-        <option value="$PROJECT_DIR$/gui/treenode.py" />
-        <option value="$PROJECT_DIR$/gui/config.py" />
-        <option value="$PROJECT_DIR$/gui/cmakevars.py.in" />
-        <option value="$PROJECT_DIR$/gui/automatascene.py" />
-        <option value="$PROJECT_DIR$/codegen/cpp/state.h" />
-        <option value="$PROJECT_DIR$/gui/filemanager.py" />
         <option value="$PROJECT_DIR$/codegen/cpp/transition.h" />
         <option value="$PROJECT_DIR$/codegen/cpp/transition.cpp" />
         <option value="$PROJECT_DIR$/codegen/cpp/temporaltransition.h" />
@@ -318,6 +294,32 @@
         <option value="$PROJECT_DIR$/gui/jderobotcommconfigdialog.py" />
         <option value="$PROJECT_DIR$/gui/rosconfigdialog.py" />
         <option value="$PROJECT_DIR$/gui/interfaces.py" />
+        <option value="$PROJECT_DIR$/parsers/filemanager.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/parsers/importmanager.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/codegen/python/conditionaltransition.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/codegen/python/temporaltransition.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/codegen/python/test.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/codegen/python/testipc.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/configs/interfaces.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/core/transition.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/gui/automata/automatascene.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/gui/dialogs/configdialog.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/gui/transition/guitransition.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/visualstates/main.py" />
+        <option value="$PROJECT_DIR$/scripts/main.py" />
+        <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/parsers/filemanager.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/gui/dialogs/jderobotcommconfigdialog.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/gui/dialogs/rosconfigdialog.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/codegen/python/runtimegui.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/generators/cppgenerator.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/generators/cpprosgenerator.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/generators/pythongenerator.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/generators/pythonrosgenerator.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/gui/visualstates.py" />
+        <option value="$PROJECT_DIR$/src/visualstates/configs/package_path.py" />
+        <option value="$PROJECT_DIR$/package.xml" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
       </list>
     </option>
@@ -334,7 +336,9 @@
     <option name="width" value="1869" />
     <option name="height" value="1084" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -350,39 +354,111 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="VisualStates" />
+              <option name="myItemId" value="visualstates" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="VisualStates" />
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="configs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualstates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scripts" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.general" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
+      <recent name="$PROJECT_DIR$/src/visualstates" />
+      <recent name="$PROJECT_DIR$/src/visualstates/gui" />
+      <recent name="$PROJECT_DIR$/src/visualstates/codegen" />
+      <recent name="$PROJECT_DIR$/gui" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/gui" />
       <recent name="$PROJECT_DIR$/gui/runtimegui/python" />
       <recent name="$PROJECT_DIR$/gui/generator" />
       <recent name="$PROJECT_DIR$" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/gui" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -728,16 +804,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="51" y="-4" width="1869" height="1084" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2495886" sideWeight="0.49583334" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32881" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295838" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32964602" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24944155" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25233132" sideWeight="0.49583334" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295838" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32672232" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24944155" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21887" sideWeight="0.50416666" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -746,7 +824,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32692307" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328125" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
     </layout>
@@ -764,292 +841,459 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/gui/generator.py" />
-    <entry file="file://$PROJECT_DIR$/gui/cmakevars.py.in" />
-    <entry file="file://$PROJECT_DIR$/gui/cmakevars.py" />
-    <entry file="file://$PROJECT_DIR$/gui/cppgenerator.py" />
-    <entry file="file://$PROJECT_DIR$/visualStates_py.in">
+    <entry file="file://$PROJECT_DIR$/src/visualstates/codegen/python/testipc.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="62" lean-forward="true" selection-start-line="2" selection-start-column="62" selection-end-line="2" selection-end-column="62" />
+        <state relative-caret-position="204">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#820#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui/codedialog.py" />
-    <entry file="file://$PROJECT_DIR$/codegen/python/runtimegui.py" />
-    <entry file="file://$PROJECT_DIR$/gui/rosconfigdialog.py" />
-    <entry file="file://$PROJECT_DIR$/gui/jderobotcommconfigdialog.py" />
-    <entry file="file://$PROJECT_DIR$/gui/configdialog.py" />
-    <entry file="file://$PROJECT_DIR$/gui/visualstates.py" />
-    <entry file="file://$PROJECT_DIR$/visualStates.py" />
-    <entry file="file://$PROJECT_DIR$/gui/interfaces.py" />
-    <entry file="file://$PROJECT_DIR$/gui/pythongenerator.py" />
-    <entry file="file://$PROJECT_DIR$/gui/pythonrosgenerator.py" />
-    <entry file="file://$PROJECT_DIR$/gui/cpprosgenerator.py" />
+    <entry file="file://$PROJECT_DIR$/src/visualstates/codegen/python/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="30" lean-forward="false" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
+          <folding>
+            <element signature="e#759#810#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/codegen/python/temporaltransition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="53" lean-forward="false" selection-start-line="8" selection-start-column="53" selection-end-line="8" selection-end-column="53" />
+          <folding>
+            <element signature="e#759#820#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/core/state.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="61" lean-forward="true" selection-start-line="22" selection-start-column="61" selection-end-line="22" selection-end-column="61" />
+          <folding>
+            <element signature="e#759#791#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/core/transition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+          <folding>
+            <element signature="e#759#791#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/automata/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/generators/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/core/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/configs/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/codegen/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/automata/automatascene.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="69" lean-forward="true" selection-start-line="26" selection-start-column="69" selection-end-line="26" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/automata/optype.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="16" lean-forward="true" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/dialogs/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/state/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/state/codedialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="26" lean-forward="true" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="26" />
+          <folding>
+            <element signature="e#759#769#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/state/guistate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#798#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/state/idtextboxgraphicsitem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#804#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/state/renamediaolog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#769#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/transition/guitransition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/transition/recthandlegraphicsitem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#804#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/transition/timerdialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#769#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/transition/transitioncodedialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" column="23" lean-forward="true" selection-start-line="30" selection-start-column="23" selection-end-line="30" selection-end-column="23" />
+          <folding>
+            <element signature="e#759#769#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/transition/transitiontype.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="18" lean-forward="true" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/tree/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/tree/treemodel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding>
+            <element signature="e#758#818#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/tree/treenode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#802#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/cmakevars.py.in">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/cmakevars.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/visualstates.in">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="54" lean-forward="true" selection-start-line="2" selection-start-column="54" selection-end-line="2" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/cmakevars.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/cmakevars.py.in">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/codedialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/configdialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/cppparser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/cpprosgenerator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/filemanager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/guistate.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/guitransition.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/idtextboxgraphicsitem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/interfaces.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/jderobotcommconfigdialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/librariesdialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/optype.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/pythongenerator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/pythonrosgenerator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/recthandlegraphicsitem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/renamediaolog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/transition.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/transitioncodedialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/transitiontype.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/treenode.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/codegen/python/state.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/state.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1632">
-          <caret line="98" column="19" lean-forward="false" selection-start-line="98" selection-start-column="19" selection-end-line="98" selection-end-column="19" />
-          <folding>
-            <element signature="e#759#801#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/cppgenerator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3774">
-          <caret line="226" column="32" lean-forward="false" selection-start-line="226" selection-start-column="32" selection-end-line="226" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/generator.py">
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="901">
-          <caret line="53" column="50" lean-forward="false" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
+        <state relative-caret-position="374">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/rosconfigdialog.py">
+    <entry file="file://$PROJECT_DIR$/scripts/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="32" column="6" lean-forward="false" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
-          <folding>
-            <element signature="e#759#769#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/timerdialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="69" column="56" lean-forward="false" selection-start-line="69" selection-start-column="56" selection-end-line="69" selection-end-column="56" />
-          <folding>
-            <element signature="e#759#769#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/automatascene.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="29" lean-forward="false" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+    <entry file="file://$PROJECT_DIR$/scripts/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/visualStates.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="28" column="25" lean-forward="false" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
+        <state relative-caret-position="476">
+          <caret line="28" column="25" lean-forward="true" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
           <folding>
             <element signature="e#801#811#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/visualstates.py">
+    <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6273">
-          <caret line="369" column="13" lean-forward="false" selection-start-line="369" selection-start-column="13" selection-end-line="369" selection-end-column="13" />
+        <state relative-caret-position="221">
+          <caret line="13" column="26" lean-forward="true" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
           <folding>
-            <element signature="e#783#810#0" expanded="true" />
+            <element signature="e#23#55#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/treemodel.py">
+    <entry file="file://$PROJECT_DIR$/src/visualstates/parsers/filemanager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="124" column="34" lean-forward="true" selection-start-line="124" selection-start-column="34" selection-end-line="124" selection-end-column="34" />
+        <state relative-caret-position="323">
+          <caret line="19" column="9" lean-forward="true" selection-start-line="19" selection-start-column="9" selection-end-line="19" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/dialogs/rosconfigdialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/dialogs/jderobotcommconfigdialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="36" column="26" lean-forward="true" selection-start-line="36" selection-start-column="26" selection-end-line="36" selection-end-column="26" />
           <folding>
-            <element signature="e#760#820#0" expanded="true" />
+            <element signature="e#759#769#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/dialogs/librariesdialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="35" lean-forward="true" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/configs/interfaces.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/dialogs/configdialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-578">
+          <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#769#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/codegen/python/runtimegui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="79" column="34" lean-forward="true" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
+          <folding>
+            <element signature="e#759#798#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/generators/cppgenerator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="408" column="20" lean-forward="true" selection-start-line="408" selection-start-column="20" selection-end-line="408" selection-end-column="20" />
+          <folding>
+            <element signature="e#759#768#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/generators/cpprosgenerator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-280">
+          <caret line="447" column="63" lean-forward="true" selection-start-line="447" selection-start-column="63" selection-end-line="447" selection-end-column="63" />
+          <folding>
+            <element signature="e#759#768#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/generators/pythongenerator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-365">
+          <caret line="94" column="70" lean-forward="true" selection-start-line="94" selection-start-column="70" selection-end-line="94" selection-end-column="70" />
+          <folding>
+            <element signature="e#759#768#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/generators/pythonrosgenerator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1150">
+          <caret line="394" column="0" lean-forward="true" selection-start-line="394" selection-start-column="0" selection-end-line="394" selection-end-column="0" />
+          <folding>
+            <element signature="e#759#768#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/gui/visualstates.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1160">
+          <caret line="374" column="0" lean-forward="true" selection-start-line="374" selection-start-column="0" selection-end-line="374" selection-end-column="0" />
+          <folding>
+            <element signature="e#778#805#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualstates/configs/package_path.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="30" lean-forward="false" selection-start-line="23" selection-start-column="30" selection-end-line="23" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="58" lean-forward="true" selection-start-line="25" selection-start-column="58" selection-end-line="25" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="33" lean-forward="true" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>

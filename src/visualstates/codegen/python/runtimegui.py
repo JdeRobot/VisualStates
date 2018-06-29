@@ -22,10 +22,10 @@ from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, \
     QWidget, QLabel, QVBoxLayout, QPushButton, QGraphicsItem, \
     QGraphicsScene
-from gui.treemodel import TreeModel
-from gui.state import State
-from gui.transition import Transition
-from gui.cmakevars import CMAKE_INSTALL_PREFIX
+from visualstates.gui.tree.treemodel import TreeModel
+from visualstates.core.state import State
+from visualstates.core.transition import Transition
+from visualstates.configs.package_path import get_package_path
 
 from threading import Thread
 import time
@@ -77,7 +77,7 @@ class RunTimeGui(QMainWindow):
         self.treeView.setModel(self.treeModel)
 
         self.logo = QLabel()
-        logoPixmap = QPixmap(CMAKE_INSTALL_PREFIX + '/share/resources/jderobot.png')
+        logoPixmap = QPixmap(get_package_path() + '/share/resources/jderobot.png')
         self.logo.setPixmap(logoPixmap)
 
         self.upButton = QPushButton()
@@ -244,8 +244,3 @@ class RunTimeGui(QMainWindow):
         self.semaphore.acquire()
         data = self.memory.read().decode()
         return data
-
-
-
-
-
