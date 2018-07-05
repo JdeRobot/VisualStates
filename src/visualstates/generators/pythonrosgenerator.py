@@ -91,7 +91,7 @@ class PythonRosGenerator(Generator):
         with open(projectPath + os.sep + 'package.xml', 'w') as f:
             f.write(xmlStr)
 
-        self.copyRuntime(projectPath)
+        # self.copyRuntime(projectPath)
 
     def generateImports(self, importStr):
         mystr = '''#!/usr/bin/python
@@ -111,10 +111,10 @@ import sys, threading, time, rospy
                     importStr.append('import ' + typeStr + '\n')
                 typeSet.add(typeStr)
 
-        mystr = '''from codegen.python.state import State
-from codegen.python.temporaltransition import TemporalTransition
-from codegen.python.conditionaltransition import ConditionalTransition
-from codegen.python.runtimegui import RunTimeGui
+        mystr = '''from visualstates.codegen.python.state import State
+from visualstates.codegen.python.temporaltransition import TemporalTransition
+from visualstates.codegen.python.conditionaltransition import ConditionalTransition
+from visualstates.codegen.python.runtimegui import RunTimeGui
 from PyQt5.QtWidgets import QApplication
 
 '''
@@ -323,7 +323,7 @@ def runGui():
 
         cmakeStr.append('cmake_minimum_required(VERSION 2.8.3)\n\n')
 
-        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS\n')
+        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS visualstates\n')
         for dep in self.config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
         cmakeStr.append(')\n\n')
@@ -354,12 +354,12 @@ def runGui():
         btoolDepElement = doc.createElement('buildtool_depend')
         btoolDepElement.appendChild(doc.createTextNode('catkin'))
         root.appendChild(btoolDepElement)
-        for bdep in config.getBuildDependencies():
+        for bdep in ['visualstates']+config.getBuildDependencies():
             bdepElement = doc.createElement('build_depend')
             bdepElement.appendChild(doc.createTextNode(bdep))
             root.appendChild(bdepElement)
 
-        for rdep in config.getRunDependencies():
+        for rdep in ['visualstates']+config.getRunDependencies():
             rdepElement = doc.createElement('run_depend')
             rdepElement.appendChild(doc.createTextNode(rdep))
             root.appendChild(rdepElement)
