@@ -37,10 +37,10 @@ class Transition:
         self.destination = None
 
         # set transitions on the state if origin and dest are not None
-        if origin is not None:
+        if origin:
             self.origin = origin
             self.origin.addOriginTransition(self)
-        if dest is not None:
+        if dest:
             self.destination = dest
             self.destination.addDestTransition(self)
 
@@ -168,5 +168,3 @@ class Transition:
         destinationId = int(transitionElement.getElementsByTagName('destinationid')[0].childNodes[0].nodeValue)
         self.addDestinationState(statesById[destinationId])
         self.isPosChanged = True
-
-

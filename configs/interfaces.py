@@ -70,9 +70,9 @@ class Interfaces:
                             type['type'] = entry[:entry.find('.h')]
                             types.append(type)
             return types
+
         else:
             return False
-
 
 if __name__ == '__main__':
     interfaces = Interfaces.getInterfaces()

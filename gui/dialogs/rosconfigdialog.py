@@ -24,6 +24,7 @@ from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QWidget, QApplication, QLabel, QGridLayout, QComboBox, \
     QFormLayout, QTabWidget, QPlainTextEdit, QInputDialog, QFileDialog, QMessageBox
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtGui import QFontDatabase
 from configs.config import RosConfig
 
 class RosConfigDialog(QDialog):
@@ -131,7 +132,7 @@ class TopicsTab(QWidget):
             rosTypes = Interfaces.getRosMessageTypes(rosDir)
         else:
             rosTypes = Interfaces.getRosMessageTypes()
-
+            
         if rosTypes:
             for type in rosTypes:
                 concatType = type['typeDir'] + '/' + type['type']
