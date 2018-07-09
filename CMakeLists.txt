@@ -4,7 +4,7 @@ project(visualstates)
 find_package(catkin REQUIRED)
 
 catkin_python_setup()
-catkin_package()
+catkin_package(INCLUDE_DIRS include)
 
 SET(SOURCE_CPP_RUNTIME
 	src/visualstates/codegen/cpp/state.cpp

@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import QDialog, QApplication, QGroupBox, QComboBox, \
     QVBoxLayout, QFormLayout
 
 from visualstates.configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
-from visualstates.gui.dialogs.jderobotcommconfigdialog import JdeRobotCommConfigDialog
+# from visualstates.gui.dialogs.jderobotcommconfigdialog import JdeRobotCommConfigDialog
 from visualstates.gui.dialogs.rosconfigdialog import RosConfigDialog
 
 
@@ -36,21 +36,21 @@ class ConfigDialog(QDialog):
         if config is not None:
             self.type = config.type
         else:
-            self.type = JDEROBOTCOMM
+            self.type = ROS
 
         self.setWindowTitle(title)
-        commSelectionBox = QGroupBox('Select Communication Interface')
-        commSelectionBox.setObjectName('commInterface')
+        # commSelectionBox = QGroupBox('Select Communication Interface')
+        # commSelectionBox.setObjectName('commInterface')
         # add new config input fields
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.commTypeCombo = QComboBox()
-        self.commTypeCombo.setFont(fixedWidthFont)
-        self.commTypeCombo.setMaximumWidth(220)
-        boxLayout = QVBoxLayout()
-        boxLayout.addWidget(self.commTypeCombo)
-        commSelectionBox.setLayout(boxLayout)
+        # self.commTypeCombo = QComboBox()
+        # self.commTypeCombo.setFont(fixedWidthFont)
+        # self.commTypeCombo.setMaximumWidth(220)
+        # boxLayout = QVBoxLayout()
+        # boxLayout.addWidget(self.commTypeCombo)
+        # commSelectionBox.setLayout(boxLayout)
         vLayout = QFormLayout()
-        vLayout.addWidget(commSelectionBox)
+        # vLayout.addWidget(commSelectionBox)
 
         self.configsLayout = QVBoxLayout()
         self.configsBox = QGroupBox('')
@@ -64,57 +64,58 @@ class ConfigDialog(QDialog):
         self.rosConfigsUI = RosConfigDialog('ROS Communication')
         self.rosConfigsUI.configChanged.connect(self.configChangedHandler)
         self.configsLayout.addWidget(self.rosConfigsUI)
-        self.rosConfigsUI.setVisible(False)
-        self.jderobotCommConfigsUI = JdeRobotCommConfigDialog('JdeRobot Communication')
-        self.jderobotCommConfigsUI.configChanged.connect(self.configChangedHandler)
-        self.configsLayout.addWidget(self.jderobotCommConfigsUI)
-        self.jderobotCommConfigsUI.setVisible(True)
+        self.rosConfigsUI.setVisible(True)
+        # self.jderobotCommConfigsUI = JdeRobotCommConfigDialog('JdeRobot Communication')
+        # self.jderobotCommConfigsUI.configChanged.connect(self.configChangedHandler)
+        # self.configsLayout.addWidget(self.jderobotCommConfigsUI)
+        # self.jderobotCommConfigsUI.setVisible(False)
 
         self.rosConfig = None
-        self.jdeRobotCommConfig = None
+        # self.jdeRobotCommConfig = None
 
-        self.commTypeCombo.addItem('JdeRobot Communication', 'jderobotcomm')
-        self.commTypeCombo.addItem('ROS Node', 'ros')
-        self.commTypeCombo.currentIndexChanged.connect(self.commTypeComboChanged)
+        # self.commTypeCombo.addItem('JdeRobot Communication', 'jderobotcomm')
+        # self.commTypeCombo.addItem('ROS Node', 'ros')
+        # self.commTypeCombo.currentIndexChanged.connect(self.commTypeComboChanged)
 
         if config is not None:
             if config.type == ROS:
                 self.rosConfig = config
-                self.commTypeCombo.setCurrentIndex(1)
+                # self.commTypeCombo.setCurrentIndex(1)
                 self.loadRosConfigs()
-            elif config.type == JDEROBOTCOMM:
-                self.jdeRobotCommConfig = config
-                self.commTypeCombo.setCurrentIndex(0)
-                self.loadJdeRobotCommConfigs()
+            # elif config.type == JDEROBOTCOMM:
+            #     self.jdeRobotCommConfig = config
+            #     self.commTypeCombo.setCurrentIndex(0)
+            #     self.loadJdeRobotCommConfigs()
         else:
-            self.loadJdeRobotCommConfigs()
+            self.loadRosConfigs()
+            # self.loadJdeRobotCommConfigs()
 
 
 
     def commTypeComboChanged(self):
         if self.commTypeCombo.currentData() == 'ros':
             self.loadRosConfigs()
-        elif self.commTypeCombo.currentData() == 'jderobotcomm':
-            self.loadJdeRobotCommConfigs()
+        # elif self.commTypeCombo.currentData() == 'jderobotcomm':
+        #     self.loadJdeRobotCommConfigs()
 
 
     def loadRosConfigs(self):
         self.type = ROS
-        self.jderobotCommConfigsUI.setVisible(False)
-        self.rosConfigsUI.setVisible(True)
+        # self.jderobotCommConfigsUI.setVisible(False)
+        # self.rosConfigsUI.setVisible(True)
         if self.rosConfig is None:
             self.rosConfig = RosConfig()
         self.rosConfigsUI.setConfig(self.rosConfig)
         self.configChanged.emit()
 
-    def loadJdeRobotCommConfigs(self):
-        self.type = JDEROBOTCOMM
-        self.rosConfigsUI.setVisible(False)
-        self.jderobotCommConfigsUI.setVisible(True)
-        if self.jdeRobotCommConfig is None:
-            self.jdeRobotCommConfig = JdeRobotConfig()
-        self.jderobotCommConfigsUI.setConfig(self.jdeRobotCommConfig)
-        self.configChanged.emit()
+    # def loadJdeRobotCommConfigs(self):
+    #     self.type = JDEROBOTCOMM
+    #     self.rosConfigsUI.setVisible(False)
+    #     self.jderobotCommConfigsUI.setVisible(True)
+    #     if self.jdeRobotCommConfig is None:
+    #         self.jdeRobotCommConfig = JdeRobotConfig()
+    #     self.jderobotCommConfigsUI.setConfig(self.jdeRobotCommConfig)
+    #     self.configChanged.emit()
 
     def configChangedHandler(self):
         self.configChanged.emit()
@@ -122,11 +123,12 @@ class ConfigDialog(QDialog):
     def getConfig(self):
         if self.type == ROS:
             return self.rosConfig
-        elif self.type == JDEROBOTCOMM:
-            return self.jdeRobotCommConfig
+        # elif self.type == JDEROBOTCOMM:
+        #     return self.jdeRobotCommConfig
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    config = JdeRobotConfig()
+    # config = JdeRobotConfig()
+    config = RosConfig()
     dialog = ConfigDialog('Config', config)
     dialog.exec_()
