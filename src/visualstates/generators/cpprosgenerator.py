@@ -87,9 +87,9 @@ class CppRosGenerator(CppGenerator):
         headers.append('#define ' + projectName + '_H\n\n')
 
         headers.append('#include <ros/ros.h>\n')
-        headers.append('#include <state.h>\n')
-        headers.append('#include <temporaltransition.h>\n')
-        headers.append('#include <conditionaltransition.h>\n')
+        headers.append('#include <visualstates/state.h>\n')
+        headers.append('#include <visualstates/temporaltransition.h>\n')
+        headers.append('#include <visualstates/conditionaltransition.h>\n')
 
         for lib in self.libraries:
             headers.append('#include <')
@@ -210,7 +210,7 @@ class CppRosGenerator(CppGenerator):
         headerStr.append('#include <iostream>\n')
         headerStr.append('#include <string>\n')
         headerStr.append('#include <signal.h>\n')
-        headerStr.append('#include <runtimegui.h>\n\n')
+        headerStr.append('#include <visualstates/runtimegui.h>\n\n')
 
 
     def generateRosMethods(self, rosStr, config, functions, variables):
@@ -329,7 +329,7 @@ void readArgs(int *argc, char* argv[]) {
 '''
         argStr.append(mystr)
         argStr.append('void* runGui(void*) {\n')
-        argStr.append('\tsystem("./' + projectName + '_runtime.py");\n')
+        argStr.append('\tsystem("rosrun ' + projectName + ' ' + projectName + '_runtime.py");\n')
         argStr.append('}\n\n')
 
     def parentString(self, state):
@@ -392,11 +392,11 @@ void signalCallback(int signum)
     def generateRunTimeGui(self, guiStr):
         guiStr.append('#!/usr/bin/python\n')
         guiStr.append('# -*- coding: utf-8 -*-\n')
-        guiStr.append('import sys\n')
-        guiStr.append('sys.path.append("' + get_package_path() + '/lib/python2.7/")\n\n')
+        #guiStr.append('import visualstates.codegen.python\n')
 
+        guiStr.append('import sys\n')
         guiStr.append('from PyQt5.QtWidgets import QApplication\n')
-        guiStr.append('from codegen.python.runtimegui import RunTimeGui\n\n')
+        guiStr.append('from visualstates.codegen.python.runtimegui import RunTimeGui\n\n')
         guiStr.append('gui = None\n\n')
         guiStr.append('def runGui():\n')
         guiStr.append('\tglobal gui\n')
@@ -436,27 +436,15 @@ void signalCallback(int signum)
 
         cmakeStr.append('cmake_minimum_required(VERSION 2.8.3)\n\n')
 
-        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS\n')
+        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS visualstates\n')
         for dep in config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
         cmakeStr.append(')\n\n')
-        cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + get_package_path() + ')\n')
         myStr = '''
-SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)
-SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/)
-SET(JDEROBOT_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib)
-SET(VISUALSTATE_RUNTIME_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib/)
-
 include_directories(
     ${catkin_INCLUDE_DIRS}
-    ${JDEROBOT_INCLUDE_DIR}
-    ${VISUALSTATE_RUNTIME_INCLUDE_DIR}
 )
 
-link_directories(
-    ${JDEROBOT_LIBS_DIR}
-    ${VISUALSTATE_RUNTIME_LIBS_DIR}
-)
 '''
         cmakeStr.append(myStr)
 
@@ -464,6 +452,7 @@ link_directories(
         cmakeStr.append('add_executable(' + projectName + ' src/' + projectName + '.cpp)\n')
         cmakeStr.append('target_link_libraries(' + projectName + ' ${catkin_LIBRARIES} visualStatesRunTime)\n')
         cmakeStr.append('install(TARGETS ' + projectName + ' RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n\n')
+        cmakeStr.append('catkin_install_python(PROGRAMS ' + projectName + '_runtime.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n\n')
         return cmakeStr
 
     def generatePackageXml(self, config, projectName):
@@ -488,12 +477,12 @@ link_directories(
         btoolDepElement = doc.createElement('buildtool_depend')
         btoolDepElement.appendChild(doc.createTextNode('catkin'))
         root.appendChild(btoolDepElement)
-        for bdep in config.getBuildDependencies():
+        for bdep in ['visualstates']+config.getBuildDependencies():
             bdepElement = doc.createElement('build_depend')
             bdepElement.appendChild(doc.createTextNode(bdep))
             root.appendChild(bdepElement)
 
-        for rdep in config.getRunDependencies():
+        for rdep in ['visualstates']+config.getRunDependencies():
             rdepElement = doc.createElement('run_depend')
             rdepElement.appendChild(doc.createTextNode(rdep))
             root.appendChild(rdepElement)
