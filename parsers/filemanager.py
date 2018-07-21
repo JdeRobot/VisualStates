@@ -73,8 +73,8 @@ class FileManager():
         self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
-        rootState = State(0, 'root', True)
-        rootState.parse(rootNode)
+        rootState = State(0, 'root', True, 0)
+        stateTransitions, namespaceNodes = rootState.parse(rootNode)
 
         # parse configs
         config = None
@@ -91,13 +91,15 @@ class FileManager():
 
         namespaces = []
         # parse namespaces
-        namespaceElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('namespaces')
+        #namespaceElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('namespaces')
+
         if len(namespaceElements) > 0:
             namespaceElements = namespaceElements[0].getElementsByTagName('namespace')
-            for namespaceElement in namespaceElements:
-                namespace = Namespace(0, "root", None, None)
-                namespace.parse(namespaceElement)
-                namespaces.append(namespace)
+
+        for namespaceNode in namespaceNodes:
+            namespace = Namespace(0, "root", None, None)
+            namespace.parse(namespaceNode)
+            namespaces.append(namespace)
 
         libraries = []
         # parse libraries

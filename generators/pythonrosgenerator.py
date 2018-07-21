@@ -111,7 +111,6 @@ import sys, threading, time, rospy
                 typeSet.add(typeStr)
 
         mystr = '''from codegen.python.state import State
-from codegen.python.namespace import Namespace
 from codegen.python.temporaltransition import TemporalTransition
 from codegen.python.conditionaltransition import ConditionalTransition
 from codegen.python.runtimegui import RunTimeGui
@@ -136,9 +135,10 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append(str(state.id))
         stateStr.append('(State):\n')
 
-        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, parent=None, gui=None):\n')
+        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, namespace, parent=None, gui=None):\n')
         stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
         stateStr.append('\t\tself.rosNode = rosNode\n\n')
+        stateStr.append('\t\tself.namespace = namespace')
 
         stateStr.append('\tdef runCode(self):\n')
         if len(state.getCode()) > 0:
@@ -181,10 +181,10 @@ from PyQt5.QtWidgets import QApplication
             rosNodeStr.append('\n\n')
 
     def generateNamespaces(self, namespaceStr):
-        for namespace in namespaces:
+        for namespace in self.namespaces:
             namespaceStr.append('class Namespace' + str(namespace.id) + '():\n')
             namespaceStr.append('\tdef __init__(self, rosNode):\n')
-            namespaceStr.append('\t\tself.rosNode = rosNode')
+            namespaceStr.append('\t\tself.rosNode = rosNode\n')
             if(len(namespace.variables) > 0):
                 for varLine in namespace.variables.split('\n'):
                     namespaceStr.append('\t\t' + varLine + '\n')
@@ -198,9 +198,10 @@ from PyQt5.QtWidgets import QApplication
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
-                tranStr.append('\tdef __init__(self, id, destinationId, rosNode):\n')
+                tranStr.append('\tdef __init__(self, id, destinationId, rosNode, namespace):\n')
                 tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
                 tranStr.append('\t\tself.rosNode = rosNode\n\n')
+                tranStr.append('\t\tself.namespace = namespace')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
                     tranStr.append('\t\t' + checkLine + '\n')
@@ -247,7 +248,7 @@ def runGui():
         mainStr.append('\trosNode = RosNode()\n\n')
 
         for namespace in self.namespaces:
-            mainStr.append('\tnamespace' + str(namespace.id) + 'Namespace' + str(namespace.id) +'(rosNode)')
+            mainStr.append('\tnamespace' + str(namespace.id) + ' = Namespace' + str(namespace.id) +'(rosNode)\n')
 
         mainStr.append('\treadArgs()\n')
         mainStr.append('\tif displayGui:\n')
@@ -280,8 +281,8 @@ def runGui():
 
         for state in self.getAllStates():
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
-                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, ' +
-                           str(state.getTimeStep()))
+                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, namespace'+ str(state.getNamespaceID()) + ','
+                           + str(state.getTimeStep()))
             if state.parent is None:
                 mainStr.append(', None, gui)\n')
             else:

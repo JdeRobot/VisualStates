@@ -49,9 +49,9 @@ class VisualStates(QMainWindow):
         self.configDialog = None
 
         # root state
-        self.rootState = State(0, "root", True)
+        self.rootNamespace = Namespace(0, "root", '', '')
+        self.rootState = State(0, "root", True, self.rootNamespace)
         self.activeState = self.rootState
-        self.activeNamespace = Namespace(0, "root", None, None)
 
         # create status bar
         self.statusBar()
@@ -71,7 +71,7 @@ class VisualStates(QMainWindow):
         self.libraries = []
         self.config = None
         self.namespaces = []
-        self.namespaces.append(self.activeNamespace)
+        self.namespaces.append(self.rootNamespace)
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
@@ -198,15 +198,18 @@ class VisualStates(QMainWindow):
         self.treeModel.removeAll()
 
         # create new root state
-        self.rootState = State(0, 'root', True)
-        self.activeNamespace = Namespace(0, "root", None, None)
+        self.rootNamespace = Namespace(0, "root", '', '')
+        self.rootState = State(0, 'root', True, self.rootNamespace)
 
+        self.automataScene.setActiveNamespace(self.rootNamespace)
         self.automataScene.setActiveState(self.rootState)
+
         self.automataScene.resetIndexes()
 
         self.libraries = []
         self.config = None
         self.namespaces = []
+        self.namespaces.append(self.rootNamespace)
 
     def openAction(self):
         fileDialog = QFileDialog(self)
@@ -217,16 +220,15 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             (self.rootState, self.config, self.libraries, self.namespaces) = self.fileManager.open(fileDialog.selectedFiles()[0])
-            # Find root namespace and set it.
-            for namespace in self.namespaces:
-                if(namespace.id == unicode(0) and namespace.name == "root"):
-                    self.activeNamespace = namespace
-                    
             self.automataPath = self.fileManager.fullPath
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
             self.automataScene.setActiveState(self.rootState)
+            # Find root Namespace with ID 0 and set it as active
+            for namespace in self.namespaces:
+                if(int(namespace.id) == 0 and namespace.name == "root"):
+                    self.automataScene.setActiveNamespace(namespace)
             self.automataScene.setLastIndexes(self.rootState)
 
             # print(str(self.config))
@@ -256,10 +258,10 @@ class VisualStates(QMainWindow):
         self.close()
 
     def stateAction(self):
-        self.automataScene.setOperationType(OpType.ADDSTATE)
+        self.automataScene.setOperationType(OpType.ADDSTATE, self.automataScene.activeNamespace)
 
     def transitionAction(self):
-        self.automataScene.setOperationType(OpType.ADDTRANSITION)
+        self.automataScene.setOperationType(OpType.ADDTRANSITION, self.automataScene.activeNamespace)
 
     def importAction(self):
         fileDialog = QFileDialog(self)
@@ -284,12 +286,12 @@ class VisualStates(QMainWindow):
             timerDialog.exec_()
 
     def variablesAction(self):
-        variablesDialog = CodeDialog('Variables', str(self.activeNamespace.variables))
+        variablesDialog = CodeDialog('Variables', str(self.automataScene.activeNamespace.variables))
         variablesDialog.codeChanged.connect(self.variablesChanged)
         variablesDialog.exec_()
 
     def functionsAction(self):
-        functionsDialog = CodeDialog('Functions', self.activeNamespace.functions)
+        functionsDialog = CodeDialog('Functions', self.automataScene.activeNamespace.functions)
         functionsDialog.codeChanged.connect(self.functionsChanged)
         functionsDialog.exec_()
 
@@ -451,10 +453,10 @@ class VisualStates(QMainWindow):
             self.activeState.setTimeStep(duration)
 
     def variablesChanged(self, variables):
-        self.activeNamespace.setVariables(variables)
+        self.automataScene.activeNamespace.setVariables(variables)
 
     def functionsChanged(self, functions):
-        self.activeNamespace.setFuntions(functions)
+        self.automataScene.activeNamespace.setFuntions(functions)
 
     def librariesChanged(self, libraries):
         self.libraries = libraries

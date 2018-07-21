@@ -47,23 +47,23 @@ class ImportManager():
         importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.activeState)
         config = self.updateConfigs(file[1], klass.config)
         libraries = self.updateLibraries(file[2], klass.libraries)
-        functions = self.updateFunctions(file[3], klass.functions)
-        variables = self.updateVariables(file[4], klass.variables)
-        return importedState, config, libraries, functions, variables
+        namespaces = self.updateNamespaces(file[3], klass.namespaces)
+        return importedState, config, libraries, namespaces
 
-    def updateFunctions(self, newFunctions, functions):
-        """Updates existing functions with imported functions"""
-        if functions == newFunctions:
-            return functions
-        else:
-            return functions+ "\n" + newFunctions
+    def updateNamespaces(self, newNamespaces, namespaces):
+        """Update Namespaces with the new Namespaces"""
+        newNamespaces = self.updateNamespaceIDs(newNamespaces, namespaces)
+        for namespace in newNamespaces:
+            namespaces.append(namespace)
+        return namespaces
 
-    def updateVariables(self, newVariables, variables):
-        """Updates existing variables with imported variables"""
-        if variables == newVariables:
-            return variables
-        else:
-            return variables+newVariables
+    def updateNamespaceIDs(self, newNamespaces, namespaces):
+        """Updates Namespace IDs according to the existing namespaces"""
+        newNamespaceID = max(int(namespace.id) for namespace in namespaces) + 1
+        for namespace in newNamespaces:
+            namespace.setID(newNamespaceID)
+            newNamespaceID + 1
+        return newNamespaces
 
     def updateLibraries(self, newLibraries, libraries):
         """Updates existing libraries with imported libraries"""
@@ -91,7 +91,7 @@ class ImportManager():
 
     def updateActiveState(self, importState, stateID, activeState):
         """Updates Parent State with States to be imported"""
-        importState = self.updateIDs(importState, stateID)
+        importState = self.updateIDs(importState, stateID, namespaceID)
         for state in importState.getChildren():
             activeState.addChild(state)
             state.setParent(activeState)
@@ -102,9 +102,10 @@ class ImportManager():
         self.updateStateIDs(importState, stateID)
         return importState
 
-    def updateStateIDs(self, importState, stateID):
+    def updateStateIDs(self, importState, stateID, namespaceID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
             child.setID(stateID)
+            child.setNamespaceID(namespaceID)
             stateID += 1
-            self.updateStateIDs(child, stateID)
+            self.updateStateIDs(child, stateID, namespaceID)
