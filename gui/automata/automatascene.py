@@ -386,6 +386,7 @@ class AutomataScene(QGraphicsScene):
     def setActiveNamespace(self, namespace):
         if namespace != self.activeNamespace and namespace:
             self.activeNamespace = namespace
+            self.namespaceIndex = namespace.getID()
         else:
             nIndex = self.getNamespaceIndex()
             self.activeNamespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
