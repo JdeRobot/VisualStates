@@ -50,10 +50,10 @@ class VisualStates(QMainWindow):
 
         # root state
         self.globalNamespace = Namespace(0, "global_namespace", '', '')
-        self.rootNamespace = Namespace(1, "local_namespace", '', '')
-        self.rootState = State(0, "root", True, self.rootNamespace)
+        self.localNamespace = Namespace(1, "local_namespace", '', '')
+        self.rootState = State(0, "root", True, self.localNamespace)
         self.activeState = self.rootState
-        self.activeNamespace = self.rootNamespace
+        self.activeNamespace = self.localNamespace
 
         # create status bar
         self.statusBar()
@@ -74,7 +74,7 @@ class VisualStates(QMainWindow):
         self.config = None
         self.namespaces = []
         self.namespaces.append(self.globalNamespace)
-        self.namespaces.append(self.rootNamespace)
+        self.namespaces.append(self.localNamespace)
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
@@ -202,10 +202,10 @@ class VisualStates(QMainWindow):
 
         # create new root state
         self.globalNamespace = Namespace(0, "global_namespace", '', '')
-        self.rootNamespace = Namespace(1, "root", '', '')
-        self.rootState = State(0, 'root', True, self.rootNamespace)
+        self.localNamespace = Namespace(1, "local_namespace", '', '')
+        self.rootState = State(0, 'root', True, self.localNamespace)
 
-        self.automataScene.setActiveNamespace(self.rootNamespace)
+        self.automataScene.setActiveNamespace(self.localNamespace)
         self.automataScene.setActiveState(self.rootState)
 
         self.automataScene.resetIndexes()
@@ -214,7 +214,7 @@ class VisualStates(QMainWindow):
         self.config = None
         self.namespaces = []
         self.namespaces.append(self.globalNamespace)
-        self.namespaces.append(self.rootNamespace)
+        self.namespaces.append(self.localNamespace)
 
     def openAction(self):
         fileDialog = QFileDialog(self)
@@ -230,10 +230,7 @@ class VisualStates(QMainWindow):
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
             self.automataScene.setActiveState(self.rootState)
-            # Find root Namespace with ID 0 and set it as active
-            for namespace in self.namespaces:
-                if(int(namespace.id) == 0 and namespace.name == "root"):
-                    self.automataScene.setActiveNamespace(namespace)
+            self.automataScene.setActiveNamespace(self.rootNamespace)
             self.automataScene.setLastIndexes(self.rootState, self.rootNamespace)
 
             # print(str(self.config))
@@ -263,10 +260,10 @@ class VisualStates(QMainWindow):
         self.close()
 
     def stateAction(self):
-        self.automataScene.setOperationType(OpType.ADDSTATE, self.automataScene.activeNamespace)
+        self.automataScene.setOperationType(OpType.ADDSTATE, self.activeNamespace)
 
     def transitionAction(self):
-        self.automataScene.setOperationType(OpType.ADDTRANSITION, self.automataScene.activeNamespace)
+        self.automataScene.setOperationType(OpType.ADDTRANSITION, self.activeNamespace)
 
     def importAction(self):
         fileDialog = QFileDialog(self)
@@ -391,7 +388,7 @@ class VisualStates(QMainWindow):
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
-        self.automataScene.setActiveNamespace(self.rootNamespace)
+        self.automataScene.setActiveNamespace(self.localNamespace)
 
         self.setCentralWidget(self.stateCanvas)
         self.stateCanvas.setScene(self.automataScene)

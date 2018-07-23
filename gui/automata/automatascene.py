@@ -53,7 +53,7 @@ class AutomataScene(QGraphicsScene):
 
         self.stateIndex = 0
         self.transitionIndex = 0
-        self.namespaceIndex = 0
+        self.namespaceIndex = 1
 
         self.prevOperationType = None
         self.stateTextEditingStarted = False
@@ -286,8 +286,13 @@ class AutomataScene(QGraphicsScene):
             else:
                 item = self.getParentItem(selectedItems[0])
                 if isinstance(item, StateGraphicsItem):
+                    if item.stateData.getInitialChild():
+                        self.setActiveNamespace(item.stateData.getInitialChild().getNamespace())
+                    else:
+                        nIndex = self.getNamespaceIndex()
+                        namespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
+                        self.setActiveNamespace(namespace)
                     self.setActiveState(item.stateData)
-                    self.setActiveNamespace(item.stateData.getNamespace())
                 QGraphicsScene.mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent)
 
         self.prevOperationType = self.operationType
@@ -384,13 +389,9 @@ class AutomataScene(QGraphicsScene):
             self.displayState(self.activeState)
 
     def setActiveNamespace(self, namespace):
-        if namespace != self.activeNamespace and namespace:
+        if namespace != self.activeNamespace:
             self.activeNamespace = namespace
-            self.namespaceIndex = namespace.getID()
-        else:
-            nIndex = self.getNamespaceIndex()
-            self.activeNamespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
-        self.activeNamespaceChanged.emit()
+            self.activeNamespaceChanged.emit()
 
     def displayState(self, state):
         transitions = []
@@ -421,7 +422,6 @@ class AutomataScene(QGraphicsScene):
         self.stateIndex = 0
         self.transitionIndex = 0
         self.namespaceIndex = 0
-
 
     def setLastIndexes(self, rootState, rootNamespace):
         """Updates AutomataScene's Largest State and Transition ID"""
