@@ -45,12 +45,9 @@ class FileManager():
         if config is not None:
             root.appendChild(config.createNode(doc))
 
-        # save namespaces
-        namespacesElement = doc.createElement('namespaces')
-        for namespace in namespaces:
-            namespaceElement = namespace.createNode(doc)
-            namespacesElement.appendChild(namespaceElement)
-        root.appendChild(namespacesElement)
+        # save global namespace
+        namespaceElement = namespaces[0].createNode(doc, globalNamespace=True)
+        root.appendChild(namespaceElement)
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -89,7 +86,6 @@ class FileManager():
                 config.loadNode(configElement)
                 config.type = JDEROBOTCOMM
 
-        namespaces = []
         # parse namespaces
         #namespaceElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('namespaces')
 
@@ -100,6 +96,7 @@ class FileManager():
             namespace = Namespace(0, "root", None, None)
             namespace.parse(namespaceNode)
             namespaces.append(namespace)
+
 
         libraries = []
         # parse libraries

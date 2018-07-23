@@ -83,8 +83,8 @@ class Transition:
     def getTemporalTime(self):
         return self.temporalTime
 
-    def getNamespaceID(self):
-        return self.namespaceid
+    def getNamespace(self):
+        return self.namespace
 
     def setTemporalTime(self, time):
         self.temporalTime = int(time)

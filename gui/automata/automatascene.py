@@ -28,6 +28,7 @@ from gui.transition.transitiontype import TransitionType
 from gui.automata.optype import OpType
 from core.state import State
 from core.transition import Transition
+from core.namespace import Namespace
 from gui.state.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
 class AutomataScene(QGraphicsScene):
@@ -38,6 +39,7 @@ class AutomataScene(QGraphicsScene):
     transitionRemoved = pyqtSignal('QGraphicsItem')
     stateNameChangedSignal = pyqtSignal('QGraphicsItem')
     activeStateChanged = pyqtSignal()
+    activeNamespaceChanged = pyqtSignal()
 
     def __init__(self, parent=None):
         super(QGraphicsScene, self).__init__(parent)
@@ -51,6 +53,7 @@ class AutomataScene(QGraphicsScene):
 
         self.stateIndex = 0
         self.transitionIndex = 0
+        self.namespaceIndex = 0
 
         self.prevOperationType = None
         self.stateTextEditingStarted = False
@@ -328,6 +331,10 @@ class AutomataScene(QGraphicsScene):
         self.transitionIndex += 1
         return self.transitionIndex
 
+    def getNamespaceIndex(self):
+        self.namespaceIndex += 1
+        return self.namespaceIndex
+
     def getParentItem(self, item):
         while item.parentItem() is not None:
             item = item.parentItem()
@@ -377,9 +384,12 @@ class AutomataScene(QGraphicsScene):
             self.displayState(self.activeState)
 
     def setActiveNamespace(self, namespace):
-        if namespace != self.activeNamespace:
+        if namespace != self.activeNamespace and namespace:
             self.activeNamespace = namespace
-            # Write Funtion to display Functions and variables
+        else:
+            nIndex = self.getNamespaceIndex()
+            self.activeNamespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
+        self.activeNamespaceChanged.emit()
 
     def displayState(self, state):
         transitions = []
@@ -409,11 +419,16 @@ class AutomataScene(QGraphicsScene):
         Helper Funtion for creating new AutomataScene"""
         self.stateIndex = 0
         self.transitionIndex = 0
+        self.namespaceIndex = 0
 
-    def setLastIndexes(self, rootState):
+
+    def setLastIndexes(self, rootState, rootNamespace):
         """Updates AutomataScene's Largest State and Transition ID"""
         if rootState.id > self.stateIndex:
             self.stateIndex = rootState.id
+
+        if rootNamespace.id > self.namespaceIndex:
+            self.namespaceIndex = rootNamespace.id
 
         for tran in rootState.getOriginTransitions():
             if tran.id > self.transitionIndex:

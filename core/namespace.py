@@ -24,8 +24,11 @@ class Namespace:
         self.functions = functions
         self.variables = variables
 
-    def createNode(self, doc):
-        namespaceElement = doc.createElement('namespace')
+    def createNode(self, doc, globalNamespace=False):
+        if globalNamespace:
+            namespaceElement = doc.createElement('global_namespace')
+        else:
+            namespaceElement = doc.createElement('namespace')
         namespaceElement.setAttribute('id', str(self.id))
         nameElement = doc.createElement('name')
         nameElement.appendChild(doc.createTextNode(self.name))

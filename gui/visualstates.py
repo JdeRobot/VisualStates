@@ -49,9 +49,11 @@ class VisualStates(QMainWindow):
         self.configDialog = None
 
         # root state
-        self.rootNamespace = Namespace(0, "root", '', '')
+        self.globalNamespace = Namespace(0, "global_namespace", '', '')
+        self.rootNamespace = Namespace(1, "local_namespace", '', '')
         self.rootState = State(0, "root", True, self.rootNamespace)
         self.activeState = self.rootState
+        self.activeNamespace = self.rootNamespace
 
         # create status bar
         self.statusBar()
@@ -71,6 +73,7 @@ class VisualStates(QMainWindow):
         self.libraries = []
         self.config = None
         self.namespaces = []
+        self.namespaces.append(self.globalNamespace)
         self.namespaces.append(self.rootNamespace)
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
@@ -198,7 +201,8 @@ class VisualStates(QMainWindow):
         self.treeModel.removeAll()
 
         # create new root state
-        self.rootNamespace = Namespace(0, "root", '', '')
+        self.globalNamespace = Namespace(0, "global_namespace", '', '')
+        self.rootNamespace = Namespace(1, "root", '', '')
         self.rootState = State(0, 'root', True, self.rootNamespace)
 
         self.automataScene.setActiveNamespace(self.rootNamespace)
@@ -209,6 +213,7 @@ class VisualStates(QMainWindow):
         self.libraries = []
         self.config = None
         self.namespaces = []
+        self.namespaces.append(self.globalNamespace)
         self.namespaces.append(self.rootNamespace)
 
     def openAction(self):
@@ -229,7 +234,7 @@ class VisualStates(QMainWindow):
             for namespace in self.namespaces:
                 if(int(namespace.id) == 0 and namespace.name == "root"):
                     self.automataScene.setActiveNamespace(namespace)
-            self.automataScene.setLastIndexes(self.rootState)
+            self.automataScene.setLastIndexes(self.rootState, self.rootNamespace)
 
             # print(str(self.config))
         # else:
@@ -380,11 +385,13 @@ class VisualStates(QMainWindow):
         self.automataScene = AutomataScene()
         self.automataScene.setSceneRect(0, 0, 2000, 2000)
         self.automataScene.activeStateChanged.connect(self.activeStateChanged)
+        self.automataScene.activeNamespaceChanged.connect(self.activeNamespaceChanged)
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.stateRemoved.connect(self.stateRemoved)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
+        self.automataScene.setActiveNamespace(self.rootNamespace)
 
         self.setCentralWidget(self.stateCanvas)
         self.stateCanvas.setScene(self.automataScene)
@@ -424,11 +431,19 @@ class VisualStates(QMainWindow):
             else:
                 self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
 
+    def activeNamespaceChanged(self):
+        if self.automataScene.activeNamespace != self.activeNamespace:
+            self.activeNamespace = self.automataScene.activeNamespace
+            if self.activeNamespace not in self.namespaces:
+                self.namespaces.append(self.activeNamespace)
+
     def upButtonClicked(self):
         if self.activeState != None:
             if self.activeState.parent != None:
                 #print(self.activeState.parent.id)
                 self.automataScene.setActiveState(self.activeState.parent)
+                self.activeNamespace = self.activeState.getNamespace()
+                self.automataScene.setActiveNamespace(self.activeNamespace)
 
     def getStateById(self,state, id):
         if state.id == id:
