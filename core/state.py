@@ -156,7 +156,6 @@ class State:
                     stateTransitions.append(childNode)
                 elif childNode.tagName == 'namespace':
                     self.namespaceid = childNode.stateElement.getAttribute('id')
-
                     namespaceNodes.append(childNode)
 
         # wire transitions with the states after all the child states are parsed

@@ -263,6 +263,7 @@ class AutomataScene(QGraphicsScene):
         else:
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
+                self.operationData = self.activeNamespace
 
         QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
 
