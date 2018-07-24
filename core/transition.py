@@ -22,7 +22,7 @@ from gui.transition.guitransition import TransitionGraphicsItem
 from PyQt5.QtCore import QPointF
 
 class Transition:
-    def __init__(self, id, name, origin=None, dest=None):
+    def __init__(self, id, name, namespace, origin=None, dest=None):
         self.id = id
         self.name = name
         self.transitionType = TransitionType.TEMPORAL
@@ -33,14 +33,16 @@ class Transition:
         self.y = 0
         self.isPosChanged = False
 
+        self.namespace = namespace
+
         self.origin = None
         self.destination = None
 
         # set transitions on the state if origin and dest are not None
-        if origin is not None:
+        if origin:
             self.origin = origin
             self.origin.addOriginTransition(self)
-        if dest is not None:
+        if dest:
             self.destination = dest
             self.destination.addDestTransition(self)
 
@@ -82,6 +84,9 @@ class Transition:
     def getTemporalTime(self):
         return self.temporalTime
 
+    def getNamespace(self):
+        return self.namespace
+    
     def setTemporalTime(self, time):
         self.temporalTime = int(time)
 
@@ -164,9 +169,9 @@ class Transition:
         if len(transitionElement.getElementsByTagName('code')[0].childNodes) > 0:
             self.setCode(transitionElement.getElementsByTagName('code')[0].childNodes[0].nodeValue)
         originId = int(transitionElement.getElementsByTagName('originid')[0].childNodes[0].nodeValue)
+        # Set NamespaceID using State ids
+        self.namespaceid = statesById[originId].getNamespaceID()
         self.addOriginState(statesById[originId])
         destinationId = int(transitionElement.getElementsByTagName('destinationid')[0].childNodes[0].nodeValue)
         self.addDestinationState(statesById[destinationId])
         self.isPosChanged = True
-
-

@@ -15,6 +15,7 @@
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
    Authors : Okan Asik (asik.okan@gmail.com)
+             Pushkal Katara (katarapushkal@gmail.com)
 
   '''
 from generators.generator import Generator
@@ -25,13 +26,12 @@ import os
 import shutil
 
 class PythonRosGenerator(Generator):
-    def __init__(self, libraries, config, states, functions, variables):
+    def __init__(self, libraries, config, states, namespaces):
         Generator.__init__(self)
         self.libraries = libraries
         self.config = config
         self.states = states
-        self.functions = functions
-        self.variables = variables
+        self.namespaces = namespaces
 
     def getAllStates(self):
         addedStates = {}
@@ -67,7 +67,8 @@ class PythonRosGenerator(Generator):
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateImports(stringList)
-        self.generateRosInterface(stringList, projectName, self.functions, self.variables)
+        self.generateRosInterface(stringList, projectName)
+        self.generateNamespaces(stringList)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         self.generateMain(stringList)
@@ -134,9 +135,10 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append(str(state.id))
         stateStr.append('(State):\n')
 
-        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, parent=None, gui=None):\n')
+        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, namespace, parent=None, gui=None):\n')
         stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
         stateStr.append('\t\tself.rosNode = rosNode\n\n')
+        stateStr.append('\t\tself.namespace = namespace')
 
         stateStr.append('\tdef runCode(self):\n')
         if len(state.getCode()) > 0:
@@ -146,7 +148,7 @@ from PyQt5.QtWidgets import QApplication
             stateStr.append('\t\tpass\n')
         stateStr.append('\n\n')
 
-    def generateRosInterface(self, rosNodeStr, projectName, functions, variables):
+    def generateRosInterface(self, rosNodeStr, projectName):
         rosNodeStr.append('class RosNode():\n')
         rosNodeStr.append('\tdef __init__(self):\n')
         rosNodeStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
@@ -163,12 +165,6 @@ from PyQt5.QtWidgets import QApplication
                                   topic['name'] + '", ' + types[1] + ', self.'+self.getVarName(topic['name'])+'Callback)\n')
                 rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + types[1] + '()\n')
 
-        # add state variables as part of ros node
-        if len(variables) > 0:
-            for varLine in variables.split('\n'):
-                rosNodeStr.append('\t\t' + varLine + '\n')
-            rosNodeStr.append('\n')
-
         rosNodeStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
 
         rosNodeStr.append('\tdef stop(self):\n')
@@ -184,20 +180,28 @@ from PyQt5.QtWidgets import QApplication
                 rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + self.getVarName(topic['name']) + '\n')
             rosNodeStr.append('\n\n')
 
-        # define user functions as part of rosnode
-        if len(functions) > 0:
-            for funcLine in functions.split('\n'):
-                rosNodeStr.append('\t' + funcLine + '\n')
-            rosNodeStr.append('\n\n')
-
+    def generateNamespaces(self, namespaceStr):
+        for namespace in self.namespaces:
+            namespaceStr.append('class Namespace' + str(namespace.id) + '():\n')
+            namespaceStr.append('\tdef __init__(self, rosNode):\n')
+            namespaceStr.append('\t\tself.rosNode = rosNode\n')
+            if(len(namespace.variables) > 0):
+                for varLine in namespace.variables.split('\n'):
+                    namespaceStr.append('\t\t' + varLine + '\n')
+                namespaceStr.append('\n')
+            if(len(namespace.functions) > 0):
+                for funcLine in namespace.functions.split('\n'):
+                    namespaceStr.append('\t' + funcLine + '\n')
+                namespaceStr.append('\n\n')
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
-                tranStr.append('\tdef __init__(self, id, destinationId, rosNode):\n')
+                tranStr.append('\tdef __init__(self, id, destinationId, rosNode, namespace):\n')
                 tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
                 tranStr.append('\t\tself.rosNode = rosNode\n\n')
+                tranStr.append('\t\tself.namespace = namespace')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
                     tranStr.append('\t\t' + checkLine + '\n')
@@ -242,6 +246,8 @@ def runGui():
 
         mainStr.append('if __name__ == "__main__":\n')
         mainStr.append('\trosNode = RosNode()\n\n')
+        for namespace in self.namespaces:
+            mainStr.append('\tnamespace' + str(namespace.id) + ' = Namespace' + str(namespace.id) +'(rosNode)\n')
         mainStr.append('\treadArgs()\n')
         mainStr.append('\tif displayGui:\n')
         mainStr.append('\t\tguiThread = threading.Thread(target=runGui)\n')
@@ -273,8 +279,8 @@ def runGui():
 
         for state in self.getAllStates():
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
-                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, ' +
-                           str(state.getTimeStep()))
+                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, namespace'+ str(state.getNamespaceID()) + ','
+                           + str(state.getTimeStep()))
             if state.parent is None:
                 mainStr.append(', None, gui)\n')
             else:
@@ -381,7 +387,6 @@ def runGui():
 
         if os.path.exists(projectPath + '/core'):
             shutil.rmtree(projectPath + '/core')
-            
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/codegen', projectPath + '/codegen')
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/gui', projectPath + '/gui')
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/core', projectPath + '/core')

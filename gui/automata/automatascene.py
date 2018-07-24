@@ -28,6 +28,7 @@ from gui.transition.transitiontype import TransitionType
 from gui.automata.optype import OpType
 from core.state import State
 from core.transition import Transition
+from core.namespace import Namespace
 from gui.state.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
 class AutomataScene(QGraphicsScene):
@@ -38,6 +39,7 @@ class AutomataScene(QGraphicsScene):
     transitionRemoved = pyqtSignal('QGraphicsItem')
     stateNameChangedSignal = pyqtSignal('QGraphicsItem')
     activeStateChanged = pyqtSignal()
+    activeNamespaceChanged = pyqtSignal()
 
     def __init__(self, parent=None):
         super(QGraphicsScene, self).__init__(parent)
@@ -51,12 +53,14 @@ class AutomataScene(QGraphicsScene):
 
         self.stateIndex = 0
         self.transitionIndex = 0
+        self.namespaceIndex = 1
 
         self.prevOperationType = None
         self.stateTextEditingStarted = False
 
         # the active state whose children will be drawn on the graphicsview
         self.activeState = None
+        self.activeNamespace = None
 
         self.createActions()
 
@@ -215,16 +219,17 @@ class AutomataScene(QGraphicsScene):
             QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
             return
 
-        if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
+        if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 sIndex = self.getStateIndex()
-                state = State(sIndex, 'state ' + str(sIndex), False, self.activeState)
+                state = State(sIndex, 'state' + str(sIndex), False, self.operationData, self.activeState)
                 state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
                              qGraphicsSceneMouseEvent.scenePos().y())
                 self.addStateItem(state.getGraphicsItem())
 
             self.origin = None
+
         elif self.operationType == OpType.ADDTRANSITION and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) > 0:
@@ -234,10 +239,12 @@ class AutomataScene(QGraphicsScene):
                     if self.origin != None:
                         self.destination = item
                         tIndex = self.getTransitionIndex()
-                        tran = Transition(tIndex, 'transition ' + str(tIndex),
+                        tran = Transition(tIndex, 'transition ' + str(tIndex), self.operationData,
                                           self.origin.stateData, self.destination.stateData)
                         self.addTransitionItem(tran.getGraphicsItem())
                         self.origin = None
+                        self.operationData = None
+
                     else:
                         self.origin = item
                 else:
@@ -246,6 +253,7 @@ class AutomataScene(QGraphicsScene):
                 self.origin = None
 
         # Feature to add? While clicking on the active state paste all the states
+
         elif self.operationType == OpType.IMPORTSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
@@ -256,6 +264,7 @@ class AutomataScene(QGraphicsScene):
         else:
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
+                self.operationData = self.activeNamespace
 
         QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
 
@@ -279,6 +288,13 @@ class AutomataScene(QGraphicsScene):
             else:
                 item = self.getParentItem(selectedItems[0])
                 if isinstance(item, StateGraphicsItem):
+                    if item.stateData.getInitialChild():
+                        self.setActiveNamespace(item.stateData.getInitialChild().getNamespace())
+                    else:
+                        nIndex = self.getNamespaceIndex()
+                        namespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
+                        self.setActiveNamespace(namespace)
+
                     self.setActiveState(item.stateData)
                 QGraphicsScene.mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent)
 
@@ -322,6 +338,10 @@ class AutomataScene(QGraphicsScene):
     def getTransitionIndex(self):
         self.transitionIndex += 1
         return self.transitionIndex
+
+    def getNamespaceIndex(self):
+        self.namespaceIndex += 1
+        return self.namespaceIndex
 
     def getParentItem(self, item):
         while item.parentItem() is not None:
@@ -371,6 +391,11 @@ class AutomataScene(QGraphicsScene):
             self.activeState = state
             self.displayState(self.activeState)
 
+    def setActiveNamespace(self, namespace):
+        if namespace != self.activeNamespace:
+            self.activeNamespace = namespace
+            self.activeNamespaceChanged.emit()
+            
     def displayState(self, state):
         transitions = []
         for child in state.getChildren():
@@ -399,11 +424,15 @@ class AutomataScene(QGraphicsScene):
         Helper Funtion for creating new AutomataScene"""
         self.stateIndex = 0
         self.transitionIndex = 0
+        self.namespaceIndex = 0
 
-    def setLastIndexes(self, rootState):
+    def setLastIndexes(self, rootState, rootNamespace):
         """Updates AutomataScene's Largest State and Transition ID"""
         if rootState.id > self.stateIndex:
             self.stateIndex = rootState.id
+
+        if rootNamespace.id > self.namespaceIndex:
+            self.namespaceIndex = rootNamespace.id
 
         for tran in rootState.getOriginTransitions():
             if tran.id > self.transitionIndex:
