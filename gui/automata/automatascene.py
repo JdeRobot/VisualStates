@@ -244,6 +244,7 @@ class AutomataScene(QGraphicsScene):
                         self.addTransitionItem(tran.getGraphicsItem())
                         self.origin = None
                         self.operationData = None
+
                     else:
                         self.origin = item
                 else:
@@ -293,6 +294,7 @@ class AutomataScene(QGraphicsScene):
                         nIndex = self.getNamespaceIndex()
                         namespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
                         self.setActiveNamespace(namespace)
+
                     self.setActiveState(item.stateData)
                 QGraphicsScene.mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent)
 
@@ -393,7 +395,7 @@ class AutomataScene(QGraphicsScene):
         if namespace != self.activeNamespace:
             self.activeNamespace = namespace
             self.activeNamespaceChanged.emit()
-
+            
     def displayState(self, state):
         transitions = []
         for child in state.getChildren():

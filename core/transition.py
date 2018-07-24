@@ -32,6 +32,7 @@ class Transition:
         self.x = 0
         self.y = 0
         self.isPosChanged = False
+
         self.namespace = namespace
 
         self.origin = None
@@ -85,7 +86,7 @@ class Transition:
 
     def getNamespace(self):
         return self.namespace
-
+    
     def setTemporalTime(self, time):
         self.temporalTime = int(time)
 

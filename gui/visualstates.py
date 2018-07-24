@@ -67,7 +67,6 @@ class VisualStates(QMainWindow):
 
         self.fileManager = FileManager()
         self.importManager = ImportManager()
-
         self.automataPath = None
 
         self.libraries = []
@@ -277,6 +276,21 @@ class VisualStates(QMainWindow):
             self.fileManager.setPath(self.automataPath)
             # Update importing Namespaces
             importedState, self.config, self.libraries, self.namespaces = self.importManager.updateAuxiliaryData(file, self)
+            self.treeModel.loadFromRoot(importedState, self.activeState)
+            self.automataScene.displayState(self.activeState)
+            self.automataScene.setLastIndexes(self.rootState)
+
+    def importAction(self):
+        fileDialog = QFileDialog(self)
+        fileDialog.setWindowTitle("Import VisualStates File")
+        fileDialog.setViewMode(QFileDialog.Detail)
+        fileDialog.setNameFilters(['VisualStates File (*.xml)'])
+        fileDialog.setDefaultSuffix('.xml')
+        fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
+        if fileDialog.exec_():
+            file = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.fileManager.setPath(self.automataPath)
+            importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
             self.automataScene.displayState(self.activeState)
             self.automataScene.setLastIndexes(self.rootState)

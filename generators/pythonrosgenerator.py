@@ -246,10 +246,8 @@ def runGui():
 
         mainStr.append('if __name__ == "__main__":\n')
         mainStr.append('\trosNode = RosNode()\n\n')
-
         for namespace in self.namespaces:
             mainStr.append('\tnamespace' + str(namespace.id) + ' = Namespace' + str(namespace.id) +'(rosNode)\n')
-
         mainStr.append('\treadArgs()\n')
         mainStr.append('\tif displayGui:\n')
         mainStr.append('\t\tguiThread = threading.Thread(target=runGui)\n')
@@ -389,7 +387,6 @@ def runGui():
 
         if os.path.exists(projectPath + '/core'):
             shutil.rmtree(projectPath + '/core')
-
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/codegen', projectPath + '/codegen')
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/gui', projectPath + '/gui')
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/core', projectPath + '/core')

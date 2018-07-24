@@ -34,9 +34,9 @@ class State:
         self.children = []
         self.originTransitions = []
         self.destTransitions = []
-
+        
         self.namespace = namespace
-
+        
         self.graphicsItem = None
         self.isRunning = False
 
@@ -203,7 +203,6 @@ class State:
 
         if self.initial and self.children:
             stateElement.appendChild(self.namespace.createNode(doc))
-
         return stateElement
 
     def getCode(self):
