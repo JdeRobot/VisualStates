@@ -280,21 +280,6 @@ class VisualStates(QMainWindow):
             self.automataScene.displayState(self.activeState)
             self.automataScene.setLastIndexes(self.rootState)
 
-    def importAction(self):
-        fileDialog = QFileDialog(self)
-        fileDialog.setWindowTitle("Import VisualStates File")
-        fileDialog.setViewMode(QFileDialog.Detail)
-        fileDialog.setNameFilters(['VisualStates File (*.xml)'])
-        fileDialog.setDefaultSuffix('.xml')
-        fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
-        if fileDialog.exec_():
-            file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            self.fileManager.setPath(self.automataPath)
-            importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(file, self)
-            self.treeModel.loadFromRoot(importedState, self.activeState)
-            self.automataScene.displayState(self.activeState)
-            self.automataScene.setLastIndexes(self.rootState)
-
     def timerAction(self):
         if self.activeState is not None:
             timerDialog = TimerDialog('Time Step Duration', str(self.activeState.getTimeStep()))
@@ -350,12 +335,15 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
-            if self.config.type == ROS:
-                generator = PythonRosGenerator(self.libraries, self.config, stateList, self.namespaces)
-            elif self.config.type == JDEROBOTCOMM:
-                generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.namespaces)
-            generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
-            self.showInfo('Python Code Generation', 'Python code generation is successful.')
+            if self.config == None:
+                self.showInfo('Configuration not set', 'Please select configurations to generate Python Node')
+            else:
+                if self.config.type == ROS:
+                    generator = PythonRosGenerator(self.libraries, self.config, stateList, self.namespaces)
+                elif self.config.type == JDEROBOTCOMM:
+                    generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.namespaces)
+                generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
+                self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:
             self.showWarning('Python Generation', 'Please save the project before code generation.')
 

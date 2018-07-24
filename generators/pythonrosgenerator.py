@@ -138,7 +138,7 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, namespace, parent=None, gui=None):\n')
         stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
         stateStr.append('\t\tself.rosNode = rosNode\n\n')
-        stateStr.append('\t\tself.namespace = namespace')
+        stateStr.append('\t\tself.namespace = namespace\n\n')
 
         stateStr.append('\tdef runCode(self):\n')
         if len(state.getCode()) > 0:
@@ -193,6 +193,7 @@ from PyQt5.QtWidgets import QApplication
                 for funcLine in namespace.functions.split('\n'):
                     namespaceStr.append('\t' + funcLine + '\n')
                 namespaceStr.append('\n\n')
+            namespaceStr.append('\n\n')
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
@@ -279,7 +280,7 @@ def runGui():
 
         for state in self.getAllStates():
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
-                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, namespace'+ str(state.getNamespaceID()) + ','
+                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, namespace'+ str(state.getNamespace().getID()) + ', '
                            + str(state.getTimeStep()))
             if state.parent is None:
                 mainStr.append(', None, gui)\n')
