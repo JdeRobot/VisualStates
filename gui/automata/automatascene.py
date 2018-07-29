@@ -339,7 +339,7 @@ class AutomataScene(QGraphicsScene):
         self.transitionIndex += 1
         return self.transitionIndex
 
-    def getNamespaceIndex(self):
+    def getNamespaceIndex(self, incr=False):
         self.namespaceIndex += 1
         return self.namespaceIndex
 
@@ -395,7 +395,7 @@ class AutomataScene(QGraphicsScene):
         if namespace != self.activeNamespace:
             self.activeNamespace = namespace
             self.activeNamespaceChanged.emit()
-            
+
     def displayState(self, state):
         transitions = []
         for child in state.getChildren():
@@ -424,7 +424,7 @@ class AutomataScene(QGraphicsScene):
         Helper Funtion for creating new AutomataScene"""
         self.stateIndex = 0
         self.transitionIndex = 0
-        self.namespaceIndex = 0
+        self.namespaceIndex = 1
 
     def setLastIndexes(self, rootState, rootNamespace):
         """Updates AutomataScene's Largest State and Transition ID"""

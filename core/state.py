@@ -34,9 +34,9 @@ class State:
         self.children = []
         self.originTransitions = []
         self.destTransitions = []
-        
+
         self.namespace = namespace
-        
+
         self.graphicsItem = None
         self.isRunning = False
 
@@ -201,7 +201,7 @@ class State:
         if parentElement is not None:
             parentElement.appendChild(stateElement)
 
-        if self.initial and self.children:
+        if self.initial and self.children and self.id != 0:
             stateElement.appendChild(self.namespace.createNode(doc))
         return stateElement
 
