@@ -41,11 +41,18 @@ class Namespace:
         namespaceElement.appendChild(variablesElement)
         return namespaceElement
 
-    def parse(self, element):
-        self.id = element.getAttribute('id')
-        self.name = element.getElementsByTagName('name')[0].childNodes[0].nodeValue
-        self.functions = element.getElementsByTagName('functions')[0].childNodes[0].nodeValue
-        self.variables = element.getElementsByTagName('variables')[0].childNodes[0].nodeValue
+    def parseElement(self, elementName, parentElement):
+        elements = parentElement.getElementsByTagName(elementName)
+        if len(elements) > 0:
+            if len(elements[0].childNodes) > 0:
+                return elements[0].childNodes[0].nodeValue
+        return ''
+
+    def parse(self, namespaceElement):
+        self.id = namespaceElement.getAttribute('id')
+        self.name = self.parseElement('name', namespaceElement)
+        self.functions = self.parseElement('functions', namespaceElement)
+        self.variables = self.parseElement('variables', namespaceElement)
 
     def setID(self, id):
         self.id = id

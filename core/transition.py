@@ -86,7 +86,7 @@ class Transition:
 
     def getNamespace(self):
         return self.namespace
-    
+
     def setTemporalTime(self, time):
         self.temporalTime = int(time)
 
@@ -170,7 +170,7 @@ class Transition:
             self.setCode(transitionElement.getElementsByTagName('code')[0].childNodes[0].nodeValue)
         originId = int(transitionElement.getElementsByTagName('originid')[0].childNodes[0].nodeValue)
         # Set NamespaceID using State ids
-        self.namespaceid = statesById[originId].getNamespaceID()
+        self.namespace = statesById[originId].getNamespace()
         self.addOriginState(statesById[originId])
         destinationId = int(transitionElement.getElementsByTagName('destinationid')[0].childNodes[0].nodeValue)
         self.addDestinationState(statesById[destinationId])

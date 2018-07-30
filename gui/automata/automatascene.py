@@ -426,13 +426,10 @@ class AutomataScene(QGraphicsScene):
         self.transitionIndex = 0
         self.namespaceIndex = 1
 
-    def setLastIndexes(self, rootState, rootNamespace):
+    def setLastIndexes(self, rootState):
         """Updates AutomataScene's Largest State and Transition ID"""
         if rootState.id > self.stateIndex:
             self.stateIndex = rootState.id
-
-        if rootNamespace.id > self.namespaceIndex:
-            self.namespaceIndex = rootNamespace.id
 
         for tran in rootState.getOriginTransitions():
             if tran.id > self.transitionIndex:
@@ -440,3 +437,10 @@ class AutomataScene(QGraphicsScene):
 
         for child in rootState.getChildren():
             self.setLastIndexes(child)
+
+    def updateNamespaceIndex(self, namespaces):
+        for namespace in namespaces:
+            if namespace.id > self.namespaceIndex:
+                self.namespaceIndex = namespace.id
+
+        #self.namespaceIndex = [n for namespace in namespaces if self.namespaceIndex > namespace.id]

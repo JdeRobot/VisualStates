@@ -66,13 +66,30 @@ class FileManager():
         stateElement = state.createElement(doc)
         return stateElement
 
+    def namespaceFromState(self, rootState, namespaces):
+        initialChild = rootState.getInitialChild()
+        namespaces.append(initialChild.getNamespace())
+        if initialChild.getInitialChild():
+            self.namespaceFromState(initialChild, namespaces)
+        else:
+            return namespaces
+
     def open(self, fullPath):
         self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
+
+        namespaces = []
+        globalNamespaceNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('global_namespace')[0]
+        globalNamespace = Namespace(0, 'global_namespace', '', '')
+        globalNamespace.parse(globalNamespaceNode)
+        namespaces.append(globalNamespace)
+
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
-        rootState = State(0, 'root', True, 0)
+        rootState = State(0, 'root', True, None ,0)
         rootState.parse(rootNode)
 
+        # Generate Namespaces from Initial States Recursively
+        namespaces = self.namespaceFromState(rootState, namespaces)
         # parse configs
         config = None
         if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')) > 0:

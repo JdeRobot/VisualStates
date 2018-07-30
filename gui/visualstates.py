@@ -229,8 +229,10 @@ class VisualStates(QMainWindow):
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
             self.automataScene.setActiveState(self.rootState)
-            self.automataScene.setActiveNamespace(self.rootNamespace)
-            self.automataScene.setLastIndexes(self.rootState, self.rootNamespace)
+
+            self.automataScene.setActiveNamespace(self.rootState.getNamespace())
+            self.automataScene.updateNamespaceIndex(self.namespaces)
+            self.automataScene.setLastIndexes(self.rootState, self.localNamespace)
 
             # print(str(self.config))
         # else:
