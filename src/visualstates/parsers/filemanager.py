@@ -18,9 +18,9 @@
 
   '''
 from xml.dom import minidom
-from core.state import State
-from core.namespace import Namespace
-from configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
+from visualstates.core.state import State
+from visualstates.core.namespace import Namespace
+from visualstates.configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
 import os
 
 class FileManager():

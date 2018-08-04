@@ -18,8 +18,7 @@
 
   '''
 
-from PyQt5.QtWidgets import QFileDialog
-from configs.config import RosConfig
+from visualstates.configs.config import RosConfig
 
 class ImportManager():
     """

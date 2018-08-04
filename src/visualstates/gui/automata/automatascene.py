@@ -26,7 +26,7 @@ from visualstates.gui.state.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 from visualstates.gui.state.renamediaolog import RenameDialog
 from visualstates.gui.transition.transitioncodedialog import TransitionCodeDialog
 from visualstates.gui.transition.transitiontype import TransitionType
-
+from visualstates.core.namespace import Namespace
 from visualstates.core.transition import Transition
 from visualstates.gui.automata.optype import OpType
 from visualstates.gui.state.guistate import StateGraphicsItem

@@ -18,9 +18,9 @@
              Pushkal Katara (katarapushkal@gmail.com)
 
   '''
-from gui.state.guistate import StateGraphicsItem
-from core.transition import Transition
-from core.namespace import Namespace
+from visualstates.gui.state.guistate import StateGraphicsItem
+from visualstates.core.transition import Transition
+from visualstates.core.namespace import Namespace
 from xml.dom.minidom import Node
 
 class State:
