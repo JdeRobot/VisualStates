@@ -51,6 +51,9 @@ class State:
     def getNamespace(self):
         return self.namespace
 
+    def getParentNamespace(self):
+        return self.parent.namespace
+
     def getID(self):
         return self.id
 
@@ -60,6 +63,9 @@ class State:
 
     def setParent(self, parent):
         self.parent = parent
+
+    def getParent(self):
+        return self.parent
 
     def addChild(self, child):
         if child not in self.children:
@@ -125,8 +131,6 @@ class State:
         return ''
 
     def parse(self, stateElement):
-        # Save All Level Namespaces into a list
-
         # parse attributes of the state
         for (name, value) in stateElement.attributes.items():
             if name == 'id':
@@ -142,10 +146,9 @@ class State:
         self.code = self.parseElement('code', stateElement)
         self.timeStepDuration = int((self.parseElement('timestep', stateElement)))
 
-        if self.initial and self.id != 0:
-            namespace = Namespace(1, 'local_namespace', '', '')
-            namespace.parse(stateElement.getElementsByTagName('namespace')[0])
-            self.namespace = namespace
+        namespace = Namespace(1, 'local_namespace', '', '')
+        namespace.parse(stateElement.getElementsByTagName('namespace')[0])
+        self.namespace = namespace
         # recursive child state parsing
         allChildTransitions = []
         statesById = {}
@@ -166,7 +169,7 @@ class State:
 
         # wire transitions with the states after all the child states are parsed
         for tranNode in allChildTransitions:
-            transition = Transition(0, 'transition', 0)
+            transition = Transition(0, 'transition')
             transition.parse(tranNode, statesById)
 
         # return transitions of the state to be able to wire after all states are created
@@ -192,6 +195,8 @@ class State:
         timeElement.appendChild(doc.createTextNode(str(self.timeStepDuration)))
         stateElement.appendChild(timeElement)
 
+        stateElement.appendChild(self.namespace.createNode(doc))
+
         # create transition elements
         for tran in self.getOriginTransitions():
             tranElement = tran.createElement(doc)
@@ -203,8 +208,6 @@ class State:
         if parentElement is not None:
             parentElement.appendChild(stateElement)
 
-        if self.initial and self.id != 0:
-            stateElement.appendChild(self.namespace.createNode(doc))
         return stateElement
 
     def getCode(self):

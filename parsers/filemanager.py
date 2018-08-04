@@ -36,7 +36,7 @@ class FileManager():
             path += '.xml'
         self.fullPath = path
 
-    def save(self, rootState, config, libraries, namespaces):
+    def save(self, rootState, config, libraries, globalNamespace):
         doc = minidom.Document()
         root = doc.createElement('VisualStates')
         doc.appendChild(root)
@@ -46,8 +46,8 @@ class FileManager():
             root.appendChild(config.createNode(doc))
 
         # save global namespace
-        namespaceElement = namespaces[0].createNode(doc, globalNamespace=True)
-        root.appendChild(namespaceElement)
+        globalNamespaceElement = globalNamespace.createNode(doc, globalNamespace=True)
+        root.appendChild(globalNamespaceElement)
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -66,30 +66,18 @@ class FileManager():
         stateElement = state.createElement(doc)
         return stateElement
 
-    def namespaceFromState(self, rootState, namespaces):
-        initialChild = rootState.getInitialChild()
-        namespaces.append(initialChild.getNamespace())
-        if initialChild.getInitialChild():
-            self.namespaceFromState(initialChild, namespaces)
-        else:
-            return namespaces
-
     def open(self, fullPath):
         self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
 
-        namespaces = []
         globalNamespaceNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('global_namespace')[0]
         globalNamespace = Namespace(0, 'global_namespace', '', '')
         globalNamespace.parse(globalNamespaceNode)
-        namespaces.append(globalNamespace)
 
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
         rootState = State(0, 'root', True, None ,0)
         rootState.parse(rootNode)
 
-        # Generate Namespaces from Initial States Recursively
-        namespaces = self.namespaceFromState(rootState, namespaces)
         # parse configs
         config = None
         if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')) > 0:
@@ -111,7 +99,7 @@ class FileManager():
             for libElement in libraryElements:
                 libraries.append(libElement.childNodes[0].nodeValue)
 
-        return rootState, config, libraries, namespaces
+        return rootState, config, libraries, globalNamespace
 
     def hasFile(self):
         return len(self.fullPath) > 0

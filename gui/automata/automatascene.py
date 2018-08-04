@@ -219,11 +219,15 @@ class AutomataScene(QGraphicsScene):
             QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
             return
 
-        if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
+        if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
+                # Create New Namespace for State
+                nIndex = self.getNamespaceIndex()
+                namespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
+
                 sIndex = self.getStateIndex()
-                state = State(sIndex, 'state' + str(sIndex), False, self.operationData, self.activeState)
+                state = State(sIndex, 'state' + str(sIndex), False, namespace, self.activeState)
                 state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
                              qGraphicsSceneMouseEvent.scenePos().y())
                 self.addStateItem(state.getGraphicsItem())
@@ -239,11 +243,10 @@ class AutomataScene(QGraphicsScene):
                     if self.origin != None:
                         self.destination = item
                         tIndex = self.getTransitionIndex()
-                        tran = Transition(tIndex, 'transition ' + str(tIndex), self.operationData,
+                        tran = Transition(tIndex, 'transition ' + str(tIndex),
                                           self.origin.stateData, self.destination.stateData)
                         self.addTransitionItem(tran.getGraphicsItem())
                         self.origin = None
-                        self.operationData = None
 
                     else:
                         self.origin = item
@@ -254,7 +257,7 @@ class AutomataScene(QGraphicsScene):
 
         # Feature to add? While clicking on the active state paste all the states
 
-        elif self.operationType == OpType.IMPORTSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
+        elif self.operationType == OpType.IMPORTSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 self.importItems(self.operationData)
@@ -264,7 +267,6 @@ class AutomataScene(QGraphicsScene):
         else:
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
-                self.operationData = self.activeNamespace
 
         QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
 
@@ -288,13 +290,6 @@ class AutomataScene(QGraphicsScene):
             else:
                 item = self.getParentItem(selectedItems[0])
                 if isinstance(item, StateGraphicsItem):
-                    if item.stateData.getInitialChild():
-                        self.setActiveNamespace(item.stateData.getInitialChild().getNamespace())
-                    else:
-                        nIndex = self.getNamespaceIndex()
-                        namespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
-                        self.setActiveNamespace(namespace)
-
                     self.setActiveState(item.stateData)
                 QGraphicsScene.mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent)
 
@@ -327,9 +322,8 @@ class AutomataScene(QGraphicsScene):
         self.currentScenePos = qEvent.scenePos()
         action = cMenu.exec_(qEvent.screenPos())
 
-    def setOperationType(self, type, data=None):
+    def setOperationType(self, type):
         self.operationType = type
-        self.operationData = data
 
     def getStateIndex(self):
         self.stateIndex += 1
@@ -339,7 +333,7 @@ class AutomataScene(QGraphicsScene):
         self.transitionIndex += 1
         return self.transitionIndex
 
-    def getNamespaceIndex(self, incr=False):
+    def getNamespaceIndex(self):
         self.namespaceIndex += 1
         return self.namespaceIndex
 
@@ -391,10 +385,9 @@ class AutomataScene(QGraphicsScene):
             self.activeState = state
             self.displayState(self.activeState)
 
-    def setActiveNamespace(self, namespace):
-        if namespace != self.activeNamespace:
-            self.activeNamespace = namespace
-            self.activeNamespaceChanged.emit()
+        if state.namespace != self.activeNamespace:
+            self.activeNamespace = state.getNamespace()
+        self.activeNamespaceChanged.emit()
 
     def displayState(self, state):
         transitions = []
@@ -435,12 +428,9 @@ class AutomataScene(QGraphicsScene):
             if tran.id > self.transitionIndex:
                 self.transitionIndex = tran.id
 
+        if rootState.getNamespace() != None:
+            if rootState.namespace.getID() > self.namespaceIndex:
+                self.namespaceIndex = rootState.namespace.id
+
         for child in rootState.getChildren():
             self.setLastIndexes(child)
-
-    def updateNamespaceIndex(self, namespaces):
-        for namespace in namespaces:
-            if namespace.id > self.namespaceIndex:
-                self.namespaceIndex = namespace.id
-
-        #self.namespaceIndex = [n for namespace in namespaces if self.namespaceIndex > namespace.id]

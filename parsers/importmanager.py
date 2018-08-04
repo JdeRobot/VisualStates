@@ -47,8 +47,8 @@ class ImportManager():
         importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.activeState)
         config = self.updateConfigs(file[1], klass.config)
         libraries = self.updateLibraries(file[2], klass.libraries)
-        namespaces = self.updateNamespaces(file[3], klass.namespaces)
-        return importedState, config, libraries, namespaces
+        globalNamespace = self.updateGlobalNamespace(file[3], klass.globalNamespace)
+        return importedState, config, libraries, globalNamespace
 
     def updateNamespaces(self, newNamespaces, namespaces):
         """Update Namespaces with the new Namespaces"""

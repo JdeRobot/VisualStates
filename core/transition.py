@@ -22,7 +22,7 @@ from gui.transition.guitransition import TransitionGraphicsItem
 from PyQt5.QtCore import QPointF
 
 class Transition:
-    def __init__(self, id, name, namespace, origin=None, dest=None):
+    def __init__(self, id, name, origin=None, dest=None):
         self.id = id
         self.name = name
         self.transitionType = TransitionType.TEMPORAL
@@ -32,8 +32,6 @@ class Transition:
         self.x = 0
         self.y = 0
         self.isPosChanged = False
-
-        self.namespace = namespace
 
         self.origin = None
         self.destination = None
@@ -85,7 +83,7 @@ class Transition:
         return self.temporalTime
 
     def getNamespace(self):
-        return self.namespace
+        return self.origin.getNamespace()
 
     def setTemporalTime(self, time):
         self.temporalTime = int(time)
@@ -169,8 +167,6 @@ class Transition:
         if len(transitionElement.getElementsByTagName('code')[0].childNodes) > 0:
             self.setCode(transitionElement.getElementsByTagName('code')[0].childNodes[0].nodeValue)
         originId = int(transitionElement.getElementsByTagName('originid')[0].childNodes[0].nodeValue)
-        # Set NamespaceID using State ids
-        self.namespace = statesById[originId].getNamespace()
         self.addOriginState(statesById[originId])
         destinationId = int(transitionElement.getElementsByTagName('destinationid')[0].childNodes[0].nodeValue)
         self.addDestinationState(statesById[destinationId])

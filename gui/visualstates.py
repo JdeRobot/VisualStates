@@ -71,9 +71,6 @@ class VisualStates(QMainWindow):
 
         self.libraries = []
         self.config = None
-        self.namespaces = []
-        self.namespaces.append(self.globalNamespace)
-        self.namespaces.append(self.localNamespace)
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
@@ -204,16 +201,12 @@ class VisualStates(QMainWindow):
         self.localNamespace = Namespace(1, "local_namespace", '', '')
         self.rootState = State(0, 'root', True, self.localNamespace)
 
-        self.automataScene.setActiveNamespace(self.localNamespace)
         self.automataScene.setActiveState(self.rootState)
 
         self.automataScene.resetIndexes()
 
         self.libraries = []
         self.config = None
-        self.namespaces = []
-        self.namespaces.append(self.globalNamespace)
-        self.namespaces.append(self.localNamespace)
 
     def openAction(self):
         fileDialog = QFileDialog(self)
@@ -223,16 +216,13 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
-            (self.rootState, self.config, self.libraries, self.namespaces) = self.fileManager.open(fileDialog.selectedFiles()[0])
+            (self.rootState, self.config, self.libraries, self.globalNamespace) = self.fileManager.open(fileDialog.selectedFiles()[0])
             self.automataPath = self.fileManager.fullPath
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
             self.automataScene.setActiveState(self.rootState)
-
-            self.automataScene.setActiveNamespace(self.rootState.getNamespace())
-            self.automataScene.updateNamespaceIndex(self.namespaces)
-            self.automataScene.setLastIndexes(self.rootState, self.localNamespace)
+            self.automataScene.setLastIndexes(self.rootState)
 
             # print(str(self.config))
         # else:
@@ -242,7 +232,7 @@ class VisualStates(QMainWindow):
         if len(self.fileManager.getFileName()) == 0:
             self.saveAsAction()
         else:
-            self.fileManager.save(self.rootState, self.config, self.libraries, self.namespaces)
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.globalNamespace)
 
     def saveAsAction(self):
         fileDialog = QFileDialog(self)
@@ -252,7 +242,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         if fileDialog.exec_():
             self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
-            self.fileManager.save(self.rootState, self.config, self.libraries, self.namespaces)
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.globalNamespace)
         # else:
         #     print('file dialog canceled')
 
@@ -261,10 +251,10 @@ class VisualStates(QMainWindow):
         self.close()
 
     def stateAction(self):
-        self.automataScene.setOperationType(OpType.ADDSTATE, self.activeNamespace)
+        self.automataScene.setOperationType(OpType.ADDSTATE)
 
     def transitionAction(self):
-        self.automataScene.setOperationType(OpType.ADDTRANSITION, self.activeNamespace)
+        self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
     def importAction(self):
         fileDialog = QFileDialog(self)
@@ -277,7 +267,7 @@ class VisualStates(QMainWindow):
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
             self.fileManager.setPath(self.automataPath)
             # Update importing Namespaces
-            importedState, self.config, self.libraries, self.namespaces = self.importManager.updateAuxiliaryData(file, self)
+            importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
             self.automataScene.displayState(self.activeState)
             self.automataScene.setLastIndexes(self.rootState)
@@ -341,7 +331,7 @@ class VisualStates(QMainWindow):
                 self.showInfo('Configuration not set', 'Please select configurations to generate Python Node')
             else:
                 if self.config.type == ROS:
-                    generator = PythonRosGenerator(self.libraries, self.config, stateList, self.namespaces)
+                    generator = PythonRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
                 elif self.config.type == JDEROBOTCOMM:
                     generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.namespaces)
                 generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
@@ -392,7 +382,6 @@ class VisualStates(QMainWindow):
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
-        self.automataScene.setActiveNamespace(self.localNamespace)
 
         self.setCentralWidget(self.stateCanvas)
         self.stateCanvas.setScene(self.automataScene)
@@ -435,16 +424,12 @@ class VisualStates(QMainWindow):
     def activeNamespaceChanged(self):
         if self.automataScene.activeNamespace != self.activeNamespace:
             self.activeNamespace = self.automataScene.activeNamespace
-            if self.activeNamespace not in self.namespaces:
-                self.namespaces.append(self.activeNamespace)
 
     def upButtonClicked(self):
         if self.activeState != None:
             if self.activeState.parent != None:
                 #print(self.activeState.parent.id)
                 self.automataScene.setActiveState(self.activeState.parent)
-                self.activeNamespace = self.activeState.getNamespace()
-                self.automataScene.setActiveNamespace(self.activeNamespace)
 
     def getStateById(self,state, id):
         if state.id == id:
