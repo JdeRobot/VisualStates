@@ -21,15 +21,18 @@ import os
 import stat
 from xml.dom import minidom
 
-from visualstates.generators.cppgenerator import CppGenerator
 from visualstates.gui.transition.transitiontype import TransitionType
 from visualstates.parsers.cppparser import CPPParser
 from visualstates.configs.package_path import get_package_path
 
 
-class CppRosGenerator(CppGenerator):
-    def __init__(self, libraries, config, interfaceHeaders, states, functions, variables):
-        CppGenerator.__init__(self, libraries, config, interfaceHeaders, states, functions, variables)
+class CppRosGenerator():
+    def __init__(self, libraries, config, interfaceHeaders, states, globalNamespace):
+        self.libraries = libraries
+        self.config = config
+        self.interfaceHeaders = interfaceHeaders
+        self.states = states
+        self.globalNamespace = globalNamespace
 
     def generate(self, projectPath, projectName):
         # create source dir if not exists
@@ -492,81 +495,3 @@ include_directories(
         doc.appendChild(root)
 
         return doc
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

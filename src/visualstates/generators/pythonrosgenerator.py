@@ -21,19 +21,16 @@ import os
 import shutil
 from xml.dom import minidom
 
-from visualstates.generators.generator import Generator
 from visualstates.gui.transition.transitiontype import TransitionType
 from visualstates.configs.package_path import get_package_path
 
 
-class PythonRosGenerator(Generator):
-    def __init__(self, libraries, config, states, functions, variables):
-        Generator.__init__(self)
+class PythonRosGenerator():
+    def __init__(self, libraries, config, states, globalNamespace):
         self.libraries = libraries
         self.config = config
         self.states = states
-        self.functions = functions
-        self.variables = variables
+        self.globalNamespace = globalNamespace
 
     def getAllStates(self):
         addedStates = {}
@@ -66,10 +63,17 @@ class PythonRosGenerator(Generator):
 
         return transitions
 
+    def getAllNamespaces(self):
+        allNamespaces = []
+        for state in self.getAllStates():
+            allNamespaces.append(state.getNamespace())
+        return allNamespaces
+
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateImports(stringList)
-        self.generateRosInterface(stringList, projectName, self.functions, self.variables)
+        self.generateGlobalNamespace(stringList, projectName)
+        self.generateNamespaceClasses(stringList)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         self.generateMain(stringList)
@@ -136,9 +140,10 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append(str(state.id))
         stateStr.append('(State):\n')
 
-        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, parent=None, gui=None):\n')
+        stateStr.append('\tdef __init__(self, id, initial, globalNamespace, cycleDuration, namespace, parent=None, gui=None):\n')
         stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
-        stateStr.append('\t\tself.rosNode = rosNode\n\n')
+        stateStr.append('\t\tself.globalNamespace = globalNamespace\n')
+        stateStr.append('\t\tself.namespace = namespace\n\n')
 
         stateStr.append('\tdef runCode(self):\n')
         if len(state.getCode()) > 0:
@@ -148,58 +153,80 @@ from PyQt5.QtWidgets import QApplication
             stateStr.append('\t\tpass\n')
         stateStr.append('\n\n')
 
-    def generateRosInterface(self, rosNodeStr, projectName, functions, variables):
-        rosNodeStr.append('class RosNode():\n')
-        rosNodeStr.append('\tdef __init__(self):\n')
-        rosNodeStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
+    def generateNamespaceClasses(self, namespaceStr):
+        for namespace in self.getAllNamespaces():
+            self.generateNamespaceClass(namespace, namespaceStr)
+
+    def generateNamespaceClass(self, namespace, namespaceStr):
+        namespaceStr.append('class Namespace' + str(namespace.id) + '():\n')
+        namespaceStr.append('\tdef __init__(self, globalNamespace):\n')
+        namespaceStr.append('\t\tself.globalNamespace = globalNamespace\n')
+
+        if(len(namespace.variables) > 0):
+            for varLine in namespace.variables.split('\n'):
+                namespaceStr.append('\t\t' + varLine + '\n')
+        namespaceStr.append('\n')
+
+        if(len(namespace.functions) > 0):
+            for funcLine in namespace.functions.split('\n'):
+                namespaceStr.append('\t' + funcLine + '\n')
+        namespaceStr.append('\n')
+
+    def generateGlobalNamespace(self, globalNamespaceStr, projectName):
+        globalNamespaceStr.append('class GlobalNamespace():\n')
+        globalNamespaceStr.append('\tdef __init__(self):\n')
+        globalNamespaceStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub = rospy.Publisher("' +
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub = rospy.Publisher("' +
                               topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
             elif topic['opType'] == 'Subscribe':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Sub = rospy.Subscriber("' +
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Sub = rospy.Subscriber("' +
                                   topic['name'] + '", ' + types[1] + ', self.'+self.getVarName(topic['name'])+'Callback)\n')
-                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + types[1] + '()\n')
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + types[1] + '()\n')
 
         # add state variables as part of ros node
+        variables = self.globalNamespace.getVariables()
         if len(variables) > 0:
             for varLine in variables.split('\n'):
-                rosNodeStr.append('\t\t' + varLine + '\n')
-            rosNodeStr.append('\n')
+                globalNamespaceStr.append('\t\t' + varLine + '\n')
+            globalNamespaceStr.append('\n')
 
-        rosNodeStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
+        globalNamespaceStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
 
-        rosNodeStr.append('\tdef stop(self):\n')
-        rosNodeStr.append('\t\trospy.signal_shutdown("exit ROS node")\n\n')
+        globalNamespaceStr.append('\tdef stop(self):\n')
+        globalNamespaceStr.append('\t\trospy.signal_shutdown("exit ROS node")\n\n')
 
         # define publisher methods and subscriber callbacks
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
-                rosNodeStr.append('\tdef publish' + self.getVarName(topic['name']) + '(self, ' + self.getVarName(topic['name']) + '):\n')
-                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub.publish(' + self.getVarName(topic['name']) + ')\n\n')
+                globalNamespaceStr.append('\tdef publish' + self.getVarName(topic['name']) + '(self, ' + self.getVarName(topic['name']) + '):\n')
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub.publish(' + self.getVarName(topic['name']) + ')\n\n')
             elif topic['opType'] == 'Subscribe':
-                rosNodeStr.append('\tdef ' + self.getVarName(topic['name']) + 'Callback(self, ' + self.getVarName(topic['name']) + '):\n')
-                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + self.getVarName(topic['name']) + '\n')
-            rosNodeStr.append('\n\n')
+                globalNamespaceStr.append('\tdef ' + self.getVarName(topic['name']) + 'Callback(self, ' + self.getVarName(topic['name']) + '):\n')
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + self.getVarName(topic['name']) + '\n')
+            globalNamespaceStr.append('\n\n')
 
         # define user functions as part of rosnode
+        functions = self.globalNamespace.getFunctions()
         if len(functions) > 0:
             for funcLine in functions.split('\n'):
-                rosNodeStr.append('\t' + funcLine + '\n')
-            rosNodeStr.append('\n\n')
+                globalNamespaceStr.append('\t' + funcLine + '\n')
+            globalNamespaceStr.append('\n\n')
 
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
-                tranStr.append('\tdef __init__(self, id, destinationId, rosNode):\n')
+                tranStr.append('\tdef __init__(self, id, destinationId, globalNamespace, namespace):\n')
                 tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
-                tranStr.append('\t\tself.rosNode = rosNode\n\n')
+                tranStr.append('\t\tself.globalNamespace = globalNamespace\n')
+                tranStr.append('\t\tself.namespace = namespace\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
                     tranStr.append('\t\t' + checkLine + '\n')
@@ -242,8 +269,11 @@ def runGui():
 '''
         mainStr.append(mystr)
 
-        mainStr.append('if __name__ == "__main__":\n')
-        mainStr.append('\trosNode = RosNode()\n\n')
+        mainStr.append('if __name__ == "__main__":\n\n')
+        mainStr.append('\tglobalNamespace = GlobalNamespace()\n\n')
+        for namespace in self.getAllNamespaces():
+            mainStr.append('\tnamespace' + str(namespace.id) + ' = Namespace' + str(namespace.id) +'(globalNamespace)\n')
+        mainStr.append('\n')
         mainStr.append('\treadArgs()\n')
         mainStr.append('\tif displayGui:\n')
         mainStr.append('\t\tguiThread = threading.Thread(target=runGui)\n')
@@ -256,7 +286,7 @@ def runGui():
         for state in self.getAllStates():
             mainStr.append('\t\tgui.addState(' + str(state.id) + ', "' + state.name +
                            '", ' + str(state.initial) + ', ' + str(state.x) + ', ' + str(state.y))
-            if state.parent is None:
+            if state.parent == 0:
                 mainStr.append(', None)\n')
             else:
                 mainStr.append(', ' + str(state.parent.id) +')\n')
@@ -275,9 +305,9 @@ def runGui():
 
         for state in self.getAllStates():
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
-                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, ' +
-                           str(state.getTimeStep()))
-            if state.parent is None:
+                           '(' + str(state.id) + ', ' + str(state.initial) + ', globalNamespace, namespace' +
+                           str(state.getNamespace().getID()) + ', ' + str(state.getTimeStep()))
+            if state.parent == 0:
                 mainStr.append(', None, gui)\n')
             else:
                 mainStr.append(', state' + str(state.parent.id) + ', gui)\n')
@@ -290,7 +320,7 @@ def runGui():
                                '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ')\n')
             elif tran.getType() == TransitionType.CONDITIONAL:
                 mainStr.append('\ttran' + str(tran.id) + ' = Tran' + str(tran.id) +
-                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', rosNode)\n')
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', globalNamespace)\n')
 
             mainStr.append('\tstate' + str(tran.origin.id) + '.addTransition(tran' + str(tran.id) + ')\n\n')
 
@@ -302,7 +332,7 @@ def runGui():
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
 
-        mainStr.append('\t\trosNode.stop()\n')
+        mainStr.append('\t\tglobalNamespace.stop()\n')
         mainStr.append('\t\tsys.exit(0)\n')
         mainStr.append('\texcept:\n')
         for state in self.states:
@@ -313,7 +343,7 @@ def runGui():
         # join threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
-        mainStr.append('\t\trosNode.stop()\n')
+        mainStr.append('\t\tglobalNamespace.stop()\n')
         mainStr.append('\t\tsys.exit(1)\n')
 
     def generateCmake(self, cmakeStr, projectName):

@@ -24,8 +24,7 @@ from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import QDialog, QApplication, QGroupBox, QComboBox, \
     QVBoxLayout, QFormLayout
 
-from visualstates.configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
-# from visualstates.gui.dialogs.jderobotcommconfigdialog import JdeRobotCommConfigDialog
+from visualstates.configs.config import ROS, RosConfig
 from visualstates.gui.dialogs.rosconfigdialog import RosConfigDialog
 
 
@@ -39,18 +38,9 @@ class ConfigDialog(QDialog):
             self.type = ROS
 
         self.setWindowTitle(title)
-        # commSelectionBox = QGroupBox('Select Communication Interface')
-        # commSelectionBox.setObjectName('commInterface')
-        # add new config input fields
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        # self.commTypeCombo = QComboBox()
-        # self.commTypeCombo.setFont(fixedWidthFont)
-        # self.commTypeCombo.setMaximumWidth(220)
-        # boxLayout = QVBoxLayout()
-        # boxLayout.addWidget(self.commTypeCombo)
-        # commSelectionBox.setLayout(boxLayout)
+
         vLayout = QFormLayout()
-        # vLayout.addWidget(commSelectionBox)
 
         self.configsLayout = QVBoxLayout()
         self.configsBox = QGroupBox('')
@@ -59,63 +49,31 @@ class ConfigDialog(QDialog):
 
         self.setLayout(vLayout)
         self.resize(700, 500)
-        #self.setStyleSheet('QGroupBox#commInterface { border: 1px solid black; border-radius: 4px; padding:15px;} QGroupBox::title#commInterface {background-color:transparent; padding-left:25px; padding-top:5px;} ')
 
         self.rosConfigsUI = RosConfigDialog('ROS Communication')
         self.rosConfigsUI.configChanged.connect(self.configChangedHandler)
         self.configsLayout.addWidget(self.rosConfigsUI)
         self.rosConfigsUI.setVisible(True)
-        # self.jderobotCommConfigsUI = JdeRobotCommConfigDialog('JdeRobot Communication')
-        # self.jderobotCommConfigsUI.configChanged.connect(self.configChangedHandler)
-        # self.configsLayout.addWidget(self.jderobotCommConfigsUI)
-        # self.jderobotCommConfigsUI.setVisible(False)
-
         self.rosConfig = None
-        # self.jdeRobotCommConfig = None
-
-        # self.commTypeCombo.addItem('JdeRobot Communication', 'jderobotcomm')
-        # self.commTypeCombo.addItem('ROS Node', 'ros')
-        # self.commTypeCombo.currentIndexChanged.connect(self.commTypeComboChanged)
 
         if config is not None:
             if config.type == ROS:
                 self.rosConfig = config
                 # self.commTypeCombo.setCurrentIndex(1)
                 self.loadRosConfigs()
-            # elif config.type == JDEROBOTCOMM:
-            #     self.jdeRobotCommConfig = config
-            #     self.commTypeCombo.setCurrentIndex(0)
-            #     self.loadJdeRobotCommConfigs()
         else:
             self.loadRosConfigs()
-            # self.loadJdeRobotCommConfigs()
-
-
 
     def commTypeComboChanged(self):
         if self.commTypeCombo.currentData() == 'ros':
             self.loadRosConfigs()
-        # elif self.commTypeCombo.currentData() == 'jderobotcomm':
-        #     self.loadJdeRobotCommConfigs()
-
 
     def loadRosConfigs(self):
         self.type = ROS
-        # self.jderobotCommConfigsUI.setVisible(False)
-        # self.rosConfigsUI.setVisible(True)
         if self.rosConfig is None:
             self.rosConfig = RosConfig()
         self.rosConfigsUI.setConfig(self.rosConfig)
         self.configChanged.emit()
-
-    # def loadJdeRobotCommConfigs(self):
-    #     self.type = JDEROBOTCOMM
-    #     self.rosConfigsUI.setVisible(False)
-    #     self.jderobotCommConfigsUI.setVisible(True)
-    #     if self.jdeRobotCommConfig is None:
-    #         self.jdeRobotCommConfig = JdeRobotConfig()
-    #     self.jderobotCommConfigsUI.setConfig(self.jdeRobotCommConfig)
-    #     self.configChanged.emit()
 
     def configChangedHandler(self):
         self.configChanged.emit()

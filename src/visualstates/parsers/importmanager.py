@@ -43,26 +43,16 @@ class ImportManager():
 
     def updateAuxiliaryData(self, file, klass):
         """Wrapper upon all update functions"""
-        importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.activeState)
+        importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.automataScene.getNamespaceIndex(), klass.activeState)
         config = self.updateConfigs(file[1], klass.config)
         libraries = self.updateLibraries(file[2], klass.libraries)
-        globalNamespace = self.updateGlobalNamespace(file[3], klass.globalNamespace)
+        globalNamespace = self.updateNamespace(file[3], klass.globalNamespace)
         return importedState, config, libraries, globalNamespace
 
-    def updateNamespaces(self, newNamespaces, namespaces):
-        """Update Namespaces with the new Namespaces"""
-        newNamespaces = self.updateNamespaceIDs(newNamespaces, namespaces)
-        for namespace in newNamespaces:
-            namespaces.append(namespace)
-        return namespaces
-
-    def updateNamespaceIDs(self, newNamespaces, namespaces):
-        """Updates Namespace IDs according to the existing namespaces"""
-        newNamespaceID = max(int(namespace.id) for namespace in namespaces) + 1
-        for namespace in newNamespaces:
-            namespace.setID(newNamespaceID)
-            newNamespaceID + 1
-        return newNamespaces
+    def updateNamespace(self, newNamespace, namespace):
+        namespace.addFunctions(newNamespace.getFunctions())
+        namespace.addVariables(newNamespace.getVariables())
+        return namespace
 
     def updateLibraries(self, newLibraries, libraries):
         """Updates existing libraries with imported libraries"""
@@ -88,7 +78,7 @@ class ImportManager():
                     config.updateJDERobotCommConfig(newConfig)
         return config
 
-    def updateActiveState(self, importState, stateID, activeState):
+    def updateActiveState(self, importState, stateID, namespaceID, activeState):
         """Updates Parent State with States to be imported"""
         importState = self.updateIDs(importState, stateID, namespaceID)
         for state in importState.getChildren():
@@ -96,15 +86,16 @@ class ImportManager():
             state.setParent(activeState)
         return importState
 
-    def updateIDs(self, importState, stateID):
+    def updateIDs(self, importState, stateID, namespaceID):
         """ Wrapper upon UpdateStateIDs """
-        self.updateStateIDs(importState, stateID)
+        self.updateStateIDs(importState, stateID, namespaceID)
         return importState
 
     def updateStateIDs(self, importState, stateID, namespaceID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
             child.setID(stateID)
-            child.setNamespaceID(namespaceID)
+            child.getNamespace().setID(namespaceID)
             stateID += 1
+            namespaceID += 1
             self.updateStateIDs(child, stateID, namespaceID)

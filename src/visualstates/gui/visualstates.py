@@ -27,10 +27,8 @@ from .transition.timerdialog import TimerDialog
 from .state.codedialog import CodeDialog
 from .dialogs.librariesdialog import LibrariesDialog
 from .dialogs.configdialog import ConfigDialog
-from ..generators.cppgenerator import CppGenerator
-from ..generators.pythongenerator import PythonGenerator
 from ..configs.interfaces import Interfaces
-from ..configs.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
+from ..configs.config import RosConfig, ROS
 from ..generators.cpprosgenerator import CppRosGenerator
 from ..generators.pythonrosgenerator import PythonRosGenerator
 from ..configs.package_path import get_package_path
@@ -296,11 +294,10 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
+            if self.config is None:
+                self.Config = RosConfig()
             if self.config.type == ROS:
                 generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.namespaces)
-            elif self.config.type == JDEROBOTCOMM:
-                generator = CppGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.namespaces)
-
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
         else:
@@ -315,13 +312,9 @@ class VisualStates(QMainWindow):
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
             if self.config is None:
-                self.config = JdeRobotConfig()
-
+                self.config = RosConfig()
             if self.config.type == ROS:
                 generator = PythonRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
-            elif self.config.type == JDEROBOTCOMM:
-                generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.namespaces)
-
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:

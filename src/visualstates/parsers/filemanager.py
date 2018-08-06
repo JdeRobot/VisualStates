@@ -20,7 +20,7 @@
 from xml.dom import minidom
 from visualstates.core.state import State
 from visualstates.core.namespace import Namespace
-from visualstates.configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
+from visualstates.configs.config import ROS, RosConfig
 import os
 
 class FileManager():
@@ -75,7 +75,7 @@ class FileManager():
         globalNamespace.parse(globalNamespaceNode)
 
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
-        rootState = State(0, 'root', True, None ,0)
+        rootState = State(0, 'root', True, None, 0)
         rootState.parse(rootNode)
 
         # parse configs
