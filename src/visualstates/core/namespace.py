@@ -49,7 +49,7 @@ class Namespace:
         return ''
 
     def parse(self, namespaceElement):
-        self.id = namespaceElement.getAttribute('id')
+        self.id = int(namespaceElement.getAttribute('id'))
         self.name = self.parseElement('name', namespaceElement)
         self.functions = self.parseElement('functions', namespaceElement)
         self.variables = self.parseElement('variables', namespaceElement)
@@ -63,11 +63,17 @@ class Namespace:
     def getVariables(self):
         return self.variables
 
+    def addVariables(self, variables):
+        self.variables += variables
+
     def setVariables(self, variables):
         self.variables = variables
 
     def getFunctions(self):
         return self.functions
+
+    def addFunctions(self, functions):
+        self.functions += functions
 
     def setFuntions(self, functions):
         self.functions = functions
