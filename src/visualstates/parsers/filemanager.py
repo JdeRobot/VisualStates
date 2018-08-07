@@ -75,7 +75,7 @@ class FileManager():
         globalNamespace.parse(globalNamespaceNode)
 
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
-        rootState = State(0, 'root', True, None, 0)
+        rootState = State(0, 'root', True, None)
         rootState.parse(rootNode)
 
         # parse configs

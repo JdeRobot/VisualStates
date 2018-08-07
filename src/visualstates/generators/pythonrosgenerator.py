@@ -286,7 +286,7 @@ def runGui():
         for state in self.getAllStates():
             mainStr.append('\t\tgui.addState(' + str(state.id) + ', "' + state.name +
                            '", ' + str(state.initial) + ', ' + str(state.x) + ', ' + str(state.y))
-            if state.parent == 0:
+            if state.parent == None:
                 mainStr.append(', None)\n')
             else:
                 mainStr.append(', ' + str(state.parent.id) +')\n')
@@ -307,7 +307,7 @@ def runGui():
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
                            '(' + str(state.id) + ', ' + str(state.initial) + ', globalNamespace, namespace' +
                            str(state.getNamespace().getID()) + ', ' + str(state.getTimeStep()))
-            if state.parent == 0:
+            if state.parent == None:
                 mainStr.append(', None, gui)\n')
             else:
                 mainStr.append(', state' + str(state.parent.id) + ', gui)\n')
