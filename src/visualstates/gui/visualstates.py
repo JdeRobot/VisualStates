@@ -42,8 +42,8 @@ class VisualStates(QMainWindow):
         self.configDialog = None
 
         # root state
-        self.globalNamespace = Namespace(0, "global_namespace", '', '')
-        self.localNamespace = Namespace(1, "local_namespace", '', '')
+        self.globalNamespace = Namespace('', '')
+        self.localNamespace = Namespace('', '')
         self.rootState = State(0, "root", True, self.localNamespace)
         self.activeState = self.rootState
         self.activeNamespace = self.localNamespace
@@ -189,8 +189,8 @@ class VisualStates(QMainWindow):
         self.treeModel.removeAll()
 
         # create new root state
-        self.globalNamespace = Namespace(0, "global_namespace", '', '')
-        self.localNamespace = Namespace(1, "local_namespace", '', '')
+        self.globalNamespace = Namespace('', '')
+        self.localNamespace = Namespace('', '')
         self.rootState = State(0, 'root', True, self.localNamespace)
 
         self.automataScene.setActiveState(self.rootState)

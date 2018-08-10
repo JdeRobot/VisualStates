@@ -55,7 +55,6 @@ class AutomataScene(QGraphicsScene):
 
         self.stateIndex = 0
         self.transitionIndex = 0
-        self.namespaceIndex = 1
 
         self.prevOperationType = None
         self.stateTextEditingStarted = False
@@ -225,9 +224,7 @@ class AutomataScene(QGraphicsScene):
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 # Create New Namespace for State
-                nIndex = self.getNamespaceIndex()
-                namespace = Namespace(nIndex, 'namespace ' + str(nIndex), '', '')
-
+                namespace = Namespace('', '')
                 sIndex = self.getStateIndex()
                 state = State(sIndex, 'state' + str(sIndex), False, namespace, self.activeState)
                 state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
@@ -335,10 +332,6 @@ class AutomataScene(QGraphicsScene):
         self.transitionIndex += 1
         return self.transitionIndex
 
-    def getNamespaceIndex(self):
-        self.namespaceIndex += 1
-        return self.namespaceIndex
-
     def getParentItem(self, item):
         while item.parentItem() is not None:
             item = item.parentItem()
@@ -419,7 +412,6 @@ class AutomataScene(QGraphicsScene):
         Helper Funtion for creating new AutomataScene"""
         self.stateIndex = 0
         self.transitionIndex = 0
-        self.namespaceIndex = 1
 
     def setLastIndexes(self, rootState):
         """Updates AutomataScene's Largest State and Transition ID"""
@@ -429,10 +421,6 @@ class AutomataScene(QGraphicsScene):
         for tran in rootState.getOriginTransitions():
             if tran.id > self.transitionIndex:
                 self.transitionIndex = tran.id
-
-        if rootState.getNamespace() != None:
-            if rootState.namespace.getID() > self.namespaceIndex:
-                self.namespaceIndex = rootState.namespace.id
 
         for child in rootState.getChildren():
             self.setLastIndexes(child)

@@ -18,9 +18,7 @@
 
   '''
 class Namespace:
-    def __init__(self, id, name, functions, variables):
-        self.id = id
-        self.name = name
+    def __init__(self, functions, variables):
         self.functions = functions
         self.variables = variables
 
@@ -29,10 +27,6 @@ class Namespace:
             namespaceElement = doc.createElement('global_namespace')
         else:
             namespaceElement = doc.createElement('namespace')
-        namespaceElement.setAttribute('id', str(self.id))
-        nameElement = doc.createElement('name')
-        nameElement.appendChild(doc.createTextNode(self.name))
-        namespaceElement.appendChild(nameElement)
         functionsElement = doc.createElement('functions')
         functionsElement.appendChild(doc.createTextNode(self.functions))
         namespaceElement.appendChild(functionsElement)
@@ -49,16 +43,8 @@ class Namespace:
         return ''
 
     def parse(self, namespaceElement):
-        self.id = int(namespaceElement.getAttribute('id'))
-        self.name = self.parseElement('name', namespaceElement)
         self.functions = self.parseElement('functions', namespaceElement)
         self.variables = self.parseElement('variables', namespaceElement)
-
-    def setID(self, id):
-        self.id = id
-
-    def getID(self):
-        return self.id
 
     def getVariables(self):
         return self.variables
