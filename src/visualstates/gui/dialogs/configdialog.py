@@ -46,7 +46,6 @@ class ConfigDialog(QDialog):
         self.configsBox = QGroupBox('')
         self.configsBox.setLayout(self.configsLayout)
         vLayout.addWidget(self.configsBox)
-
         self.setLayout(vLayout)
         self.resize(700, 500)
 

@@ -62,7 +62,6 @@ class RosConfigDialog(QDialog):
     def configChangedHandler(self):
         self.configChanged.emit()
 
-
 class PackageTab(QWidget):
     configChanged = pyqtSignal()
     def __init__(self):
@@ -81,12 +80,12 @@ class PackageTab(QWidget):
         layout.addRow('Run Dependencies', self.runDependencies)
 
     def buildDependenciesChanged(self):
-        if self.config is not None:
+        if self.config:
             self.config.setBuildDependencies(self.buildDependencies.toPlainText())
             self.configChanged.emit()
 
     def runDependenciesChanged(self):
-        if self.config is not None:
+        if self.config:
             self.config.setRunDependencies(self.runDependencies.toPlainText())
             self.configChanged.emit()
 

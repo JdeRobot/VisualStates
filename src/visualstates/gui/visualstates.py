@@ -25,6 +25,7 @@ from ..core.state import State
 from ..core.namespace import Namespace
 from .transition.timerdialog import TimerDialog
 from .state.codedialog import CodeDialog
+from .dialogs.namespacedialog import NamespaceDialog
 from .dialogs.librariesdialog import LibrariesDialog
 from .dialogs.configdialog import ConfigDialog
 from ..configs.interfaces import Interfaces
@@ -123,6 +124,11 @@ class VisualStates(QMainWindow):
         functionsAction.setStatusTip('Define functions')
         functionsAction.triggered.connect(self.functionsAction)
 
+        globalNamespaceAction = QAction('&Global Namespace', self)
+        globalNamespaceAction.setShortcut('Ctrl+G')
+        globalNamespaceAction.setStatusTip('Open Global Namespace')
+        globalNamespaceAction.triggered.connect(self.globalNamespaceAction)
+
         # actions menu
         librariesAction = QAction('&Libraries', self)
         librariesAction.setShortcut('Ctrl+L')
@@ -171,6 +177,7 @@ class VisualStates(QMainWindow):
 
         dataMenu = menubar.addMenu('&Data')
         dataMenu.addAction(timerAction)
+        dataMenu.addAction(globalNamespaceAction)
         dataMenu.addAction(variablesAction)
         dataMenu.addAction(functionsAction)
 
@@ -273,6 +280,11 @@ class VisualStates(QMainWindow):
         functionsDialog = CodeDialog('Functions', self.automataScene.activeNamespace.functions)
         functionsDialog.codeChanged.connect(self.functionsChanged)
         functionsDialog.exec_()
+
+    def globalNamespaceAction(self):
+        self.globalNamespaceDialog = NamespaceDialog('Global Namespace', self.globalNamespace)
+        self.globalNamespaceDialog.namespaceChanged.connect(self.namespaceChanged)
+        self.globalNamespaceDialog.exec_()
 
     def librariesAction(self):
         librariesDialog = LibrariesDialog('Libraries', self.libraries)
@@ -438,14 +450,18 @@ class VisualStates(QMainWindow):
         self.automataScene.activeNamespace.setVariables(variables)
 
     def functionsChanged(self, functions):
-        self.automataScene.activeNamespace.setFuntions(functions)
+        self.automataScene.activeNamespace.setFunctions(functions)
 
     def librariesChanged(self, libraries):
         self.libraries = libraries
 
     def configChanged(self):
-        if self.configDialog is not None:
+        if self.configDialog:
             self.config = self.configDialog.getConfig()
+
+    def namespaceChanged(self):
+        if self.globalNamespaceDialog:
+            self.globalNamespace = self.globalNamespaceDialog.getNamespace()
 
     def getStateList(self, state, stateList):
         if len(state.getChildren()) > 0:

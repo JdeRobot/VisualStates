@@ -49,6 +49,10 @@ class Namespace:
     def getVariables(self):
         return self.variables
 
+    def getVariablesAsText(self):
+        variablesText = self.getAsText(self.variables)
+        return variablesText
+
     def addVariables(self, variables):
         self.variables += variables
 
@@ -58,8 +62,21 @@ class Namespace:
     def getFunctions(self):
         return self.functions
 
+    def getFunctionsAsText(self):
+        textFunctions = self.getAsText(self.functions)
+        return textFunctions
+
+    def getAsText(self, string):
+        #TODO
+        myStr = ''
+        for i in range(len(string)):
+            myStr += string[i]
+            if i < len(string):
+                myStr += ''
+        return myStr
+
     def addFunctions(self, functions):
         self.functions += functions
 
-    def setFuntions(self, functions):
+    def setFunctions(self, functions):
         self.functions = functions
