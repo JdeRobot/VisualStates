@@ -24,7 +24,6 @@ from .tree.treemodel import TreeModel
 from ..core.state import State
 from ..core.namespace import Namespace
 from .transition.timerdialog import TimerDialog
-from .state.codedialog import CodeDialog
 from .dialogs.namespacedialog import NamespaceDialog
 from .dialogs.librariesdialog import LibrariesDialog
 from .dialogs.configdialog import ConfigDialog
@@ -114,20 +113,15 @@ class VisualStates(QMainWindow):
         timerAction.setStatusTip('Set timing of states')
         timerAction.triggered.connect(self.timerAction)
 
-        variablesAction = QAction('&Variables', self)
-        variablesAction.setShortcut('Ctrl+V')
-        variablesAction.setStatusTip('Define state variables')
-        variablesAction.triggered.connect(self.variablesAction)
-
-        functionsAction = QAction('&Functions', self)
-        functionsAction.setShortcut('Ctrl+F')
-        functionsAction.setStatusTip('Define functions')
-        functionsAction.triggered.connect(self.functionsAction)
-
         globalNamespaceAction = QAction('&Global Namespace', self)
         globalNamespaceAction.setShortcut('Ctrl+G')
         globalNamespaceAction.setStatusTip('Open Global Namespace')
         globalNamespaceAction.triggered.connect(self.globalNamespaceAction)
+
+        stateNamespaceAction = QAction('&State Namespace', self)
+        stateNamespaceAction.setShortcut('Ctrl+G')
+        stateNamespaceAction.setStatusTip('Open State Namespace')
+        stateNamespaceAction.triggered.connect(self.localNamespaceAction)
 
         # actions menu
         librariesAction = QAction('&Libraries', self)
@@ -178,8 +172,7 @@ class VisualStates(QMainWindow):
         dataMenu = menubar.addMenu('&Data')
         dataMenu.addAction(timerAction)
         dataMenu.addAction(globalNamespaceAction)
-        dataMenu.addAction(variablesAction)
-        dataMenu.addAction(functionsAction)
+        dataMenu.addAction(stateNamespaceAction)
 
         actionsMenu = menubar.addMenu('&Actions')
         actionsMenu.addAction(librariesAction)
@@ -271,20 +264,15 @@ class VisualStates(QMainWindow):
             timerDialog.timeChanged.connect(self.timeStepDurationChanged)
             timerDialog.exec_()
 
-    def variablesAction(self):
-        variablesDialog = CodeDialog('Variables', str(self.automataScene.activeNamespace.variables))
-        variablesDialog.codeChanged.connect(self.variablesChanged)
-        variablesDialog.exec_()
-
-    def functionsAction(self):
-        functionsDialog = CodeDialog('Functions', self.automataScene.activeNamespace.functions)
-        functionsDialog.codeChanged.connect(self.functionsChanged)
-        functionsDialog.exec_()
-
     def globalNamespaceAction(self):
         self.globalNamespaceDialog = NamespaceDialog('Global Namespace', self.globalNamespace)
-        self.globalNamespaceDialog.namespaceChanged.connect(self.namespaceChanged)
+        self.globalNamespaceDialog.namespaceChanged.connect(self.globalNamespaceChanged)
         self.globalNamespaceDialog.exec_()
+
+    def localNamespaceAction(self):
+        self.localNamespaceDialog = NamespaceDialog('Local Namespace', self.activeNamespace)
+        self.localNamespaceDialog.namespaceChanged.connect(self.localNamespaceChanged)
+        self.localNamespaceDialog.exec_()
 
     def librariesAction(self):
         librariesDialog = LibrariesDialog('Libraries', self.libraries)
@@ -446,12 +434,6 @@ class VisualStates(QMainWindow):
         if self.activeState is not None:
             self.activeState.setTimeStep(duration)
 
-    def variablesChanged(self, variables):
-        self.automataScene.activeNamespace.setVariables(variables)
-
-    def functionsChanged(self, functions):
-        self.automataScene.activeNamespace.setFunctions(functions)
-
     def librariesChanged(self, libraries):
         self.libraries = libraries
 
@@ -459,9 +441,13 @@ class VisualStates(QMainWindow):
         if self.configDialog:
             self.config = self.configDialog.getConfig()
 
-    def namespaceChanged(self):
+    def globalNamespaceChanged(self):
         if self.globalNamespaceDialog:
             self.globalNamespace = self.globalNamespaceDialog.getNamespace()
+
+    def localNamespaceChanged(self):
+        if self.localNamespaceDialog:
+            self.activeNamespace = self.localNamespaceDialog.getNamespace()
 
     def getStateList(self, state, stateList):
         if len(state.getChildren()) > 0:
