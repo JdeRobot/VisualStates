@@ -73,7 +73,6 @@ class PythonRosGenerator():
         stringList = []
         self.generateImports(stringList)
         self.generateGlobalNamespace(stringList, projectName)
-        self.generateNamespaceClasses(stringList)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         self.generateMain(stringList)
@@ -153,24 +152,19 @@ from PyQt5.QtWidgets import QApplication
             stateStr.append('\t\tpass\n')
         stateStr.append('\n\n')
 
-    def generateNamespaceClasses(self, namespaceStr):
-        for namespace in self.getAllNamespaces():
-            self.generateNamespaceClass(namespace, namespaceStr)
+        stateStr.append('class Namespace' + str(state.id) + '():\n')
+        stateStr.append('\tdef __init__(self, globalNamespace):\n')
+        stateStr.append('\t\tself.globalNamespace = globalNamespace\n')
 
-    def generateNamespaceClass(self, namespace, namespaceStr):
-        namespaceStr.append('class Namespace' + str(namespace.id) + '():\n')
-        namespaceStr.append('\tdef __init__(self, globalNamespace):\n')
-        namespaceStr.append('\t\tself.globalNamespace = globalNamespace\n')
+        if(len(state.namespace.variables) > 0):
+            for varLine in state.namespace.variables.split('\n'):
+                stateStr.append('\t\t' + varLine + '\n')
+        stateStr.append('\n')
 
-        if(len(namespace.variables) > 0):
-            for varLine in namespace.variables.split('\n'):
-                namespaceStr.append('\t\t' + varLine + '\n')
-        namespaceStr.append('\n')
-
-        if(len(namespace.functions) > 0):
-            for funcLine in namespace.functions.split('\n'):
-                namespaceStr.append('\t' + funcLine + '\n')
-        namespaceStr.append('\n')
+        if(len(state.namespace.functions) > 0):
+            for funcLine in state.namespace.functions.split('\n'):
+                stateStr.append('\t' + funcLine + '\n')
+        stateStr.append('\n')
 
     def generateGlobalNamespace(self, globalNamespaceStr, projectName):
         globalNamespaceStr.append('class GlobalNamespace():\n')
@@ -271,8 +265,6 @@ def runGui():
 
         mainStr.append('if __name__ == "__main__":\n\n')
         mainStr.append('\tglobalNamespace = GlobalNamespace()\n\n')
-        for namespace in self.getAllNamespaces():
-            mainStr.append('\tnamespace' + str(namespace.id) + ' = Namespace' + str(namespace.id) +'(globalNamespace)\n')
         mainStr.append('\n')
         mainStr.append('\treadArgs()\n')
         mainStr.append('\tif displayGui:\n')
@@ -304,9 +296,10 @@ def runGui():
         mainStr.append('\t\tgui.emitActiveStateById(0)\n\n')
 
         for state in self.getAllStates():
+            mainStr.append('\tnamespace' + str(state.id) + ' = Namespace' + str(state.id) +'(globalNamespace)\n')
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
                            '(' + str(state.id) + ', ' + str(state.initial) + ', globalNamespace, namespace' +
-                           str(state.getNamespace().getID()) + ', ' + str(state.getTimeStep()))
+                           str(state.id) + ', ' + str(state.getTimeStep()))
             if state.parent == None:
                 mainStr.append(', None, gui)\n')
             else:
