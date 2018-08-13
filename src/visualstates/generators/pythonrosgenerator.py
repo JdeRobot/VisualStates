@@ -298,12 +298,11 @@ def runGui():
         for state in self.getAllStates():
             mainStr.append('\tnamespace' + str(state.id) + ' = Namespace' + str(state.id) +'(globalNamespace)\n')
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
-                           '(' + str(state.id) + ', ' + str(state.initial) + ', globalNamespace, namespace' +
-                           str(state.id) + ', ' + str(state.getTimeStep()))
+                           '(' + str(state.id) + ', ' + str(state.initial) + ', globalNamespace, ')
             if state.parent == None:
-                mainStr.append(', None, gui)\n')
+                mainStr.append('None, ' + str(state.getTimeStep()) + ', None, gui)\n')
             else:
-                mainStr.append(', state' + str(state.parent.id) + ', gui)\n')
+                mainStr.append('namespace' + str(state.parent.id)+ ', ' + str(state.getTimeStep()) + ', state' + str(state.parent.id) + ', gui)\n')
         mainStr.append('\n')
 
         # create and add transitions to their origins
