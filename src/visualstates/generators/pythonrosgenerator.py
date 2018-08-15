@@ -139,7 +139,7 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append(str(state.id))
         stateStr.append('(State):\n')
 
-        stateStr.append('\tdef __init__(self, id, initial, globalNamespace, cycleDuration, namespace, parent=None, gui=None):\n')
+        stateStr.append('\tdef __init__(self, id, initial, globalNamespace, namespace, cycleDuration, parent=None, gui=None):\n')
         stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
         stateStr.append('\t\tself.globalNamespace = globalNamespace\n')
         stateStr.append('\t\tself.namespace = namespace\n\n')
