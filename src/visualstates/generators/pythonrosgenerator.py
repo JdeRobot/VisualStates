@@ -312,7 +312,7 @@ def runGui():
                                '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ')\n')
             elif tran.getType() == TransitionType.CONDITIONAL:
                 mainStr.append('\ttran' + str(tran.id) + ' = Tran' + str(tran.id) +
-                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', globalNamespace)\n')
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', globalNamespace, namespace' + str(tran.origin.parent.id) + ')\n')
 
             mainStr.append('\tstate' + str(tran.origin.id) + '.addTransition(tran' + str(tran.id) + ')\n\n')
 

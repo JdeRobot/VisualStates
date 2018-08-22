@@ -33,32 +33,13 @@
       </topic>
     </topics>
   </config>
-  <functions>def calculate_obstacle(self):
-	laserData = self.turtlebotROS_laser_scan
-	for val in laserData.ranges:
-		if val &lt; self.obstacle_threshold:
-			self.is_obstacle = True
-			return
-	self.is_obstacle = False
-	
-def calculate_yaw(self):
-	q = self.turtlebotROS_odom.pose.pose.orientation #Quaternion
-	e_q = [q.x, q.y, q.z, q.w] # Copy Due to ROS Issue
-	current_yaw = tf.transformations.euler_from_quaternion(e_q)[2] # Getting YAW
-	if current_yaw &gt; self.new_angle:
-		self.rotate = True
-		self.new_angle = random.uniform(-math.pi, math.pi) # Set new Random Value
-		return
-	self.rotate = False</functions>
-  <variables>self.obstacle_threshold = 0.5
-self.rotate = False
-self.is_obstacle = False
-random_angle = random.uniform(-math.pi, math.pi)
-self.new_angle = 0</variables>
+  <global_namespace>
+    <functions></functions>
+    <variables></variables>
+  </global_namespace>
   <libraries>
     <library>math</library>
     <library>random</library>
-    <library>tf</library>
   </libraries>
   <state id="0" initial="True">
     <posx>0.0</posx>
@@ -66,21 +47,49 @@ self.new_angle = 0</variables>
     <name>root</name>
     <code></code>
     <timestep>100</timestep>
+    <namespace>
+      <functions>def calculate_obstacle(self):
+	laserData = self.rosNode.turtlebotROS_laser_scan
+	for val in laserData.ranges:
+		if val &amp;lt; self.obstacle_threshold:
+			self.is_obstacle = True
+			return
+	self.is_obstacle = False
+	
+def calculate_yaw(self):
+	q = self.rosNode.turtlebotROS_odom.pose.pose.orientation #Quaternion
+	e_q = [q.x, q.y, q.z, q.w] # Copy Due to ROS Issue
+	current_yaw = tf.transformations.euler_from_quaternion(e_q)[2] # Getting YAW
+	if current_yaw &amp;gt; self.new_angle:
+		self.rotate = True
+		self.new_angle = random.uniform(-math.pi, math.pi) # Set new Random Value
+		return
+	self.rotate = False</functions>
+      <variables>self.obstacle_threshold = 0.5
+self.rotate = False
+self.is_obstacle = False
+random_angle = random.uniform(-math.pi, math.pi)
+self.new_angle = 0</variables>
+    </namespace>
     <state id="1" initial="True">
-      <posx>905.0</posx>
-      <posy>843.0</posy>
+      <posx>680.0</posx>
+      <posy>853.0</posy>
       <name>Go</name>
       <code>velCommand = Twist()
 velCommand.linear.x = 1
 velCommand.angular.z = 0.0
 self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
+      <namespace>
+        <functions></functions>
+        <variables></variables>
+      </namespace>
       <transition id="1">
         <type>1</type>
         <condition>self.rosNode.calculate_obstacle();
 return self.rosNode.is_obstacle;</condition>
-        <posx>998.5</posx>
-        <posy>839.5</posy>
+        <posx>734.0</posx>
+        <posy>914.5</posy>
         <name>GoThresh5</name>
         <originid>1</originid>
         <destinationid>2</destinationid>
@@ -88,43 +97,48 @@ return self.rosNode.is_obstacle;</condition>
       </transition>
     </state>
     <state id="2" initial="False">
-      <posx>1094.0</posx>
-      <posy>836.0</posy>
+      <posx>766.0</posx>
+      <posy>991.0</posy>
       <name>GetBack</name>
       <code>velCommand = Twist()
 velCommand.linear.x = -1
 velCommand.angular.z = 0.0
 self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
+      <namespace>
+        <functions></functions>
+        <variables></variables>
+      </namespace>
       <transition id="2">
         <type>0</type>
         <time>2000</time>
-        <posx>1066.0</posx>
-        <posy>910.5</posy>
-        <name>GetBack3sec</name>
+        <posx>681.0</posx>
+        <posy>991.5</posy>
+        <name>GetBack2Sec</name>
         <originid>2</originid>
         <destinationid>3</destinationid>
         <code></code>
       </transition>
     </state>
     <state id="3" initial="False">
-      <posx>993.0</posx>
-      <posy>992.0</posy>
+      <posx>590.0</posx>
+      <posy>990.0</posy>
       <name>Rotate</name>
       <code>velCommand = Twist()
 velCommand.linear.x = 0.0
 velCommand.angular.z = 0.1 # Move always CCW
-self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)
-
-</code>
+self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
+      <namespace>
+        <functions></functions>
+        <variables></variables>
+      </namespace>
       <transition id="3">
         <type>1</type>
         <condition>self.rosNode.calculate_yaw()
-return self.rosNode.rotate
-</condition>
-        <posx>935.5</posx>
-        <posy>914.0</posy>
+return self.rosNode.rotate</condition>
+        <posx>621.0</posx>
+        <posy>915.0</posy>
         <name>RotateRandom</name>
         <originid>3</originid>
         <destinationid>1</destinationid>

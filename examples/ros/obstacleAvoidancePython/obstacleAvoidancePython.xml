@@ -24,16 +24,10 @@
       </topic>
     </topics>
   </config>
-  <functions>def calculate_obstacle(self):
-	laserData = self.turtlebotROS_laser_scan
-	for val in laserData.ranges:
-		if val &lt; self.obstacle_threshold:
-			self.is_obstacle = True
-			return
-	self.is_obstacle = False</functions>
-  <variables>self.obstacle_threshold = 0.4
-self.is_obstacle = False
-</variables>
+  <global_namespace>
+    <functions></functions>
+    <variables></variables>
+  </global_namespace>
   <libraries/>
   <state id="0" initial="True">
     <posx>0.0</posx>
@@ -41,21 +35,37 @@ self.is_obstacle = False
     <name>root</name>
     <code></code>
     <timestep>100</timestep>
+    <namespace>
+      <functions>def calculate_obstacle(self):
+	laserData = self.turtlebotROS_laser_scan
+	for val in laserData.ranges:
+		if val &lt; self.obstacle_threshold:
+			self.is_obstacle = True
+			return
+	self.is_obstacle = False
+	</functions>
+      <variables>self.is_obstacle = False
+self.obstacle_threshold = 0.4</variables>
+    </namespace>
     <state id="1" initial="True">
-      <posx>845.0</posx>
-      <posy>970.0</posy>
-      <name>move</name>
+      <posx>970.0</posx>
+      <posy>859.0</posy>
+      <name>Move</name>
       <code>velCommand = Twist()
 velCommand.linear.x = 0.3
 velCommand.angular.z = 0.0
 self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
+      <namespace>
+        <functions></functions>
+        <variables></variables>
+      </namespace>
       <transition id="1">
         <type>1</type>
         <condition>self.rosNode.calculate_obstacle();
 return self.rosNode.is_obstacle;</condition>
-        <posx>931.0</posx>
-        <posy>884.0</posy>
+        <posx>1072.5</posx>
+        <posy>936.5</posy>
         <name>obstacle</name>
         <originid>1</originid>
         <destinationid>2</destinationid>
@@ -63,20 +73,21 @@ return self.rosNode.is_obstacle;</condition>
       </transition>
     </state>
     <state id="2" initial="False">
-      <posx>1023.0</posx>
-      <posy>981.0</posy>
-      <name>avoid</name>
-      <code>velCommand = Twist()
-velCommand.linear.x = 0.0
-velCommand.angular.z = 0.1
-self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
+      <posx>969.0</posx>
+      <posy>1025.0</posy>
+      <name>Avoid</name>
+      <code></code>
       <timestep>100</timestep>
+      <namespace>
+        <functions></functions>
+        <variables></variables>
+      </namespace>
       <transition id="2">
         <type>1</type>
         <condition>self.rosNode.calculate_obstacle()
 return not self.rosNode.is_obstacle</condition>
-        <posx>927.0</posx>
-        <posy>1056.0</posy>
+        <posx>866.5</posx>
+        <posy>945.5</posy>
         <name>no obstacle</name>
         <originid>2</originid>
         <destinationid>1</destinationid>
