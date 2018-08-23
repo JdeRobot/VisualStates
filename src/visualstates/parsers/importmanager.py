@@ -43,7 +43,7 @@ class ImportManager():
 
     def updateAuxiliaryData(self, file, klass):
         """Wrapper upon all update functions"""
-        importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.automataScene.getNamespaceIndex(), klass.activeState)
+        importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.activeState)
         config = self.updateConfigs(file[1], klass.config)
         libraries = self.updateLibraries(file[2], klass.libraries)
         globalNamespace = self.updateNamespace(file[3], klass.globalNamespace)
@@ -78,24 +78,22 @@ class ImportManager():
                     config.updateJDERobotCommConfig(newConfig)
         return config
 
-    def updateActiveState(self, importState, stateID, namespaceID, activeState):
+    def updateActiveState(self, importState, stateID, activeState):
         """Updates Parent State with States to be imported"""
-        importState = self.updateIDs(importState, stateID, namespaceID)
+        importState = self.updateIDs(importState, stateID)
         for state in importState.getChildren():
             activeState.addChild(state)
             state.setParent(activeState)
         return importState
 
-    def updateIDs(self, importState, stateID, namespaceID):
+    def updateIDs(self, importState, stateID):
         """ Wrapper upon UpdateStateIDs """
-        self.updateStateIDs(importState, stateID, namespaceID)
+        self.updateStateIDs(importState, stateID)
         return importState
 
-    def updateStateIDs(self, importState, stateID, namespaceID):
+    def updateStateIDs(self, importState, stateID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
             child.setID(stateID)
-            child.getNamespace().setID(namespaceID)
             stateID += 1
-            namespaceID += 1
-            self.updateStateIDs(child, stateID, namespaceID)
+            self.updateStateIDs(child, stateID)

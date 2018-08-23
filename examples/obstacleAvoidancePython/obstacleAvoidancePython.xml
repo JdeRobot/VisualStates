@@ -37,7 +37,7 @@
     <timestep>100</timestep>
     <namespace>
       <functions>def calculate_obstacle(self):
-	laserData = self.turtlebotROS_laser_scan
+	laserData = self.globalNamespace.turtlebotROS_laser_scan
 	for val in laserData.ranges:
 		if val &lt; self.obstacle_threshold:
 			self.is_obstacle = True

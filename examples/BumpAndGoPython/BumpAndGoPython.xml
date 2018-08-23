@@ -49,7 +49,7 @@
     <timestep>100</timestep>
     <namespace>
       <functions>def calculate_obstacle(self):
-	laserData = self.rosNode.turtlebotROS_laser_scan
+	laserData = self.globalNamespace.turtlebotROS_laser_scan
 	for val in laserData.ranges:
 		if val &amp;lt; self.obstacle_threshold:
 			self.is_obstacle = True
@@ -57,7 +57,7 @@
 	self.is_obstacle = False
 	
 def calculate_yaw(self):
-	q = self.rosNode.turtlebotROS_odom.pose.pose.orientation #Quaternion
+	q = self.globalNamespace.turtlebotROS_odom.pose.pose.orientation #Quaternion
 	e_q = [q.x, q.y, q.z, q.w] # Copy Due to ROS Issue
 	current_yaw = tf.transformations.euler_from_quaternion(e_q)[2] # Getting YAW
 	if current_yaw &amp;gt; self.new_angle:

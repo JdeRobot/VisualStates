@@ -165,7 +165,7 @@ class TreeModel(QAbstractItemModel):
 
     def setAllBackgroundByParentId(self, color, parentId):
         parent = None
-        if parentId == 0:
+        if parentId == None:
             parent = self.rootNode
         else:
             parent = self.getByDataId(parentId)
