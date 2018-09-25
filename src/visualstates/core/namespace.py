@@ -54,7 +54,7 @@ class Namespace:
         return variablesText
 
     def addVariables(self, variables):
-        self.variables += variables
+        self.variables += '\n' + variables
 
     def setVariables(self, variables):
         self.variables = variables
@@ -76,7 +76,7 @@ class Namespace:
         return myStr
 
     def addFunctions(self, functions):
-        self.functions += functions
+        self.functions += '\n\n' + functions
 
     def setFunctions(self, functions):
         self.functions = functions
