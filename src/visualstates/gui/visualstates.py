@@ -250,7 +250,9 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
+            tempPath = self.fileManager.getFullPath()
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
+            self.fileManager.setFullPath(tempPath)
             # if the current active state already has an initial state make sure that
             # there will not be any initial state in the imported state
             if self.activeState.getInitialChild() is not None:
