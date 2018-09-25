@@ -251,6 +251,12 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
+            # if the current active state already has an initial state make sure that
+            # there will not be any initial state in the imported state
+            if self.activeState.getInitialChild() is not None:
+                for childState in file[0].getChildren():
+                    childState.setInitial(False)
+
             # Update importing Namespaces
             importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
