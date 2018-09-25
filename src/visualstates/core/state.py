@@ -45,6 +45,9 @@ class State:
     def setID(self, id):
         self.id = id
 
+    def setName(self, _name):
+        self.name = _name
+
     def setNamespace(self, namespace):
         self.namespace = namespace
 
@@ -56,6 +59,9 @@ class State:
 
     def getID(self):
         return self.id
+
+    def getName(self):
+        return self.name
 
     def setPos(self, x, y):
         self.x = x

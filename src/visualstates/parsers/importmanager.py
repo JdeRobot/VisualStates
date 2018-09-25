@@ -94,6 +94,7 @@ class ImportManager():
     def updateStateIDs(self, importState, stateID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
+            child.setName('state' + str(stateID))
             child.setID(stateID)
             stateID += 1
             self.updateStateIDs(child, stateID)

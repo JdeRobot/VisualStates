@@ -158,7 +158,8 @@ class AutomataScene(QGraphicsScene):
         QGraphicsScene.mousePressEvent(self, qGraphicsSceneMouseEvent)
 
     def addTransitionItem(self, tranItem, isInsertion=True):
-        self.addItem(tranItem)
+        if not tranItem in self.items():
+            self.addItem(tranItem)
         if isInsertion:
             self.transitionInserted.emit(tranItem)
 
@@ -167,7 +168,8 @@ class AutomataScene(QGraphicsScene):
         stateItem.stateTextEditStarted.connect(self.stateTextEditStarted)
         stateItem.stateTextEditFinished.connect(self.stateTextEditFinished)
 
-        self.addItem(stateItem)
+        if not stateItem in self.items():
+            self.addItem(stateItem)
         self.activeState.addChild(stateItem.stateData)
         if len(self.activeState.getChildren()) == 1:
             self.selectedState = stateItem
