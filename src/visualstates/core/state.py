@@ -251,3 +251,6 @@ class State:
         if not self.isRunning:
             for child in self.getChildren():
                 child.setRunning(self.isRunning)
+
+    def getRunning(self):
+        return self.isRunning
