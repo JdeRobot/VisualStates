@@ -66,18 +66,18 @@ def calculate_yaw(self):
 		self.new_angle = random.uniform(-math.pi, math.pi) # Set new Random Value
 		return
 	self.rotate = False</functions>
-      <variables>self.obstacle_threshold = 0.5
+      <variables>self.obstacle_threshold = 0.1
+# if very close
 self.rotate = False
 self.is_obstacle = False
-random_angle = random.uniform(-math.pi, math.pi)
 self.new_angle = 0</variables>
     </namespace>
     <state id="1" initial="True">
-      <posx>1200.0</posx>
-      <posy>913.0</posy>
+      <posx>910.0</posx>
+      <posy>895.0</posy>
       <name>Go</name>
       <code>velCommand = Twist()
-velCommand.linear.x = 1
+velCommand.linear.x = 0.5
 velCommand.angular.z = 0.0
 self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
@@ -89,8 +89,8 @@ self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velComman
         <type>1</type>
         <condition>self.namespace.calculate_obstacle()
 return self.namespace.is_obstacle</condition>
-        <posx>1274.0</posx>
-        <posy>1036.5</posy>
+        <posx>1008.0</posx>
+        <posy>1029.5</posy>
         <name>GoThresh5</name>
         <originid>1</originid>
         <destinationid>2</destinationid>
@@ -98,11 +98,11 @@ return self.namespace.is_obstacle</condition>
       </transition>
     </state>
     <state id="2" initial="False">
-      <posx>1351.0</posx>
-      <posy>1162.0</posy>
+      <posx>1054.0</posx>
+      <posy>1131.0</posy>
       <name>GetBack</name>
       <code>velCommand = Twist()
-velCommand.linear.x = -1
+velCommand.linear.x = -0.5
 velCommand.angular.z = 0.0
 self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
@@ -112,9 +112,9 @@ self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velComman
       </namespace>
       <transition id="2">
         <type>0</type>
-        <time>2000</time>
-        <posx>1236.0</posx>
-        <posy>1163.5</posy>
+        <time>1000</time>
+        <posx>923.0</posx>
+        <posy>1148.5</posy>
         <name>GetBack2Sec</name>
         <originid>2</originid>
         <destinationid>3</destinationid>
@@ -122,12 +122,12 @@ self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velComman
       </transition>
     </state>
     <state id="3" initial="False">
-      <posx>1094.0</posx>
-      <posy>1145.0</posy>
+      <posx>792.0</posx>
+      <posy>1149.0</posy>
       <name>Rotate</name>
       <code>velCommand = Twist()
 velCommand.linear.x = 0.0
-velCommand.angular.z = 0.1 # Move always CCW
+velCommand.angular.z = 0.2 # Move always CCW
 self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
       <namespace>
@@ -138,8 +138,8 @@ self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velComman
         <type>1</type>
         <condition>self.namespace.calculate_yaw()
 return self.namespace.rotate</condition>
-        <posx>1138.0</posx>
-        <posy>1035.0</posy>
+        <posx>833.0</posx>
+        <posy>1020.0</posy>
         <name>RotateRandom</name>
         <originid>3</originid>
         <destinationid>1</destinationid>
