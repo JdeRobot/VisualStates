@@ -26,4 +26,6 @@ from visualstates.gui.visualstates import VisualStates
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     mainWindow = VisualStates()
+    if len(sys.argv) > 1:
+        mainWindow.openFile(sys.argv[1])
     sys.exit(app.exec_())

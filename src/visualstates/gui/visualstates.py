@@ -208,13 +208,17 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
-            (self.rootState, self.config, self.libraries, self.globalNamespace) = self.fileManager.open(fileDialog.selectedFiles()[0])
-            self.automataPath = self.fileManager.fullPath
-            self.treeModel.removeAll()
-            self.treeModel.loadFromRoot(self.rootState)
-            # set the active state as the loaded state
-            self.automataScene.setActiveState(self.rootState)
-            self.automataScene.setLastIndexes(self.rootState)
+            self.openFile(fileDialog.selectedFiles()[0])
+
+    def openFile(self, fileName):
+        (self.rootState, self.config, self.libraries, self.globalNamespace) = self.fileManager.open(fileName)
+        self.automataPath = self.fileManager.fullPath
+        self.treeModel.removeAll()
+        self.treeModel.loadFromRoot(self.rootState)
+        # set the active state as the loaded state
+        self.automataScene.setActiveState(self.rootState)
+        self.automataScene.setLastIndexes(self.rootState)
+
 
     def saveAction(self):
         if len(self.fileManager.getFileName()) == 0:
