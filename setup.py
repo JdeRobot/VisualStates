@@ -4,7 +4,6 @@ from distutils.core import setup
 from catkin_pkg.python_setup import generate_distutils_setup
 
 d = generate_distutils_setup(
-   version='0.1.1',
    scripts=['scripts/main.py'],
    packages=['visualstates', 'visualstates.gui', \
              'visualstates.codegen', 'visualstates.codegen.python', 'visualstates.configs', \
