@@ -8,17 +8,18 @@ sudo apt install git
 sudo apt install cmake
 sudo apt install python-pyqt5
 sudo apt install python-pyqt5.qsci
-sudo apt install python-yaml
-sudo apt install python-sysv-ipc
 ```
 
-### Build and Install the Tool
+### Install VisualStates in catkin_ws
+The VisualStates tool is distributed as a ROS package. You can directly clone this repository in an active catkin workspace. After copying the repository as ROS package. You can run visualstates following these steps.
 ```
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
+catkin_make
+rosrun visualstates main.py
 ```
+
+### To run an example please check the examples
+- [bump_and_go_python](https://github.com/JdeRobot/VisualStates/blob/master/examples/bump_and_go_python/README.md)
+- [obstacle_avoidance_cpp](https://github.com/JdeRobot/VisualStates/blob/master/examples/obstacle_avoidance_cpp/README.md)
+- [obstacle_avoidance_python](https://github.com/JdeRobot/VisualStates/blob/master/examples/obstacle_avoidance_python/README.md)
 
 
