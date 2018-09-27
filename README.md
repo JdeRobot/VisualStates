@@ -4,8 +4,7 @@
 
 ### Install Dependencies
 ```
-sudo apt install git
-sudo apt install cmake
+sudo apt install ros-kinetic-desktop
 sudo apt install python-pyqt5
 sudo apt install python-pyqt5.qsci
 ```
