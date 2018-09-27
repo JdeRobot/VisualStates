@@ -30,11 +30,11 @@ source /opt/jderobot/share/jderobot/gazebo/gazebo-assets-setup.sh
 ### ROS package generation
 First we must generate the ros package of the behavior using the **visualstates**.
 ```
-rosrun visualstates main.py <path_to_visualstates>/examples/obstacle_avoidance_cpp/obstacle_avoidance_cpp.xml
+rosrun visualstates main.py <path_to_visualstates>/examples/obstacle_avoidance_python/obstacle_avoidance_python.xml
 ```
-Using `File -> Save As` save the behavior in an empty directory that is also in an active `catkin_workspace`. Since code generation will create required files to make the directory a ROS package, you should have different directory for every new behavior. Now, we can generate ROS package using `Actions -> Generate C++` menu.
+Using `File -> Save As` save the behavior in an empty directory that is also in an active `catkin_workspace`. Since code generation will create required files to make the directory a ROS package, you should have different directory for every new behavior. Now, we can generate ROS package using `Actions -> Generate Python` menu.
 
-Navigate to your `catkin_workspace` and run `catkin_make`. As an output of `catkin_make` you will see the `obstacle_avoidance_cpp` listed as a ROS package.
+Navigate to your `catkin_workspace` and run `catkin_make`. As an output of `catkin_make` you will see the `obstacle_avoidance_python` listed as a ROS package.
 ```
 cd catkin_ws
 catkin_make
@@ -49,5 +49,5 @@ rosrun gazebo_ros gazebo kobuki-simple-ros.world
 ```
 Run our generated package
 ```
-rosrun obstacle_avoidance_cpp obstacle_avoidance_cpp --displaygui=true
+rosrun obstacle_avoidance_python obstacle_avoidance_python.py --displaygui=true
 ```

@@ -54,7 +54,7 @@ self.obstacle_threshold = 0.4</variables>
       <code>velCommand = Twist()
 velCommand.linear.x = 0.3
 velCommand.angular.z = 0.0
-self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
+self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
       <namespace>
         <functions></functions>
@@ -62,8 +62,8 @@ self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code
       </namespace>
       <transition id="1">
         <type>1</type>
-        <condition>self.rosNode.calculate_obstacle();
-return self.rosNode.is_obstacle;</condition>
+        <condition>self.namespace.calculate_obstacle()
+return self.namespace.is_obstacle</condition>
         <posx>1072.5</posx>
         <posy>936.5</posy>
         <name>obstacle</name>
@@ -76,7 +76,10 @@ return self.rosNode.is_obstacle;</condition>
       <posx>969.0</posx>
       <posy>1025.0</posy>
       <name>Avoid</name>
-      <code></code>
+      <code>velCommand = Twist()
+velCommand.linear.x = 0.0
+velCommand.angular.z = 0.1
+self.globalNamespace.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
       <timestep>100</timestep>
       <namespace>
         <functions></functions>
@@ -84,8 +87,8 @@ return self.rosNode.is_obstacle;</condition>
       </namespace>
       <transition id="2">
         <type>1</type>
-        <condition>self.rosNode.calculate_obstacle()
-return not self.rosNode.is_obstacle</condition>
+        <condition>self.namespace.calculate_obstacle()
+return not self.namespace.is_obstacle</condition>
         <posx>866.5</posx>
         <posy>945.5</posy>
         <name>no obstacle</name>
