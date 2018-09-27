@@ -23,16 +23,13 @@ from xml.dom import minidom
 
 from visualstates.gui.transition.transitiontype import TransitionType
 from visualstates.parsers.cppparser import CPPParser
-from visualstates.configs.package_path import get_package_path
+from visualstates.generators.base_generator import BaseGenerator
 
 
-class CppRosGenerator():
-    def __init__(self, libraries, config, interfaceHeaders, states, globalNamespace):
-        self.libraries = libraries
-        self.config = config
-        self.interfaceHeaders = interfaceHeaders
-        self.states = states
-        self.globalNamespace = globalNamespace
+class CppRosGenerator(BaseGenerator):
+    def __init__(self, libraries, config, _interfaceHeaders, states, globalNamespace):
+        BaseGenerator.__init__(self, libraries, config, states, globalNamespace)
+        self.interfaceHeaders = _interfaceHeaders
 
     def generate(self, projectPath, projectName):
         # create source dir if not exists
@@ -41,7 +38,8 @@ class CppRosGenerator():
 
         stringList = []
         self.generateHeaders(stringList, projectName)
-        self.generateRosNodeClass(stringList, self.config, self.functions, self.variables)
+        self.generateGlobalNamespaceClass(stringList, self.config, self.globalNamespace)
+        self.generateStateNamespaceClass(stringList)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         stringList.append('#endif')
@@ -52,9 +50,10 @@ class CppRosGenerator():
 
         stringList = []
         self.generateHeadersForCpp(stringList, projectName)
-        self.generateRosMethods(stringList, self.config, self.functions, self.variables)
         self.generateStateMethods(stringList)
         self.generateTranMethods(stringList)
+        self.generateGlobalNamespaceMethods(stringList, self.config, self.globalNamespace)
+        self.generateStateNamespaceMethods(stringList)
         self.generateReadArgs(stringList, projectName)
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
@@ -84,7 +83,6 @@ class CppRosGenerator():
         with open(projectPath + os.sep + 'package.xml', 'w') as f:
             f.write(xmlStr)
 
-
     def generateHeaders(self, headers, projectName):
         headers.append('#ifndef ' + projectName + '_H\n')
         headers.append('#define ' + projectName + '_H\n\n')
@@ -110,8 +108,8 @@ class CppRosGenerator():
 
         return headers
 
-    def generateRosNodeClass(self, classStr, config, functions, variables):
-        classStr.append('class RosNode {\n')
+    def generateGlobalNamespaceClass(self, classStr, config, globalNamespace):
+        classStr.append('class GlobalNamespace {\n')
         classStr.append('private:\n')
         classStr.append('\tros::NodeHandle nh;\n')
         classStr.append('\tros::Rate rate;\n')
@@ -130,14 +128,13 @@ class CppRosGenerator():
                 types = type.split('/')
                 if len(types) == 2:
                     classStr.append('\t' + types[0] + '::' + types[1] + ' last' + varName + ';\n')
-                    classStr.append('\t void ' + varName + 'Callback(const ' + types[0] + '::' + types[1] + '& ' + varName + ');\n')
+                    classStr.append('\tvoid ' + varName + 'Callback(const ' + types[0] + '::' + types[1] + '& ' + varName + ');\n')
                 else:
                     classStr.append('\t' + type + ' last' + varName + ';\n')
-                    classStr.append(
-                        '\t void ' + varName + 'Callback(const ' + type + '& ' + varName + ');\n')
+                    classStr.append('\tvoid ' + varName + 'Callback(const ' + type + '& ' + varName + ');\n')
         classStr.append('\n\n')
         classStr.append('public:\n')
-        classStr.append('\tRosNode(int nodeRate);\n')
+        classStr.append('\tGlobalNamespace(int nodeRate);\n')
         classStr.append('\tvoid startThread();\n')
         classStr.append('\tstatic void* threadRunner(void*);\n')
         classStr.append('\tvoid run();\n')
@@ -165,38 +162,79 @@ class CppRosGenerator():
         classStr.append('\n')
 
         # define variables
-        types, varNames, initialValues = CPPParser.parseVariables(variables)
+        types, varNames, initialValues = CPPParser.parseVariables(globalNamespace.variables)
         for i in range(len(types)):
             classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
         classStr.append('\n')
 
-        returnTypes, funcNames, codes = CPPParser.parseFunctions(functions)
+        returnTypes, funcNames, codes = CPPParser.parseFunctions(globalNamespace.functions)
         for i in range(len(returnTypes)):
             classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
 
-
-
         classStr.append('};\n\n')
+
+    def generateStateNamespaceClass(self, classStr):
+        for state in self.getAllStates():
+            classStr.append('class Namespace' + str(state.id) + ' {\n')
+            classStr.append('public:\n')
+            classStr.append('\tGlobalNamespace* globalNamespace;\n')
+            types, varNames, initialValues = CPPParser.parseVariables(state.getNamespace().variables)
+            for i in range(len(types)):
+                classStr.append(types[i] + ' ' + varNames[i] + ';\n')
+            classStr.append('\n')
+            classStr.append('public:\n')
+            classStr.append('\tNamespace'+str(state.id)+'(GlobalNamespace* _globalNamespace) {\n')
+            classStr.append('\t\tglobalNamespace = _globalNamespace;\n')
+            for i in range(len(types)):
+                classStr.append('\t\t'+varNames[i] + ' = ' + initialValues[i] + ';\n')
+            classStr.append('\t}\n')
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getNamespace().functions)
+            for i in range(len(returnTypes)):
+                classStr.append(returnTypes[i] + ' ' + funcNames[i] + ';\n')
+            classStr.append('};\n\n')
 
     def generateStateClasses(self, classStr):
         for state in self.getAllStates():
             classStr.append('class State' + str(state.id) + ' : public State {\n')
             classStr.append('public:\n')
-            classStr.append('\tRosNode* node;\n')
-            classStr.append('\tState' + str(state.id) + '(int id, bool initial, RosNode* node, int cycleDuration, State* parent, RunTimeGui* gui):\n')
-            classStr.append('\t\tState(id, initial, cycleDuration, parent, gui) {this->node = node;}\n')
+            classStr.append('\tGlobalNamespace* globalNamespace;\n')
+            if state.parent is not None:
+                classStr.append('\tNamespace' + str(state.parent.id)+ '* stateNamespace;\n')
+                classStr.append('\tState' + str(state.id) + '(int id, bool initial, GlobalNamespace* _globalNamespace,'\
+                                ' Namespace'+str(state.parent.id)+'* _stateNamespace, int cycleDuration, State* parent, RunTimeGui* gui):\n')
+                classStr.append(
+                    '\t\tState(id, initial, cycleDuration, parent, gui) {\nglobalNamespace = _globalNamespace;\nstateNamespace = _stateNamespace;\n}\n')
+            else:
+                classStr.append('\tState' + str(state.id) + '(int id, bool initial, GlobalNamespace* _globalNamespace,\
+int cycleDuration, State* parent, RunTimeGui* gui):\n')
+                classStr.append(
+                    '\t\tState(id, initial, cycleDuration, parent, gui) {\nglobalNamespace = _globalNamespace;\n}\n')
             classStr.append('\tvirtual void runCode();\n')
-
             classStr.append('};\n\n')
+
+    def generateStateMethods(self, stateStrList):
+        for state in self.getAllStates():
+            stateStrList.append('void State' + str(state.id) + '::runCode() {\n')
+            for codeLine in state.getCode().split('\n'):
+                stateStrList.append('\t' + codeLine + '\n')
+            stateStrList.append('}\n\n')
 
     def generateTransitionClasses(self, classStr):
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 classStr.append('class Tran' + str(tran.id) + ' : public ConditionalTransition {\n')
                 classStr.append('\tpublic:\n')
-                classStr.append('\tRosNode* node;')
-                classStr.append('\tTran' + str(tran.id) + '(int id, int destId, RosNode* node):\n')
-                classStr.append('ConditionalTransition(id, destId) {this->node = node;}\n')
+                classStr.append('\tGlobalNamespace* globalNamespace;\n')
+                print('tran.origin.parent.id:' + str(tran.origin.parent.id))
+                if tran.origin.parent is not None:
+                    classStr.append('Namespace' + str(tran.origin.parent.id) + '* stateNamespace;\n\n')
+                    classStr.append('\tTran' + str(tran.id) + '(int id, int destId, GlobalNamespace* _globalNamespace, \
+Namespace'+str(tran.origin.parent.id)+'* _stateNamespace):\n')
+                    classStr.append('ConditionalTransition(id, destId) {\nglobalNamespace = _globalNamespace;\n\
+stateNamespace = _stateNamespace;}\n')
+                else:
+                    classStr.append('\tTran' + str(tran.id) + '(int id, int destId, GlobalNamespace* _globalNamespace):\n')
+                    classStr.append('ConditionalTransition(id, destId) {globalNamespace = _globalNamespace;}\n')
                 classStr.append('\tvirtual void init();\n')
                 classStr.append('\tvirtual bool checkCondition();\n')
                 classStr.append('\tvirtual void runCode();\n')
@@ -208,6 +246,22 @@ class CppRosGenerator():
                 classStr.append('\tvirtual void runCode();\n')
                 classStr.append('};\n\n')
 
+    def generateTranMethods(self, tranStr):
+        for tran in self.getAllTransitions():
+            if tran.getType() == TransitionType.CONDITIONAL:
+                #todo: currently user does not provide init method
+                tranStr.append('void Tran' + str(tran.id) + '::init() {\n')
+                tranStr.append('}\n\n')
+                tranStr.append('bool Tran' + str(tran.id) + '::checkCondition() {\n')
+                for codeLine in tran.getCondition().split('\n'):
+                    tranStr.append('\t' + codeLine + '\n')
+                tranStr.append('}\n')
+
+            tranStr.append('void Tran' + str(tran.id) + '::runCode() {\n')
+            for codeLine in tran.getCode().split('\n'):
+                tranStr.append('\t' + codeLine + '\n')
+            tranStr.append('}\n\n')
+
     def generateHeadersForCpp(self, headerStr, projectName):
         headerStr.append('#include "' + projectName + '.h"\n')
         headerStr.append('#include <iostream>\n')
@@ -215,9 +269,8 @@ class CppRosGenerator():
         headerStr.append('#include <signal.h>\n')
         headerStr.append('#include <visualstates/runtimegui.h>\n\n')
 
-
-    def generateRosMethods(self, rosStr, config, functions, variables):
-        rosStr.append('RosNode::RosNode(int nodeRate):rate(nodeRate) {\n')
+    def generateGlobalNamespaceMethods(self, rosStr, config, globalNamespace):
+        rosStr.append('GlobalNamespace::GlobalNamespace(int nodeRate):rate(nodeRate) {\n')
         for topic in config.getTopics():
             varName = topic['name'].replace('/', '_')
             if varName[0] == '_':
@@ -232,32 +285,32 @@ class CppRosGenerator():
                     rosStr.append('\t' + varName + 'Pub = nh.advertise<' + type + '>("' + topic[
                         'name'] + '", 10);\n')
             elif topic['opType'] == 'Subscribe':
-                rosStr.append('\t' + varName + 'Sub = nh.subscribe("' + topic['name'] + '", 10, &RosNode::'+varName+'Callback, this);\n')
+                rosStr.append('\t' + varName + 'Sub = nh.subscribe("' + topic['name'] + '", 10, &GlobalNamespace::'+varName+'Callback, this);\n')
 
         # set inital values of variables
-        types, varNames, initialValues = CPPParser.parseVariables(variables)
+        types, varNames, initialValues = CPPParser.parseVariables(globalNamespace.variables)
         for i in range(len(types)):
             if initialValues[i] is not None:
                 rosStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
 
         rosStr.append('}\n\n')
 
-        rosStr.append('void* RosNode::threadRunner(void* owner) {\n')
-        rosStr.append('\t((RosNode*)owner)->run();\n')
+        rosStr.append('void* GlobalNamespace::threadRunner(void* owner) {\n')
+        rosStr.append('\t((GlobalNamespace*)owner)->run();\n')
         rosStr.append('}\n\n')
 
-        rosStr.append('void RosNode::startThread() {\n')
-        rosStr.append('\tpthread_create(&thread, NULL, &RosNode::threadRunner, this);\n')
+        rosStr.append('void GlobalNamespace::startThread() {\n')
+        rosStr.append('\tpthread_create(&thread, NULL, &GlobalNamespace::threadRunner, this);\n')
         rosStr.append('}\n\n')
 
-        rosStr.append('void RosNode::run() {\n')
+        rosStr.append('void GlobalNamespace::run() {\n')
         rosStr.append('\twhile(nh.ok()) {\n')
         rosStr.append('\t\tros::spinOnce();\n')
         rosStr.append('\t\trate.sleep();\n')
         rosStr.append('\t}\n')
         rosStr.append('}\n\n')
 
-        rosStr.append('void RosNode::join() {\n')
+        rosStr.append('void GlobalNamespace::join() {\n')
         rosStr.append('\tpthread_join(thread, NULL);\n')
         rosStr.append('}\n\n')
 
@@ -270,16 +323,16 @@ class CppRosGenerator():
                 type = topic['type']
                 types = type.split('/')
                 if len(types) == 2:
-                    rosStr.append('void RosNode::' + varName + 'Callback(const ' + types[0] + '::' + types[1] + '& ' + varName + ') {\n')
+                    rosStr.append('void GlobalNamespace::' + varName + 'Callback(const ' + types[0] + '::' + types[1] + '& ' + varName + ') {\n')
                 else:
-                    rosStr.append('void RosNode::' + varName + 'Callback(const ' + type + '& ' + varName + ') {\n')
+                    rosStr.append('void GlobalNamespace::' + varName + 'Callback(const ' + type + '& ' + varName + ') {\n')
                 rosStr.append('\tlast' + varName + ' = ' + varName + ';\n')
                 rosStr.append('}\n\n')
 
                 if len(types) == 2:
-                    rosStr.append(types[0] + '::' + types[1] + '& RosNode::get' + varName + '() {\n')
+                    rosStr.append(types[0] + '::' + types[1] + '& GlobalNamespace::get' + varName + '() {\n')
                 else:
-                    rosStr.append(type + '& RosNode::get' + varName + '() {\n')
+                    rosStr.append(type + '& GlobalNamespace::get' + varName + '() {\n')
                 rosStr.append('\treturn last' + varName + ';\n')
                 rosStr.append('}\n\n')
 
@@ -287,19 +340,27 @@ class CppRosGenerator():
                 type = topic['type']
                 types = type.split('/')
                 if len(types) == 2:
-                    rosStr.append('void RosNode::publish' + varName + '(' + types[0] + '::' + types[
+                    rosStr.append('void GlobalNamespace::publish' + varName + '(' + types[0] + '::' + types[
                         1] + '& ' + varName + ') {\n')
                 else:
-                    rosStr.append('void RosNode::publish' + varName + '(' + type + '& ' + varName + ') {\n')
+                    rosStr.append('void GlobalNamespace::publish' + varName + '(' + type + '& ' + varName + ') {\n')
                 rosStr.append('\t' + varName + 'Pub.publish(' + varName + ');\n')
                 rosStr.append('}\n\n')
 
-        returnTypes, funcNames, codes = CPPParser.parseFunctions(functions)
+        returnTypes, funcNames, codes = CPPParser.parseFunctions(globalNamespace.functions)
         for i in range(len(returnTypes)):
-            rosStr.append(returnTypes[i] + ' RosNode::' + funcNames[i] + '\n')
+            rosStr.append(returnTypes[i] + ' GlobalNamespace::' + funcNames[i] + '\n')
             rosStr.append(codes[i])
             rosStr.append('\n\n')
 
+    def generateStateNamespaceMethods(self, strList):
+        for state in self.getAllStates():
+            namespace = state.getNamespace()
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(namespace.functions)
+            for i in range(len(returnTypes)):
+                strList.append(returnTypes[i] + ' Namespace'+str(state.id)+'::' + funcNames[i] + '\n')
+                strList.append(codes[i])
+                strList.append('\n\n')
 
     def generateReadArgs(self, argStr, projectName):
         mystr = '''
@@ -355,8 +416,8 @@ void signalCallback(int signum)
         mainStr.append(myStr)
         mainStr.append('int main(int argc, char* argv[]) {\n')
         mainStr.append('\tros::init(argc, argv,"' + projectName + '_node");\n')
-        mainStr.append('\tRosNode node(10);\n')
-        mainStr.append('\tnode.startThread();\n')
+        mainStr.append('\tGlobalNamespace globalNamespace(10);\n')
+        mainStr.append('\tglobalNamespace.startThread();\n')
         mainStr.append('\treadArgs(&argc, argv);\n\n')
         mainStr.append('\tif (displayGui) {\n')
         mainStr.append('\t\tpthread_create(&guiThread, NULL, &runGui, NULL);\n')
@@ -365,16 +426,23 @@ void signalCallback(int signum)
 
         # create state instances
         for state in self.getAllStates():
-            mainStr.append('\tState* state' + str(state.id) + ' = new State' + str(state.id) + '(' +
-                           str(state.id) + ', ' + str(state.initial).lower() + ', &node, ' + str(state.getTimeStep()) +
-                           ', ' + self.parentString(state) + ', runTimeGui);\n')
+            mainStr.append('\tNamespace' + str(state.id) + ' stateNamespace' + str(state.id) + '(&globalNamespace);\n')
+            if state.parent is not None:
+                mainStr.append('\tState* state' + str(state.id) + ' = new State' + str(state.id) + '(' +
+                               str(state.id) + ', ' + str(state.initial).lower() + ', &globalNamespace, &stateNamespace' + str(state.parent.id) + ', ' + str(
+                    state.getTimeStep()) +
+                               ', ' + self.parentString(state) + ', runTimeGui);\n')
+            else:
+                mainStr.append('\tState* state' + str(state.id) + ' = new State' + str(state.id) + '(' +
+                               str(state.id) + ', ' + str(state.initial).lower() + ', &globalNamespace, ' + str(state.getTimeStep()) +
+                               ', ' + self.parentString(state) + ', runTimeGui);\n')
         mainStr.append('\n')
 
         # create transition instances
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) + '(' + str(tran.id) +
-                           ', ' + str(tran.destination.id) + ', &node);\n')
+                           ', ' + str(tran.destination.id) + ', &globalNamespace, &stateNamespace'+str(tran.origin.parent.id)+');\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) + '(' + str(tran.id) +
                                ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ');\n')

@@ -23,51 +23,12 @@ from xml.dom import minidom
 
 from visualstates.gui.transition.transitiontype import TransitionType
 from visualstates.configs.package_path import get_package_path
+from visualstates.generators.base_generator import BaseGenerator
 
 
-class PythonRosGenerator():
+class PythonRosGenerator(BaseGenerator):
     def __init__(self, libraries, config, states, globalNamespace):
-        self.libraries = libraries
-        self.config = config
-        self.states = states
-        self.globalNamespace = globalNamespace
-
-    def getAllStates(self):
-        addedStates = {}
-        allStates = []
-        for state in self.states:
-            if state.id not in addedStates:
-                addedStates[state.id] = state
-                allStates.append(state)
-
-            for childState in state.getChildren():
-                if childState.id not in addedStates:
-                    addedStates[childState.id] = childState
-                    allStates.append(childState)
-
-        return allStates
-
-    def getAllTransitions(self):
-        addedTransitions = {}
-        transitions = []
-        for state in self.states:
-            for tran in state.getOriginTransitions():
-                if tran.id not in addedTransitions:
-                    addedTransitions[tran.id] = tran
-                    transitions.append(tran)
-            for childState in state.getChildren():
-                for tran in childState.getOriginTransitions():
-                    if tran.id not in addedTransitions:
-                        addedTransitions[tran.id] = tran
-                        transitions.append(tran)
-
-        return transitions
-
-    def getAllNamespaces(self):
-        allNamespaces = []
-        for state in self.getAllStates():
-            allNamespaces.append(state.getNamespace())
-        return allNamespaces
+        BaseGenerator.__init__(self, libraries, config, states, globalNamespace)
 
     def generate(self, projectPath, projectName):
         stringList = []
