@@ -26,9 +26,6 @@ from visualstates.gui.tree.treemodel import TreeModel
 from visualstates.core.state import State
 from visualstates.core.transition import Transition
 from visualstates.configs.package_path import get_package_path
-from threading import Thread
-import time
-import sysv_ipc
 
 class RunTimeGui(QMainWindow):
 
@@ -60,10 +57,6 @@ class RunTimeGui(QMainWindow):
         self.activeStateChanged.connect(self.activeStateChangedHandle)
         self.runningStateChanged.connect(self.runningStateChangedHandle)
         self.loadFromRoot.connect(self.loadFromRootHandle)
-
-        self.memory = None
-        self.ipcThread = None
-        self.semaphore = None
 
     def createTreeView(self):
         dockWidget = QDockWidget()
@@ -128,8 +121,8 @@ class RunTimeGui(QMainWindow):
             return
 
         runningState = self.states[id]
+        runningState.setRunning(True)
 
-        parentId = None
         if runningState.parent is not None:
             for child in runningState.parent.getChildren():
                 if child.getRunning():
@@ -138,14 +131,15 @@ class RunTimeGui(QMainWindow):
                     child.resetGraphicsItem()
                     self.scene.addItem(child.getGraphicsItem())
 
+
             if not runningState.getRunning():
                 runningState.setRunning(True)
                 self.scene.removeItem(runningState.getGraphicsItem())
                 runningState.resetGraphicsItem()
                 self.scene.addItem(runningState.getGraphicsItem())
-            parentId = runningState.parent.id
 
-        self.treeModel.setAllBackgroundByParentId(Qt.white, parentId)
+            self.treeModel.setAllBackgroundByParentId(Qt.white, runningState.parent.id)
+
         self.treeModel.setBackgroundById(runningState.id, Qt.green)
 
     def emitActiveStateById(self, id):
@@ -162,7 +156,6 @@ class RunTimeGui(QMainWindow):
         # print('set active state:' + str(id))
         self.scene.clear()
         for childState in self.activeState.getChildren():
-            # print('add child to scene:' + str(childState.id))
             qitem = childState.getGraphicsItem()
             qitem.setAcceptHoverEvents(False)
             qitem.setFlag(QGraphicsItem.ItemIsMovable, False)
@@ -180,6 +173,12 @@ class RunTimeGui(QMainWindow):
 
     def loadFromRootHandle(self, id):
         self.treeModel.loadFromRoot(self.states[id])
+        self.states[id].setRunning(True)
+        for child in self.states[id].getChildren():
+            if child.initial:
+                child.setRunning(True)
+                self.treeModel.setBackgroundById(child.id, Qt.green)
+                return
 
     def stateDoubleClicked(self, stateItem):
         if len(stateItem.stateData.getChildren()) > 0:
@@ -211,41 +210,3 @@ class RunTimeGui(QMainWindow):
 
         for s in state.getChildren():
             self.getStateList(s, stateList)
-
-    def loopIPC(self):
-        while True:
-            msg = self.getIPCMessage()
-            if msg is not None:
-                if len(msg) > 0:
-                    msg = msg.strip()
-                    methodName = msg.split(' ')[0]
-                    id = int(msg.split(' ')[1])
-                    if methodName == 'emitRunningStateById':
-                        self.emitRunningStateById(id)
-                    else:
-                        print('unknown method name')
-
-            # time.sleep(1.0/1000)
-
-    def activateIPC(self):
-        try:
-            self.memory = sysv_ipc.SharedMemory(123456, flags=sysv_ipc.IPC_CREAT, size = 1024)
-        except:
-            print('cannot create or open share mem with id 123456')
-            return
-
-        # create sempahore
-        try:
-            self.semaphore = sysv_ipc.Semaphore(9, flags=sysv_ipc.IPC_CREAT, initial_value=0)
-        except:
-            print('cannot create or open semaphore with id 9')
-            self.memory.remove()
-            return
-
-        self.ipcThread = Thread(target=self.loopIPC)
-        self.ipcThread.start()
-
-    def getIPCMessage(self):
-        self.semaphore.acquire()
-        data = self.memory.read().decode()
-        return data

@@ -9,7 +9,5 @@
   <run_depend>python-rospkg</run_depend>
   <run_depend>python-qt5-bindings</run_depend>
   <run_depend>python-qt5-bindings-qsci</run_depend>
-  <run_depend>python-sysv-ipc</run_depend>
-  <run_depend>python-yaml</run_depend>
   <export/>
 </package>

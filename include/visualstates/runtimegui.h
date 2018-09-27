@@ -20,18 +20,12 @@
 #ifndef RUNTIMEGUI_H
 #define RUNTIMEGUI_H
 
-#include <queue>
-#include <pthread.h>
-#include <string>
+#include <ros/ros.h>
 
 class RunTimeGui {
 protected:
-    pthread_t threadIPC;
-    int sem_id;
-    std::queue<std::string> msgQueue;
-    char* ipcData;
-
-    void createSharedMemAndSemaphore();
+    ros::NodeHandle nh;
+    ros::Publisher runningStatePublisher;
 
 public:
     RunTimeGui();
@@ -39,11 +33,6 @@ public:
     void emitRunningStateById(int id);
     void emitLoadFromRoot();
     void emitActiveStateById(int id);
-
-    void addState(int id, std::string name, bool intial, float x, float y, int parentId);
-
-    static void* loopStaticIPC(void*);
-    void loopIPC();
 };
 
 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(visualstates)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS roscpp)
 
 catkin_python_setup()
 catkin_package(INCLUDE_DIRS include)
@@ -13,7 +13,10 @@ SET(SOURCE_CPP_RUNTIME
     src/visualstates/codegen/cpp/runtimegui.cpp
 )
 
-include_directories(include)
+include_directories(
+    ${catkin_INCLUDE_DIRS}
+    include
+)
 
 ADD_LIBRARY(visualStatesRunTime SHARED ${SOURCE_CPP_RUNTIME})
 TARGET_LINK_LIBRARIES(visualStatesRunTime pthread)

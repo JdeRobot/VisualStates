@@ -225,7 +225,6 @@ int cycleDuration, State* parent, RunTimeGui* gui):\n')
                 classStr.append('class Tran' + str(tran.id) + ' : public ConditionalTransition {\n')
                 classStr.append('\tpublic:\n')
                 classStr.append('\tGlobalNamespace* globalNamespace;\n')
-                print('tran.origin.parent.id:' + str(tran.origin.parent.id))
                 if tran.origin.parent is not None:
                     classStr.append('Namespace' + str(tran.origin.parent.id) + '* stateNamespace;\n\n')
                     classStr.append('\tTran' + str(tran.id) + '(int id, int destId, GlobalNamespace* _globalNamespace, \
@@ -467,13 +466,20 @@ void signalCallback(int signum)
 
         guiStr.append('import sys\n')
         guiStr.append('from PyQt5.QtWidgets import QApplication\n')
-        guiStr.append('from visualstates.codegen.python.runtimegui import RunTimeGui\n\n')
+        guiStr.append('from visualstates.codegen.python.runtimegui import RunTimeGui\n')
+        guiStr.append('import rospy\n')
+        guiStr.append('from std_msgs.msg import String\n\n')
         guiStr.append('gui = None\n\n')
+        guiStr.append('def callback(string_msg):\n')
+        guiStr.append('\tglobal gui\n')
+        guiStr.append('\tstate_id = int(string_msg.data)\n')
+        guiStr.append('\tgui.emitRunningStateById(state_id)\n\n\n')
         guiStr.append('def runGui():\n')
         guiStr.append('\tglobal gui\n')
+        guiStr.append('\trospy.init_node("runtime_gui", anonymous=True)\n')
+        guiStr.append('\trunningStateSubs = rospy.Subscriber("/runtime_gui", String, callback)\n\n')
         guiStr.append('\tapp = QApplication(sys.argv)\n')
-        guiStr.append('\tgui = RunTimeGui()\n')
-        guiStr.append('\tgui.activateIPC()\n\n')
+        guiStr.append('\tgui = RunTimeGui()\n\n')
 
         # create runtime state code
         for state in self.getAllStates():
