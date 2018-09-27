@@ -17,10 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from PyQt5.QtCore import QPointF
 from visualstates.gui.transition.transitiontype import TransitionType
 from visualstates.gui.transition.guitransition import TransitionGraphicsItem
-
+from PyQt5.QtCore import QPointF
 
 class Transition:
     def __init__(self, id, name, origin=None, dest=None):
@@ -38,10 +37,10 @@ class Transition:
         self.destination = None
 
         # set transitions on the state if origin and dest are not None
-        if origin is not None:
+        if origin:
             self.origin = origin
             self.origin.addOriginTransition(self)
-        if dest is not None:
+        if dest:
             self.destination = dest
             self.destination.addDestTransition(self)
 
@@ -82,6 +81,9 @@ class Transition:
 
     def getTemporalTime(self):
         return self.temporalTime
+
+    def getNamespace(self):
+        return self.origin.getNamespace()
 
     def setTemporalTime(self, time):
         self.temporalTime = int(time)
@@ -169,5 +171,3 @@ class Transition:
         destinationId = int(transitionElement.getElementsByTagName('destinationid')[0].childNodes[0].nodeValue)
         self.addDestinationState(statesById[destinationId])
         self.isPosChanged = True
-
-

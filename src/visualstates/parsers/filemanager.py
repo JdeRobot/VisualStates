@@ -17,12 +17,11 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-import os
 from xml.dom import minidom
-
-from visualstates.configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
 from visualstates.core.state import State
-
+from visualstates.core.namespace import Namespace
+from visualstates.configs.config import ROS, RosConfig
+import os
 
 class FileManager():
     def __init__(self):
@@ -37,7 +36,7 @@ class FileManager():
             path += '.xml'
         self.fullPath = path
 
-    def save(self, rootState, config, libraries, functions, variables):
+    def save(self, rootState, config, libraries, globalNamespace):
         doc = minidom.Document()
         root = doc.createElement('VisualStates')
         doc.appendChild(root)
@@ -46,15 +45,9 @@ class FileManager():
         if config is not None:
             root.appendChild(config.createNode(doc))
 
-        # save functions
-        functionsElement = doc.createElement('functions')
-        functionsElement.appendChild(doc.createTextNode(functions))
-        root.appendChild(functionsElement)
-
-        # save variables
-        variablesElement = doc.createElement('variables')
-        variablesElement.appendChild(doc.createTextNode(variables))
-        root.appendChild(variablesElement)
+        # save global namespace
+        globalNamespaceElement = globalNamespace.createNode(doc, globalNamespace=True)
+        root.appendChild(globalNamespaceElement)
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -76,8 +69,13 @@ class FileManager():
     def open(self, fullPath):
         self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
+
+        globalNamespaceNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('global_namespace')[0]
+        globalNamespace = Namespace('', '')
+        globalNamespace.parse(globalNamespaceNode)
+
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
-        rootState = State(0, 'root', True)
+        rootState = State(0, 'root', True, None)
         rootState.parse(rootNode)
 
         # parse configs
@@ -94,7 +92,6 @@ class FileManager():
                 config.type = JDEROBOTCOMM
 
         libraries = []
-
         # parse libraries
         libraryElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('libraries')
         if len(libraryElements) > 0:
@@ -102,21 +99,7 @@ class FileManager():
             for libElement in libraryElements:
                 libraries.append(libElement.childNodes[0].nodeValue)
 
-        # get functions
-        functions = ''
-        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('functions')) > 0:
-            functionsElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('functions')[0]
-            if len(functionsElement.childNodes) > 0:
-                functions = functionsElement.childNodes[0].nodeValue
-
-        # get variables
-        variables = ''
-        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('variables')) > 0:
-            variablesElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('variables')[0]
-            if len(variablesElement.childNodes) > 0:
-                variables = variablesElement.childNodes[0].nodeValue
-
-        return rootState, config, libraries, functions, variables
+        return rootState, config, libraries, globalNamespace
 
     def hasFile(self):
         return len(self.fullPath) > 0

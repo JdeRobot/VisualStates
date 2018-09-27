@@ -15,16 +15,16 @@
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
    Authors : Okan Asik (asik.okan@gmail.com)
+             Pushkal Katara (katarapushkal@gmail.com)
 
   '''
+from visualstates.gui.state.guistate import StateGraphicsItem
+from visualstates.core.transition import Transition
+from visualstates.core.namespace import Namespace
 from xml.dom.minidom import Node
 
-from visualstates.core.transition import Transition
-from visualstates.gui.state.guistate import StateGraphicsItem
-
-
 class State:
-    def __init__(self, id, name, initial, parent=None):
+    def __init__(self, id, name, initial, namespace, parent=None):
         self.parent = parent
         self.id = id
         self.name = name
@@ -37,14 +37,31 @@ class State:
         self.originTransitions = []
         self.destTransitions = []
 
+        self.namespace = namespace
+
         self.graphicsItem = None
         self.isRunning = False
 
     def setID(self, id):
         self.id = id
 
+    def setName(self, _name):
+        self.name = _name
+
+    def setNamespace(self, namespace):
+        self.namespace = namespace
+
+    def getNamespace(self):
+        return self.namespace
+
+    def getParentNamespace(self):
+        return self.parent.namespace
+
     def getID(self):
         return self.id
+
+    def getName(self):
+        return self.name
 
     def setPos(self, x, y):
         self.x = x
@@ -52,6 +69,9 @@ class State:
 
     def setParent(self, parent):
         self.parent = parent
+
+    def getParent(self):
+        return self.parent
 
     def addChild(self, child):
         if child not in self.children:
@@ -132,15 +152,20 @@ class State:
         self.code = self.parseElement('code', stateElement)
         self.timeStepDuration = int((self.parseElement('timestep', stateElement)))
 
+        namespace = Namespace('', '')
+        namespace.parse(stateElement.getElementsByTagName('namespace')[0])
+        self.namespace = namespace
         # recursive child state parsing
         allChildTransitions = []
         statesById = {}
         stateTransitions = []
+
         for childNode in stateElement.childNodes:
             if childNode.nodeType == Node.ELEMENT_NODE:
                 if childNode.tagName == 'state':
-                    childState = State(0, 'state', False, self)
+                    childState = State(0, 'state', False, self.namespace, self)
                     transitionNodes = childState.parse(childNode)
+
                     # print('add child:' + childState.name + ' to parent:' + self.name)
                     self.addChild(childState)
                     statesById[childState.id] = childState
@@ -176,6 +201,8 @@ class State:
         timeElement.appendChild(doc.createTextNode(str(self.timeStepDuration)))
         stateElement.appendChild(timeElement)
 
+        stateElement.appendChild(self.namespace.createNode(doc))
+
         # create transition elements
         for tran in self.getOriginTransitions():
             tranElement = tran.createElement(doc)
@@ -205,7 +232,6 @@ class State:
         for child in self.getChildren():
             if child.initial:
                 return child
-
         return None
 
     def setInitial(self, initial):
@@ -225,3 +251,6 @@ class State:
         if not self.isRunning:
             for child in self.getChildren():
                 child.setRunning(self.isRunning)
+
+    def getRunning(self):
+        return self.isRunning

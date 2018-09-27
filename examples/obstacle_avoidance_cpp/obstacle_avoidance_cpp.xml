@@ -24,19 +24,10 @@
       </topic>
     </topics>
   </config>
-  <functions>void calculate_obstacle() {
-	sensor_msgs::LaserScan&amp; laserData = getturtlebotROS_laser_scan();
-	for (int i = 0; i &lt; laserData.ranges.size(); i++) {
-		if (laserData.ranges[i] &lt; obstacle_threshold) {
-			is_obstacle = true;
-			return;
-		}
-	}
-	is_obstacle = false;
-}</functions>
-  <variables>float obstacle_threshold = 0.4;
-bool is_obstacle = false;
-</variables>
+  <global_namespace>
+    <functions></functions>
+    <variables></variables>
+  </global_namespace>
   <libraries/>
   <state id="0" initial="True">
     <posx>0.0</posx>
@@ -44,6 +35,22 @@ bool is_obstacle = false;
     <name>root</name>
     <code></code>
     <timestep>100</timestep>
+    <namespace>
+      <functions>void calculate_obstacle() {
+	sensor_msgs::LaserScan&amp; laserData = globalNamespace-&gt;getturtlebotROS_laser_scan();
+	for (int i = 0; i &lt; laserData.ranges.size(); i++) {
+		if (laserData.ranges[i] &lt; obstacle_threshold) {
+			is_obstacle = true;
+			return;
+		}
+	}
+	is_obstacle = false;
+}
+</functions>
+      <variables>float obstacle_threshold = 0.4;
+bool is_obstacle = false;
+</variables>
+    </namespace>
     <state id="1" initial="True">
       <posx>845.0</posx>
       <posy>970.0</posy>
@@ -51,12 +58,16 @@ bool is_obstacle = false;
       <code>geometry_msgs::Twist velCommand;
 velCommand.linear.x = 0.3;
 velCommand.angular.z = 0.0;
-node-&gt;publishturtlebotROS_mobile_base_commands_velocity(velCommand);</code>
+globalNamespace-&gt;publishturtlebotROS_mobile_base_commands_velocity(velCommand);</code>
       <timestep>100</timestep>
+      <namespace>
+        <functions></functions>
+        <variables></variables>
+      </namespace>
       <transition id="1">
         <type>1</type>
-        <condition>node-&gt;calculate_obstacle();
-return node-&gt;is_obstacle;</condition>
+        <condition>stateNamespace-&gt;calculate_obstacle();
+return stateNamespace-&gt;is_obstacle;</condition>
         <posx>931.0</posx>
         <posy>884.0</posy>
         <name>obstacle</name>
@@ -72,12 +83,16 @@ return node-&gt;is_obstacle;</condition>
       <code>geometry_msgs::Twist velCommand;
 velCommand.linear.x = 0.0;
 velCommand.angular.z = 0.1;
-node-&gt;publishturtlebotROS_mobile_base_commands_velocity(velCommand);</code>
+globalNamespace-&gt;publishturtlebotROS_mobile_base_commands_velocity(velCommand);</code>
       <timestep>100</timestep>
+      <namespace>
+        <functions></functions>
+        <variables></variables>
+      </namespace>
       <transition id="2">
         <type>1</type>
-        <condition>node-&gt;calculate_obstacle();
-return !node-&gt;is_obstacle;</condition>
+        <condition>stateNamespace-&gt;calculate_obstacle();
+return !stateNamespace-&gt;is_obstacle;</condition>
         <posx>927.0</posx>
         <posy>1056.0</posy>
         <name>no obstacle</name>

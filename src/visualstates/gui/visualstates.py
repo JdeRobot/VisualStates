@@ -17,20 +17,18 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, \
     QWidget, QFileDialog, QLabel, QVBoxLayout, QPushButton, QMessageBox
-
 from .automata.automatascene import AutomataScene, OpType
 from ..parsers.filemanager import FileManager
 from ..parsers.importmanager import ImportManager
 from .tree.treemodel import TreeModel
 from ..core.state import State
+from ..core.namespace import Namespace
 from .transition.timerdialog import TimerDialog
-from .state.codedialog import CodeDialog
+from .dialogs.namespacedialog import NamespaceDialog
 from .dialogs.librariesdialog import LibrariesDialog
 from .dialogs.configdialog import ConfigDialog
-from ..generators.cppgenerator import CppGenerator
-from ..generators.pythongenerator import PythonGenerator
 from ..configs.interfaces import Interfaces
-from ..configs.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
+from ..configs.config import RosConfig, ROS
 from ..generators.cpprosgenerator import CppRosGenerator
 from ..generators.pythonrosgenerator import PythonRosGenerator
 from ..configs.package_path import get_package_path
@@ -44,8 +42,11 @@ class VisualStates(QMainWindow):
         self.configDialog = None
 
         # root state
-        self.rootState = State(0, "root", True)
+        self.globalNamespace = Namespace('', '')
+        self.localNamespace = Namespace('', '')
+        self.rootState = State(0, "root", True, self.localNamespace)
         self.activeState = self.rootState
+        self.activeNamespace = self.localNamespace
 
         # create status bar
         self.statusBar()
@@ -59,13 +60,10 @@ class VisualStates(QMainWindow):
 
         self.fileManager = FileManager()
         self.importManager = ImportManager()
-
         self.automataPath = None
 
         self.libraries = []
         self.config = None
-        self.functions = ''
-        self.variables = ''
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
@@ -115,15 +113,15 @@ class VisualStates(QMainWindow):
         timerAction.setStatusTip('Set timing of states')
         timerAction.triggered.connect(self.timerAction)
 
-        variablesAction = QAction('&Variables', self)
-        variablesAction.setShortcut('Ctrl+V')
-        variablesAction.setStatusTip('Define state variables')
-        variablesAction.triggered.connect(self.variablesAction)
+        globalNamespaceAction = QAction('&Global Namespace', self)
+        globalNamespaceAction.setShortcut('Ctrl+G')
+        globalNamespaceAction.setStatusTip('Open Global Namespace')
+        globalNamespaceAction.triggered.connect(self.globalNamespaceAction)
 
-        functionsAction = QAction('&Functions', self)
-        functionsAction.setShortcut('Ctrl+F')
-        functionsAction.setStatusTip('Define functions')
-        functionsAction.triggered.connect(self.functionsAction)
+        stateNamespaceAction = QAction('&State Namespace', self)
+        stateNamespaceAction.setShortcut('Ctrl+G')
+        stateNamespaceAction.setStatusTip('Open State Namespace')
+        stateNamespaceAction.triggered.connect(self.localNamespaceAction)
 
         # actions menu
         librariesAction = QAction('&Libraries', self)
@@ -173,8 +171,8 @@ class VisualStates(QMainWindow):
 
         dataMenu = menubar.addMenu('&Data')
         dataMenu.addAction(timerAction)
-        dataMenu.addAction(variablesAction)
-        dataMenu.addAction(functionsAction)
+        dataMenu.addAction(globalNamespaceAction)
+        dataMenu.addAction(stateNamespaceAction)
 
         actionsMenu = menubar.addMenu('&Actions')
         actionsMenu.addAction(librariesAction)
@@ -191,14 +189,16 @@ class VisualStates(QMainWindow):
         self.treeModel.removeAll()
 
         # create new root state
-        self.rootState = State(0, 'root', True)
+        self.globalNamespace = Namespace('', '')
+        self.localNamespace = Namespace('', '')
+        self.rootState = State(0, 'root', True, self.localNamespace)
+
         self.automataScene.setActiveState(self.rootState)
+
         self.automataScene.resetIndexes()
 
         self.libraries = []
         self.config = None
-        self.functions = ''
-        self.variables = ''
 
     def openAction(self):
         fileDialog = QFileDialog(self)
@@ -208,23 +208,23 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
-            (self.rootState, self.config, self.libraries, self.functions, self.variables) = self.fileManager.open(
-                fileDialog.selectedFiles()[0])
-            self.automataPath = self.fileManager.fullPath
-            self.treeModel.removeAll()
-            self.treeModel.loadFromRoot(self.rootState)
-            # set the active state as the loaded state
-            self.automataScene.setActiveState(self.rootState)
-            self.automataScene.setLastIndexes(self.rootState)
-            # print(str(self.config))
-            # else:
-            #     print('open is canceled')
+            self.openFile(fileDialog.selectedFiles()[0])
+
+    def openFile(self, fileName):
+        (self.rootState, self.config, self.libraries, self.globalNamespace) = self.fileManager.open(fileName)
+        self.automataPath = self.fileManager.fullPath
+        self.treeModel.removeAll()
+        self.treeModel.loadFromRoot(self.rootState)
+        # set the active state as the loaded state
+        self.automataScene.setActiveState(self.rootState)
+        self.automataScene.setLastIndexes(self.rootState)
+
 
     def saveAction(self):
         if len(self.fileManager.getFileName()) == 0:
             self.saveAsAction()
         else:
-            self.fileManager.save(self.rootState, self.config, self.libraries, self.functions, self.variables)
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.globalNamespace)
 
     def saveAsAction(self):
         fileDialog = QFileDialog(self)
@@ -234,9 +234,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         if fileDialog.exec_():
             self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
-            self.fileManager.save(self.rootState, self.config, self.libraries, self.functions, self.variables)
-            # else:
-            #     print('file dialog canceled')
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.globalNamespace)
 
     def quitAction(self):
         # print('Quit')
@@ -256,10 +254,17 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
+            tempPath = self.fileManager.getFullPath()
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            self.fileManager.setPath(self.automataPath)
-            importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(
-                file, self)
+            self.fileManager.setFullPath(tempPath)
+            # if the current active state already has an initial state make sure that
+            # there will not be any initial state in the imported state
+            if self.activeState.getInitialChild() is not None:
+                for childState in file[0].getChildren():
+                    childState.setInitial(False)
+
+            # Update importing Namespaces
+            importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
             self.automataScene.displayState(self.activeState)
             self.automataScene.setLastIndexes(self.rootState)
@@ -270,15 +275,15 @@ class VisualStates(QMainWindow):
             timerDialog.timeChanged.connect(self.timeStepDurationChanged)
             timerDialog.exec_()
 
-    def variablesAction(self):
-        variablesDialog = CodeDialog('Variables', self.variables)
-        variablesDialog.codeChanged.connect(self.variablesChanged)
-        variablesDialog.exec_()
+    def globalNamespaceAction(self):
+        self.globalNamespaceDialog = NamespaceDialog('Global Namespace', self.globalNamespace)
+        self.globalNamespaceDialog.namespaceChanged.connect(self.globalNamespaceChanged)
+        self.globalNamespaceDialog.exec_()
 
-    def functionsAction(self):
-        functionsDialog = CodeDialog('Functions', self.functions)
-        functionsDialog.codeChanged.connect(self.functionsChanged)
-        functionsDialog.exec_()
+    def localNamespaceAction(self):
+        self.localNamespaceDialog = NamespaceDialog('Local Namespace', self.activeNamespace)
+        self.localNamespaceDialog.namespaceChanged.connect(self.localNamespaceChanged)
+        self.localNamespaceDialog.exec_()
 
     def librariesAction(self):
         librariesDialog = LibrariesDialog('Libraries', self.libraries)
@@ -300,13 +305,10 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
+            if self.config is None:
+                self.Config = RosConfig()
             if self.config.type == ROS:
-                generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList,
-                                            self.functions, self.variables)
-            elif self.config.type == JDEROBOTCOMM:
-                generator = CppGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList,
-                                         self.functions, self.variables)
-
+                generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.globalNamespace)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
         else:
@@ -321,13 +323,9 @@ class VisualStates(QMainWindow):
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
             if self.config is None:
-                self.config = JdeRobotConfig()
-
+                self.config = RosConfig()
             if self.config.type == ROS:
-                generator = PythonRosGenerator(self.libraries, self.config, stateList, self.functions, self.variables)
-            elif self.config.type == JDEROBOTCOMM:
-                generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList,
-                                            self.functions, self.variables)
+                generator = PythonRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:
@@ -370,6 +368,7 @@ class VisualStates(QMainWindow):
         self.automataScene = AutomataScene()
         self.automataScene.setSceneRect(0, 0, 2000, 2000)
         self.automataScene.activeStateChanged.connect(self.activeStateChanged)
+        self.automataScene.activeNamespaceChanged.connect(self.activeNamespaceChanged)
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.stateRemoved.connect(self.stateRemoved)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
@@ -414,10 +413,14 @@ class VisualStates(QMainWindow):
             else:
                 self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
 
+    def activeNamespaceChanged(self):
+        if self.automataScene.activeNamespace != self.activeNamespace:
+            self.activeNamespace = self.automataScene.activeNamespace
+
     def upButtonClicked(self):
         if self.activeState != None:
             if self.activeState.parent != None:
-                # print(self.activeState.parent.id)
+                #print(self.activeState.parent.id)
                 self.automataScene.setActiveState(self.activeState.parent)
 
     def getStateById(self, state, id):
@@ -442,18 +445,20 @@ class VisualStates(QMainWindow):
         if self.activeState is not None:
             self.activeState.setTimeStep(duration)
 
-    def variablesChanged(self, variables):
-        self.variables = variables
-
-    def functionsChanged(self, functions):
-        self.functions = functions
-
     def librariesChanged(self, libraries):
         self.libraries = libraries
 
     def configChanged(self):
-        if self.configDialog is not None:
+        if self.configDialog:
             self.config = self.configDialog.getConfig()
+
+    def globalNamespaceChanged(self):
+        if self.globalNamespaceDialog:
+            self.globalNamespace = self.globalNamespaceDialog.getNamespace()
+
+    def localNamespaceChanged(self):
+        if self.localNamespaceDialog:
+            self.activeNamespace = self.localNamespaceDialog.getNamespace()
 
     def getStateList(self, state, stateList):
         if len(state.getChildren()) > 0:

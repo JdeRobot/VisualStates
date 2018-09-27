@@ -26,7 +26,6 @@ from visualstates.gui.tree.treemodel import TreeModel
 from visualstates.core.state import State
 from visualstates.core.transition import Transition
 from visualstates.configs.package_path import get_package_path
-
 from threading import Thread
 import time
 import sysv_ipc
@@ -103,11 +102,11 @@ class RunTimeGui(QMainWindow):
         self.stateCanvas.setScene(self.scene)
         self.stateCanvas.setRenderHint(QPainter.Antialiasing)
 
-
     def addState(self, id, name, initial, x, y, parentId):
         if parentId is not None:
             self.states[id] = State(id, name, initial, self.states[parentId])
             self.states[parentId].addChild(self.states[id])
+            self.states[id].parent = self.states[parentId]
             parentItem = self.treeModel.getByDataId(parentId)
             # print('parent:' + str(parentItem))
         else:
@@ -122,11 +121,9 @@ class RunTimeGui(QMainWindow):
         self.transitions[id].setPos(x, y)
 
     def emitRunningStateById(self, id):
-        # print('emit running state:' + str(id))
         self.runningStateChanged.emit(id)
 
     def runningStateChangedHandle(self, id):
-        # print('running state:' + str(id))
         if id not in self.states:
             return
 
@@ -135,9 +132,17 @@ class RunTimeGui(QMainWindow):
         parentId = None
         if runningState.parent is not None:
             for child in runningState.parent.getChildren():
-                child.setRunning(False)
+                if child.getRunning():
+                    child.setRunning(False)
+                    self.scene.removeItem(child.getGraphicsItem())
+                    child.resetGraphicsItem()
+                    self.scene.addItem(child.getGraphicsItem())
 
-            runningState.setRunning(True)
+            if not runningState.getRunning():
+                runningState.setRunning(True)
+                self.scene.removeItem(runningState.getGraphicsItem())
+                runningState.resetGraphicsItem()
+                self.scene.addItem(runningState.getGraphicsItem())
             parentId = runningState.parent.id
 
         self.treeModel.setAllBackgroundByParentId(Qt.white, parentId)

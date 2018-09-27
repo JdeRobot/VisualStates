@@ -146,6 +146,8 @@ class TreeModel(QAbstractItemModel):
         return mychildren
 
     def getByDataId(self, id):
+        if id == 0:
+            return self.rootNode
         for item in self.getChildren(self.rootNode):
             if item.id == id:
                 return item
@@ -157,7 +159,7 @@ class TreeModel(QAbstractItemModel):
 
     def loadFromRoot(self, rootState, parentState=None):
         for child in rootState.getChildren():
-            if parentState:
+            if parentState is not None:
                 self.insertStateData(child, QColor(Qt.white), self.getByDataId(parentState.id))
             else:
                 self.insertStateData(child, QColor(Qt.white), self.getByDataId(rootState.id))
@@ -165,7 +167,7 @@ class TreeModel(QAbstractItemModel):
 
     def setAllBackgroundByParentId(self, color, parentId):
         parent = None
-        if parentId == 0:
+        if parentId is None:
             parent = self.rootNode
         else:
             parent = self.getByDataId(parentId)

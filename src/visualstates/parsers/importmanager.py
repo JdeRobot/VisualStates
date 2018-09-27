@@ -46,23 +46,13 @@ class ImportManager():
         importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.activeState)
         config = self.updateConfigs(file[1], klass.config)
         libraries = self.updateLibraries(file[2], klass.libraries)
-        functions = self.updateFunctions(file[3], klass.functions)
-        variables = self.updateVariables(file[4], klass.variables)
-        return importedState, config, libraries, functions, variables
+        globalNamespace = self.updateNamespace(file[3], klass.globalNamespace)
+        return importedState, config, libraries, globalNamespace
 
-    def updateFunctions(self, newFunctions, functions):
-        """Updates existing functions with imported functions"""
-        if functions == newFunctions:
-            return functions
-        else:
-            return functions+ "\n" + newFunctions
-
-    def updateVariables(self, newVariables, variables):
-        """Updates existing variables with imported variables"""
-        if variables == newVariables:
-            return variables
-        else:
-            return variables+newVariables
+    def updateNamespace(self, newNamespace, namespace):
+        namespace.addFunctions(newNamespace.getFunctions())
+        namespace.addVariables(newNamespace.getVariables())
+        return namespace
 
     def updateLibraries(self, newLibraries, libraries):
         """Updates existing libraries with imported libraries"""
@@ -104,6 +94,7 @@ class ImportManager():
     def updateStateIDs(self, importState, stateID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
+            child.setName('state' + str(stateID))
             child.setID(stateID)
             stateID += 1
             self.updateStateIDs(child, stateID)

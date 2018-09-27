@@ -18,13 +18,11 @@
 
   '''
 
-JDEROBOTCOMM = 0
 ROS = 1
 
 class Config():
     def __init__(self):
-        self.type = JDEROBOTCOMM
-
+        self.type = ROS
 
 class RosConfig(Config):
 
@@ -196,106 +194,3 @@ class RosConfig(Config):
             topic['type'] = t.getElementsByTagName('type')[0].childNodes[0].nodeValue
             topic['opType'] = t.getElementsByTagName('opType')[0].childNodes[0].nodeValue
             self.topics.append(topic)
-
-
-
-class JdeRobotConfig(Config):
-    def __init__(self):
-        self.type = JDEROBOTCOMM
-        self.interfaces = []
-
-    def updateJDERobotCommConfig(self, config):
-        for interface in config.interfaces:
-            if interface not in self.interfaces:
-                self.interfaces.append(interface)
-
-    def getInterfaces(self):
-        return self.interfaces
-
-    def removeInterface(self, id):
-        deleteItem = None
-        for inter in self.interfaces:
-            if inter['id'] == id:
-                deleteItem = inter
-                break
-        if deleteItem is not None:
-            self.interfaces.remove(deleteItem)
-
-    def addInterface(self, interface):
-        self.interfaces.append(interface)
-
-    def createNode(self, doc):
-        cfgElement = doc.createElement('config')
-        cfgElement.setAttribute('type', str(self.type))
-
-        interfacesElement = doc.createElement('interfaces')
-        for inter in self.interfaces:
-            interElement = doc.createElement('interface')
-
-            sTypeElement = doc.createElement('serverType')
-            sTypeElement.appendChild(doc.createTextNode(inter['serverType']))
-            interElement.appendChild(sTypeElement)
-
-            nameElement = doc.createElement('name')
-            nameElement.appendChild(doc.createTextNode(inter['name']))
-            interElement.appendChild(nameElement)
-
-            topicElement = doc.createElement('topic')
-            topicElement.appendChild(doc.createTextNode(inter['topic']))
-            interElement.appendChild(topicElement)
-
-            proxyElement = doc.createElement('proxyName')
-            proxyElement.appendChild(doc.createTextNode(inter['proxyName']))
-            interElement.appendChild(proxyElement)
-
-            ipElement = doc.createElement('ip')
-            ipElement.appendChild(doc.createTextNode(inter['ip']))
-            interElement.appendChild(ipElement)
-
-            portElement = doc.createElement('port')
-            portElement.appendChild(doc.createTextNode(inter['port']))
-            interElement.appendChild(portElement)
-
-            iElement = doc.createElement('interfaceName')
-            iElement.appendChild(doc.createTextNode(inter['interface']))
-            interElement.appendChild(iElement)
-
-            interfacesElement.appendChild(interElement)
-
-        cfgElement.appendChild(interfacesElement)
-        return cfgElement
-
-    def loadNode(self, node):
-        self.type = node.getAttribute('type')
-        interfacesElement = node.getElementsByTagName('interfaces')[0]
-        self.interfaces = []
-        for interElement in interfacesElement.getElementsByTagName('interface'):
-            interface = {}
-            sTypeElement = interElement.getElementsByTagName('serverType')[0]
-            interface['serverType'] = self.getNodeValue(sTypeElement)
-
-            nameElement = interElement.getElementsByTagName('name')[0]
-            interface['name'] = self.getNodeValue(nameElement)
-
-            topicElement = interElement.getElementsByTagName('topic')[0]
-            interface['topic'] = self.getNodeValue(topicElement)
-
-            proxyElement = interElement.getElementsByTagName('proxyName')[0]
-            interface['proxyName'] = self.getNodeValue(proxyElement)
-
-            ipElement = interElement.getElementsByTagName('ip')[0]
-            interface['ip'] = self.getNodeValue(ipElement)
-
-            portElement = interElement.getElementsByTagName('port')[0]
-            interface['port'] = self.getNodeValue(portElement)
-
-            iElement = interElement.getElementsByTagName('interfaceName')[0]
-            interface['interface'] = self.getNodeValue(iElement)
-
-            self.interfaces.append(interface)
-
-    def getNodeValue(self, element):
-        if len(element.childNodes) > 0:
-            return element.childNodes[0].nodeValue
-        else:
-            return ''
