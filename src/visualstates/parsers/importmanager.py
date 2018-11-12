@@ -50,8 +50,11 @@ class ImportManager():
         return importedState, config, libraries, globalNamespace
 
     def updateNamespace(self, newNamespace, namespace):
-        namespace.addFunctions(newNamespace.getFunctions())
-        namespace.addVariables(newNamespace.getVariables())
+        newFunctions = newNamespace.getFunctions()
+        newVariables = newNamespace.getVariables()
+        if newFunctions and newVariables:
+            namespace.addFunctions(newFunctions)
+            namespace.addVariables(newVariables)
         return namespace
 
     def updateLibraries(self, newLibraries, libraries):
@@ -84,6 +87,8 @@ class ImportManager():
         for state in importState.getChildren():
             activeState.addChild(state)
             state.setParent(activeState)
+        updatedParentNamespace = self.updateNamespace(importState.getNamespace(), activeState.namespace)
+        activeState.setNamespace(updatedParentNamespace)
         return importState
 
     def updateIDs(self, importState, stateID):
@@ -94,7 +99,6 @@ class ImportManager():
     def updateStateIDs(self, importState, stateID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
-            child.setName('state' + str(stateID))
             child.setID(stateID)
             stateID += 1
             self.updateStateIDs(child, stateID)
