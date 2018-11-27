@@ -29,9 +29,11 @@ class IdTextBoxGraphicsItem(QGraphicsTextItem):
     def __init__(self, name, parent=None):
         super(QGraphicsTextItem, self).__init__(name, parent)
         self.name = name
+        self.interactionEnabled = True
 
     def mouseDoubleClickEvent(self, event):
-        if self.textInteractionFlags() == Qt.NoTextInteraction:
+        if self.textInteractionFlags() == Qt.NoTextInteraction and \
+                self.interactionEnabled:
             self.setTextInteractionFlags(Qt.TextEditorInteraction)
             self.textEditStarted.emit()
 
@@ -43,3 +45,6 @@ class IdTextBoxGraphicsItem(QGraphicsTextItem):
         self.textChanged.emit(self.toPlainText())
         self.textEditFinished.emit()
         QGraphicsTextItem.focusOutEvent(self, event)
+
+    def disableTextEditingInteraction(self):
+        self.interactionEnabled = False
