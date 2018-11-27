@@ -158,7 +158,6 @@ class RunTimeGui(QMainWindow):
         self.activeStateChanged.emit(id)
 
     def activeStateChangedHandle(self, id):
-        print('active state id:' + str(id))
         if id is None:
             return
         if id not in self.states:
