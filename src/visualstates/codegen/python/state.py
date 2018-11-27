@@ -78,12 +78,12 @@ class State():
 
             runState = False
             if self.parent is not None:
-                if self.parent.currentState == self:
+                if self.parent.getRunningChild() == self:
                     runState = True
             elif self.parent is None:
                 runState = True
 
-            if initState:
+            if initState and runState:
                 self.currentState.init()
                 initState = False
 
@@ -119,3 +119,13 @@ class State():
 
     def join(self):
         self.thread.join()
+
+    def getRunningChild(self):
+        if self.parent is None:
+            return self.currentState
+        else:
+            if self.parent.getRunningChild() == self:
+                return self.currentState
+
+        return None
+
