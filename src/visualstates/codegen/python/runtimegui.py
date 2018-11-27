@@ -233,6 +233,7 @@ class RunTimeGui(QMainWindow):
         gsItem.setAcceptHoverEvents(False)
         gsItem.setFlag(QGraphicsItem.ItemIsMovable, False)
         gsItem.doubleClicked.connect(self.stateDoubleClicked)
+        gsItem.disableInteraction()
         self.scene.addItem(gsItem)
 
     def removeStateGraphicsItem(self, state):

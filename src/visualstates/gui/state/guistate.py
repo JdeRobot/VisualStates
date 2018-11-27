@@ -141,3 +141,7 @@ class StateGraphicsItem(QGraphicsObject):
             brush.setColor(Qt.blue)
 
         self.ellipse.setBrush(brush)
+
+    def disableInteraction(self):
+        if self.textGraphics is not None:
+            self.textGraphics.disableTextEditingInteraction()

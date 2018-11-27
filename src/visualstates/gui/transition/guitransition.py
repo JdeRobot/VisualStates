@@ -163,3 +163,5 @@ class TransitionGraphicsItem(QGraphicsObject):
         if self.middleHandle is not None:
             self.middleHandle.setFlag(QGraphicsItem.ItemIsMovable, False)
             self.middleHandle.disableInteraction()
+        if self.textGraphics is not None:
+            self.textGraphics.disableTextEditingInteraction()
