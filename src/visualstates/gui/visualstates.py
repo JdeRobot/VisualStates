@@ -32,6 +32,7 @@ from ..configs.config import RosConfig, ROS
 from ..generators.cpprosgenerator import CppRosGenerator
 from ..generators.pythonrosgenerator import PythonRosGenerator
 from ..configs.package_path import get_package_path
+from .dialogs.aboutdialog import AboutDialog
 
 
 class VisualStates(QMainWindow):
@@ -339,8 +340,8 @@ class VisualStates(QMainWindow):
             self.showWarning('Python Generation', 'Please save the project before code generation.')
 
     def aboutAction(self):
-        pass
-        # print('about action')
+        aboutDialog = AboutDialog()
+        aboutDialog.exec_()
 
     def createTreeView(self):
         dockWidget = QDockWidget()
