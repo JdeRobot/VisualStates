@@ -49,7 +49,14 @@ class VisualStates(QMainWindow):
         self.activeNamespace = self.localNamespace
 
         # create status bar
-        self.statusBar()
+        # remove border around the widget added to the status bar
+        self.setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
+        statusBar = self.statusBar()
+        logo = QLabel()
+        logo.setAlignment(Qt.AlignHCenter)
+        logoPixmap = QPixmap(get_package_path() + '/resources/jderobot.png')
+        logo.setPixmap(logoPixmap)
+        statusBar.addWidget(logo)
 
         self.createMenu()
         self.createTreeView()
@@ -345,10 +352,6 @@ class VisualStates(QMainWindow):
         self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
 
-        self.logo = QLabel()
-        logoPixmap = QPixmap(get_package_path() + '/resources/jderobot.png')
-        self.logo.setPixmap(logoPixmap)
-
         self.upButton = QPushButton()
         self.upButton.setText('Up')
         self.upButton.clicked.connect(self.upButtonClicked)
@@ -357,7 +360,6 @@ class VisualStates(QMainWindow):
         leftLayout = QVBoxLayout()
         leftLayout.addWidget(self.treeView)
         leftLayout.addWidget(self.upButton)
-        leftLayout.addWidget(self.logo)
         leftContainer.setLayout(leftLayout)
 
         dockWidget.setWidget(leftContainer)
