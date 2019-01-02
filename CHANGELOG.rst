@@ -4,8 +4,9 @@ Changelog for package visualstates
 
 Forthcoming
 -----------
-* remove git and cmake dependencies and add ROS dependency
-* added examples and fixed installation instructions
-* yaml and sysv_ipc dependency is removed. The connection between runtime gui and the running behavior is done using ROS messages.
-* Import Functionality with Namespace Strategy and adapted examples
-* Contributors: AAAAAAAAA, Aitor Martinez, Aitor Martínez Fernández, Francisco Pérez, Francisco Rivas, Jose Maria Canas Plaza, Luis Roberto Morales Iglesias, Okan Aşık, Pushkal Katara
+* 0.2.2
+* have a new informative about dialog
+* fixes an import bug
+* fixes state initialization bug.
+* fixes state and transition name editing in runtime gui bug.
+* fixes runtime gui hierarhical view bug.
