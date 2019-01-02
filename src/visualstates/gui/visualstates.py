@@ -32,6 +32,7 @@ from ..configs.config import RosConfig, ROS
 from ..generators.cpprosgenerator import CppRosGenerator
 from ..generators.pythonrosgenerator import PythonRosGenerator
 from ..configs.package_path import get_package_path
+from .dialogs.aboutdialog import AboutDialog
 
 
 class VisualStates(QMainWindow):
@@ -49,7 +50,14 @@ class VisualStates(QMainWindow):
         self.activeNamespace = self.localNamespace
 
         # create status bar
-        self.statusBar()
+        # remove border around the widget added to the status bar
+        self.setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
+        statusBar = self.statusBar()
+        logo = QLabel()
+        logo.setAlignment(Qt.AlignHCenter)
+        logoPixmap = QPixmap(get_package_path() + '/resources/jderobot.png')
+        logo.setPixmap(logoPixmap)
+        statusBar.addWidget(logo)
 
         self.createMenu()
         self.createTreeView()
@@ -332,8 +340,8 @@ class VisualStates(QMainWindow):
             self.showWarning('Python Generation', 'Please save the project before code generation.')
 
     def aboutAction(self):
-        pass
-        # print('about action')
+        aboutDialog = AboutDialog()
+        aboutDialog.exec_()
 
     def createTreeView(self):
         dockWidget = QDockWidget()
@@ -345,10 +353,6 @@ class VisualStates(QMainWindow):
         self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
 
-        self.logo = QLabel()
-        logoPixmap = QPixmap(get_package_path() + '/resources/jderobot.png')
-        self.logo.setPixmap(logoPixmap)
-
         self.upButton = QPushButton()
         self.upButton.setText('Up')
         self.upButton.clicked.connect(self.upButtonClicked)
@@ -357,7 +361,6 @@ class VisualStates(QMainWindow):
         leftLayout = QVBoxLayout()
         leftLayout.addWidget(self.treeView)
         leftLayout.addWidget(self.upButton)
-        leftLayout.addWidget(self.logo)
         leftContainer.setLayout(leftLayout)
 
         dockWidget.setWidget(leftContainer)
