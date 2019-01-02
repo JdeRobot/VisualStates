@@ -1,6 +1,16 @@
 # VisualStates
 
-## Installation 
+## Installation from Ubuntu ROS package
+If you have already installed ROS on your system, you can install visualstates with the following command.
+```
+sudo apt install ros-kinetic-visualstates
+```
+To run the visualstates run the following command
+```
+rosrun visualstates main.py
+```
+
+## Installation from Source
 
 ### Install Dependencies
 ```
@@ -16,9 +26,6 @@ catkin_make
 rosrun visualstates main.py
 ```
 
-### To run an example please check the examples
-- [bump_and_go_python](https://github.com/JdeRobot/VisualStates/blob/master/examples/bump_and_go_python/README.md)
-- [obstacle_avoidance_cpp](https://github.com/JdeRobot/VisualStates/blob/master/examples/obstacle_avoidance_cpp/README.md)
-- [obstacle_avoidance_python](https://github.com/JdeRobot/VisualStates/blob/master/examples/obstacle_avoidance_python/README.md)
+To run an example behavior please check the examples repository here: [VisualStates-examples](https://github.com/JdeRobot/VisualStates-examples)
 
 
