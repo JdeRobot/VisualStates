@@ -314,7 +314,7 @@ class VisualStates(QMainWindow):
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
             if self.config is None:
-                self.Config = RosConfig()
+                self.config = RosConfig()
             if self.config.type == ROS:
                 generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.globalNamespace)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())

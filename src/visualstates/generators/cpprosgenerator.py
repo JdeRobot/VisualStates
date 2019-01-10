@@ -513,7 +513,7 @@ void signalCallback(int signum)
 
         cmakeStr.append('cmake_minimum_required(VERSION 2.8.3)\n\n')
 
-        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS visualstates\n')
+        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS roscpp visualstates\n')
         for dep in config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
         cmakeStr.append(')\n\n')
