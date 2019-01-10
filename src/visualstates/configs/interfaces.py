@@ -47,7 +47,13 @@ class Interfaces:
         return Interfaces.interfaces
 
     @staticmethod
-    def getRosMessageTypes(rosDir = '/opt/ros/kinetic'):
+    def getRosMessageTypes(rosDir=None):
+        if rosDir is None:
+            if 'ROS_DISTRO' in os.environ:
+                rosDir = '/opt/ros/' + os.environ['ROS_DISTRO']
+            else:
+                rosDir = '/opt/ros/kinetic'
+
         messageDir = rosDir + '/include'
         if os.path.exists(messageDir):
             allContents = os.listdir(messageDir)
