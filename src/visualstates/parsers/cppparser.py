@@ -84,7 +84,7 @@ class CPPParser():
 
             varType = varLine[0:varLine.find(' ')]
             varName = None
-            initalValue = None
+            initialValue = None
             if varLine.find('=') >= 0:
                 # if there is initial value
                 varName = varLine[varLine.find(' ')+1:varLine.find('=')].strip()
