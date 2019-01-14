@@ -33,6 +33,7 @@ class PythonRosGenerator(BaseGenerator):
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateImports(stringList)
+        self.generateSignalHandling(stringList)
         self.generateGlobalNamespace(stringList, projectName)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
@@ -60,7 +61,7 @@ class PythonRosGenerator(BaseGenerator):
     def generateImports(self, importStr):
         mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys, threading, time, rospy
+import sys, threading, time, rospy, signal
 '''
         importStr.append(mystr)
 
@@ -90,6 +91,24 @@ from PyQt5.QtWidgets import QApplication
         importStr.append('\n')
 
         return importStr
+
+    def generateSignalHandling(self, signalStr):
+        rootState = self.getRootState()
+        signalStr.append('globalNamespace = None\n')
+        signalStr.append('state' + str(rootState.id) + ' = None\n')
+        signalStr.append('app = None\n\n')
+        signalStr.append('def stopRecursive(state):\n')
+        signalStr.append('\tstate.stop()\n')
+        signalStr.append('\tfor childState in state.states:\n')
+        signalStr.append('\t\tstopRecursive(childState)\n\n')
+        signalStr.append('def sigintHandler(signal, frame):\n')
+        signalStr.append('\tglobal globalNamespace\n')
+        signalStr.append('\tglobal state' + str(rootState.id) + '\n')
+        signalStr.append('\tglobal app\n')
+        signalStr.append('\tapp.quit()\n')
+        signalStr.append('\tstopRecursive(state' + str(rootState.id) + ')\n')
+        signalStr.append('\tglobalNamespace.stop()\n\n')
+        signalStr.append('signal.signal(signal.SIGINT, sigintHandler)\n\n')
 
     def generateStateClasses(self, stateStr):
         for state in self.getAllStates():
@@ -130,7 +149,7 @@ from PyQt5.QtWidgets import QApplication
     def generateGlobalNamespace(self, globalNamespaceStr, projectName):
         globalNamespaceStr.append('class GlobalNamespace():\n')
         globalNamespaceStr.append('\tdef __init__(self):\n')
-        globalNamespaceStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
+        globalNamespaceStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True, disable_signals=True)\n\n')
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
                 typesStr = topic['type']
@@ -215,6 +234,7 @@ def readArgs():
 \t\t\t\tprint('runtime gui disabled')
 
 def runGui():
+\tglobal app
 \tglobal gui
 \tapp = QApplication(sys.argv)
 \tgui = RunTimeGui()
@@ -277,27 +297,14 @@ def runGui():
 
             mainStr.append('\tstate' + str(tran.origin.id) + '.addTransition(tran' + str(tran.id) + ')\n\n')
 
-        mainStr.append('\ttry:\n')
         # start threads
         for state in self.states:
-            mainStr.append('\t\tstate' + str(state.id) + '.startThread()\n')
-        # join threads
-        for state in self.states:
-            mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
+            mainStr.append('\tstate' + str(state.id) + '.startThread()\n')
 
-        mainStr.append('\t\tglobalNamespace.stop()\n')
-        mainStr.append('\t\tsys.exit(0)\n')
-        mainStr.append('\texcept:\n')
-        for state in self.states:
-            mainStr.append('\t\tstate' + str(state.id) + '.stop()\n')
-        mainStr.append('\t\tif displayGui:\n')
-        mainStr.append('\t\t\tgui.close()\n')
-        mainStr.append('\t\t\tguiThread.join()\n\n')
-        # join threads
-        for state in self.states:
-            mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
-        mainStr.append('\t\tglobalNamespace.stop()\n')
-        mainStr.append('\t\tsys.exit(1)\n')
+        mainStr.append('\n')
+        rootState = self.getRootState()
+        mainStr.append('\twhile state' + str(rootState.id) + '.running:\n')
+        mainStr.append('\t\ttime.sleep(0.01)\n\n')
 
     def generateCmake(self, cmakeStr, projectName):
         cmakeStr.append('project(')

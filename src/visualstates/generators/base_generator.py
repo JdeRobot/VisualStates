@@ -42,6 +42,11 @@ class BaseGenerator():
                 return state
         return None
 
+    def getRootState(self):
+        for state in self.states:
+            if state.parent is None:
+                return state
+
     # def getAllNamespaces(self):
     #     allNamespaces = []
     #     for state in self.getAllStates():
