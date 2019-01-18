@@ -32,11 +32,13 @@ class RosConfig(Config):
     def __init__(self):
         self.type = ROS
         self.topics = []
+        self.services = []
         self.buildDependencies = []
         self.runDependencies = []
 
     def updateROSConfig(self, newConfig):
         self.updateTopics(newConfig.topics)
+        self.updateServices(newConfig.services)
         self.updateBuildDependencies(newConfig.buildDependencies)
         self.updateRunDependencies(newConfig.runDependencies)
 
@@ -58,15 +60,34 @@ class RosConfig(Config):
         topic['opType'] = opType
         self.topics.append(topic)
 
+    def addService(self, id, name, type):
+        service = {}
+        service['id'] = id
+        service['name'] = name
+        service['type'] = type
+        self.services.append(service)
+
     def updateTopics(self, topics):
         for topic in topics:
             if topic not in self.topics:
                 self.addTopic(self.getTopicID(), topic['name'], topic['type'], topic['opType'])
 
+    def updateServices(self, services):
+        for serv in services:
+            if serv not in self.services:
+                self.addService(self.getServiceID(), serv['name'], serv['type'])
+
     def getTopicID(self):
         if self.topics:
             return max(map(lambda x: x['id'], self.topics)) + 1
-        else: return 0
+        else:
+            return 0
+
+    def getServiceID(self):
+        if self.services:
+            return max(map(lambda x: x['id'], self.services)) + 1
+        else:
+            return 0
 
     def removeTopic(self, id):
         topicToDelete = None
@@ -165,8 +186,20 @@ class RosConfig(Config):
             tElement.appendChild(opElement)
 
             tElements.appendChild(tElement)
-
         cfgElement.appendChild(tElements)
+
+        sElements = doc.createElement('services')
+        for srv in self.services:
+            sElement = doc.createElement('service')
+            sElement.setAttribute('id', str(srv['id']))
+            nameElement = doc.createElement('name')
+            nameElement.appendChild(doc.createTextNode(srv['name']))
+            sElement.appendChild(nameElement)
+            typeElement = doc.createElement('type')
+            typeElement.appendChild(doc.createTextNode(srv['type']))
+            sElement.appendChild(typeElement)
+            sElements.appendChild(sElement)
+        cfgElement.appendChild(sElements)
 
         return cfgElement
 
@@ -194,3 +227,12 @@ class RosConfig(Config):
             topic['type'] = t.getElementsByTagName('type')[0].childNodes[0].nodeValue
             topic['opType'] = t.getElementsByTagName('opType')[0].childNodes[0].nodeValue
             self.topics.append(topic)
+
+        self.services = []
+        sElements = node.getElementsByTagName('services')[0]
+        for srv in sElements.getElementsByTagName('service'):
+            service = {}
+            service['id'] = int(srv.getAttribute('id'))
+            service['name'] = srv.getElementsByTagName('name')[0].childNodes[0].nodeValue
+            service['type'] = srv.getElementsByTagName('type')[0].childNodes[0].nodeValue
+            self.services.append(service)
