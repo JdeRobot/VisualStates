@@ -18,9 +18,11 @@
 
   '''
 class Transition(object):
-    def __init__(self, id, destinationId):
+    def __init__(self, id, destinationId, globalNamespace, namespace):
         self.id = id
         self.destinationId = destinationId
+	self.globalNamespace = globalNamespace
+	self.namespace = namespace
 
     def init(self):
         pass

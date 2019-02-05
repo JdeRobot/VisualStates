@@ -198,9 +198,7 @@ from PyQt5.QtWidgets import QApplication
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
                 tranStr.append('\tdef __init__(self, id, destinationId, globalNamespace, namespace):\n')
-                tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
-                tranStr.append('\t\tself.globalNamespace = globalNamespace\n')
-                tranStr.append('\t\tself.namespace = namespace\n\n')
+                tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId, globalNamespace, namespace)\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
                     tranStr.append('\t\t' + checkLine + '\n')
@@ -208,9 +206,7 @@ from PyQt5.QtWidgets import QApplication
             elif tran.getType() == TransitionType.TEMPORAL:
                 tranStr.append('class Tran' + str(tran.id) + '(TemporalTransition):\n\n')
                 tranStr.append('\tdef __init__(self, id, destinationId, elapsedTime, globalNamespace, namespace):\n')
-                tranStr.append('\t\tTemporalTransition.__init__(self, id, destinationId, elapsedTime)\n')
-                tranStr.append('\t\tself.globalNamespace = globalNamespace\n')
-                tranStr.append('\t\tself.namespace = namespace\n\n')
+                tranStr.append('\t\tTemporalTransition.__init__(self, id, destinationId, elapsedTime, globalNamespace, namespace)\n')
             tranStr.append('\tdef runCode(self):\n')
             if len(tran.getCode()) > 0:
                 for codeLine in tran.getCode().split('\n'):
