@@ -20,7 +20,7 @@
 from xml.dom import minidom
 from visualstates.core.state import State
 from visualstates.core.namespace import Namespace
-from visualstates.configs.config import ROS, RosConfig
+from visualstates.configs.rosconfig import RosConfig
 import os
 
 class FileManager():
@@ -82,14 +82,8 @@ class FileManager():
         config = None
         if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')) > 0:
             configElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')[0]
-            if configElement.getAttribute('type') == str(ROS):
-                config = RosConfig()
-                config.loadNode(configElement)
-                config.type = ROS
-            elif configElement.getAttribute('type') == str(JDEROBOTCOMM):
-                config = JdeRobotConfig()
-                config.loadNode(configElement)
-                config.type = JDEROBOTCOMM
+            config = RosConfig()
+            config.loadNode(configElement)
 
         libraries = []
         # parse libraries
