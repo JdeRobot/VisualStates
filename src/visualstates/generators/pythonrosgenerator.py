@@ -22,8 +22,8 @@ import shutil
 from xml.dom import minidom
 
 from visualstates.gui.transition.transitiontype import TransitionType
-from visualstates.configs.package_path import get_package_path
-from visualstates.generators.base_generator import BaseGenerator
+from visualstates.configs.rospackage import getPackagePath
+from visualstates.generators.basegenerator import BaseGenerator
 
 
 class PythonRosGenerator(BaseGenerator):
@@ -155,14 +155,14 @@ from PyQt5.QtWidgets import QApplication
             if topic['opType'] == 'Publish':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub = rospy.Publisher("' +
+                globalNamespaceStr.append('\t\tself.' + topic['methodname'] + 'Pub = rospy.Publisher("' +
                               topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
             elif topic['opType'] == 'Subscribe':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Sub = rospy.Subscriber("' +
-                                  topic['name'] + '", ' + types[1] + ', self.'+self.getVarName(topic['name'])+'Callback)\n')
-                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + types[1] + '()\n')
+                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + 'Sub = rospy.Subscriber("' +
+                                  topic['name'] + '", ' + types[1] + ', self.' + topic['variablename'] + 'Callback)\n')
+                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + ' = ' + types[1] + '()\n')
 
         # add state variables as part of ros node
         variables = self.globalNamespace.getVariables()
@@ -179,11 +179,11 @@ from PyQt5.QtWidgets import QApplication
         # define publisher methods and subscriber callbacks
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
-                globalNamespaceStr.append('\tdef publish' + self.getVarName(topic['name']) + '(self, ' + self.getVarName(topic['name']) + '):\n')
-                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub.publish(' + self.getVarName(topic['name']) + ')\n\n')
+                globalNamespaceStr.append('\tdef ' + topic['methodname'] + '(self, _' + topic['methodname'] + '):\n')
+                globalNamespaceStr.append('\t\tself.' + topic['methodname'] + 'Pub.publish(_' + topic['methodname'] + ')\n\n')
             elif topic['opType'] == 'Subscribe':
-                globalNamespaceStr.append('\tdef ' + self.getVarName(topic['name']) + 'Callback(self, ' + self.getVarName(topic['name']) + '):\n')
-                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + self.getVarName(topic['name']) + '\n')
+                globalNamespaceStr.append('\tdef ' + topic['variablename'] + 'Callback(self, _' + topic['variablename'] + '):\n')
+                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + ' = _' + topic['variablename'] + '\n')
             globalNamespaceStr.append('\n\n')
 
         # define user functions as part of rosnode
@@ -375,12 +375,6 @@ def runGui():
         if os.path.exists(projectPath + '/core'):
             shutil.rmtree(projectPath + '/core')
 
-        shutil.copytree(get_package_path() + '/lib/python2.7/codegen', projectPath + '/codegen')
-        shutil.copytree(get_package_path() + '/lib/python2.7/gui', projectPath + '/gui')
-        shutil.copytree(get_package_path() + '/lib/python2.7/core', projectPath + '/core')
-
-    def getVarName(self, varName):
-        varName = varName.replace('/', '_')
-        if varName[0] == '_':
-            varName = varName[1:]
-        return varName
+        shutil.copytree(getPackagePath() + '/lib/python2.7/codegen', projectPath + '/codegen')
+        shutil.copytree(getPackagePath() + '/lib/python2.7/gui', projectPath + '/gui')
+        shutil.copytree(getPackagePath() + '/lib/python2.7/core', projectPath + '/core')

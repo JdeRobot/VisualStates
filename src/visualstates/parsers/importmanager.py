@@ -18,7 +18,7 @@
 
   '''
 
-from visualstates.configs.config import RosConfig
+from visualstates.configs.rosconfig import RosConfig
 
 class ImportManager():
     """
@@ -37,9 +37,6 @@ class ImportManager():
 
     Returns list of States which needs to be Imported
     """
-    def __init__(self):
-        self.JDEROBOTCOMM = 0
-        self.ROS = 1
 
     def updateAuxiliaryData(self, file, klass):
         """Wrapper upon all update functions"""
@@ -67,18 +64,11 @@ class ImportManager():
     def updateConfigs(self, newConfig, config):
         """Updates Existing Configurations with imported Configurations"""
         if newConfig:
-            if config and newConfig.type == config.type:
-                if newConfig.type == self.ROS:
-                    config.updateROSConfig(newConfig)
-                elif newConfig.type == self.JDEROBOTCOMM:
-                    config.updateJDERobotCommConfig(newConfig)
-            else:
-                if newConfig.type == self.ROS:
-                    config = RosConfig()
-                    config.updateROSConfig(newConfig)
-                elif newConfig.type == self.JDEROBOTCOMM:
-                    config = JdeRobotConfig()
-                    config.updateJDERobotCommConfig(newConfig)
+            if config is None:
+                config = RosConfig()
+
+            config.updateROSConfig(newConfig)
+
         return config
 
     def updateActiveState(self, importState, stateID, activeState):

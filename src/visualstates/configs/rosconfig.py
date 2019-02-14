@@ -18,19 +18,14 @@
 
   '''
 
-ROS = 1
+from visualstates.generators.pythonrosgenerator import PythonRosGenerator
 
-class Config():
-    def __init__(self):
-        self.type = ROS
+class RosConfig(object):
 
-class RosConfig(Config):
-
-    PUBLISH = 0
-    SUBSCRIBE = 1
+    PUBLISH = 'Publish'
+    SUBSCRIBE = 'Subscribe'
 
     def __init__(self):
-        self.type = ROS
         self.topics = []
         self.buildDependencies = []
         self.runDependencies = []
@@ -50,37 +45,28 @@ class RosConfig(Config):
         else:
             return True
 
-    def addTopic(self, id, name, type, opType):
-        topic = {}
-        topic['id'] = id
-        topic['name'] = name
-        topic['type'] = type
-        topic['opType'] = opType
-        self.topics.append(topic)
+    def addTopic(self, id, topic):
+        newTopic = {}
+        newTopic['id'] = id
+        if topic['opType'] == RosConfig.PUBLISH:
+            newTopic['methodname'] = topic['methodname']
+        elif topic['opType'] == RosConfig.SUBSCRIBE:
+            newTopic['variablename'] = topic['variablename']
+        newTopic['name'] = topic['name']
+        newTopic['type'] = topic['type']
+        newTopic['opType'] = topic['opType']
+        self.topics.append(newTopic)
 
     def updateTopics(self, topics):
         for topic in topics:
             if topic not in self.topics:
-                self.addTopic(self.getTopicID(), topic['name'], topic['type'], topic['opType'])
+                self.addTopic(self.getTopicID(), topic)
 
     def getTopicID(self):
         if self.topics:
             return max(map(lambda x: x['id'], self.topics)) + 1
-        else: return 0
-
-    def removeTopic(self, id):
-        topicToDelete = None
-        for t in self.topics:
-            if t['id'] == id:
-                topicToDelete = t
-                break
-        self.topics.remove(topicToDelete)
-
-    def editTopic(self, id, name):
-        for topic in self.topics:
-            if topic['id'] == id:
-                topic['name'] = name
-                break
+        else:
+            return 0
 
     def setBuildDependencies(self, dependencies):
         """Dependencies coming as strings"""
@@ -93,38 +79,14 @@ class RosConfig(Config):
     def getBuildDependencies(self):
         return self.buildDependencies
 
-    def getBuildDependenciesAsText(self):
-        myStr = ''
-        for i in range(len(self.buildDependencies)):
-            myStr += self.buildDependencies[i]
-            if i < len(self.buildDependencies):
-                myStr += '\n'
-        return myStr
-
     def updateBuildDependencies(self, dependencies):
         """Dependencies coming as List"""
         for dep in dependencies:
             if dep not in self.buildDependencies:
                 self.buildDependencies.append(dep)
 
-    def setRunDependencies(self, dependencies):
-        """Dependencies coming as strings"""
-        self.runDependencies = []
-        dependStrs = dependencies.split('\n')
-        for dStr in dependStrs:
-            if len(dStr.strip()) > 0:
-                self.runDependencies.append(dStr.strip())
-
     def getRunDependencies(self):
         return self.runDependencies
-
-    def getRunDependenciesAsText(self):
-        myStr = ''
-        for i in range(len(self.runDependencies)):
-            myStr += self.runDependencies[i]
-            if i < len(self.runDependencies):
-                myStr += '\n'
-        return myStr
 
     def updateRunDependencies(self, dependencies):
         """Dependencies coming as List"""
@@ -134,7 +96,6 @@ class RosConfig(Config):
 
     def createNode(self, doc):
         cfgElement = doc.createElement('config')
-        cfgElement.setAttribute('type', str(self.type))
 
         bDependencies = doc.createElement('buildDependencies')
         for bDepend in self.buildDependencies:
@@ -154,6 +115,14 @@ class RosConfig(Config):
         for t in self.topics:
             tElement = doc.createElement('topic')
             tElement.setAttribute('id', str(t['id']))
+            if t['opType'] == RosConfig.PUBLISH:
+                methodElement = doc.createElement('methodname')
+                methodElement.appendChild(doc.createTextNode(t['methodname']))
+                tElement.appendChild(methodElement)
+            elif t['opType'] == RosConfig.SUBSCRIBE:
+                varElement = doc.createElement('variablename')
+                varElement.appendChild(doc.createTextNode(t['variablename']))
+                tElement.appendChild(varElement)
             nameElement = doc.createElement('name')
             nameElement.appendChild(doc.createTextNode(t['name']))
             tElement.appendChild(nameElement)
@@ -171,8 +140,6 @@ class RosConfig(Config):
         return cfgElement
 
     def loadNode(self, node):
-        self.type = node.getAttribute('type')
-
         self.buildDependencies = []
         bDependencies = node.getElementsByTagName('buildDependencies')[0]
         for bDependency in bDependencies.getElementsByTagName('dependency'):
@@ -193,4 +160,23 @@ class RosConfig(Config):
             topic['name'] = t.getElementsByTagName('name')[0].childNodes[0].nodeValue
             topic['type'] = t.getElementsByTagName('type')[0].childNodes[0].nodeValue
             topic['opType'] = t.getElementsByTagName('opType')[0].childNodes[0].nodeValue
+            if topic['opType'] == RosConfig.PUBLISH:
+                methodnames = t.getElementsByTagName('methodname')
+                if len(methodnames) > 0:
+                    topic['methodname'] = methodnames[0].childNodes[0].nodeValue
+                else:
+                    topic['methodname'] = self.getVarName(topic['name'])
+            elif topic['opType'] == RosConfig.SUBSCRIBE:
+                varnames = t.getElementsByTagName('variablename')
+                if len(varnames) > 0:
+                    topic['variablename'] = varnames[0].childNodes[0].nodeValue
+                else:
+                    topic['variablename'] = self.getVarName(topic['name'])
+
             self.topics.append(topic)
+
+    def getVarName(self, varName):
+        varName = varName.replace('/', '_')
+        if varName[0] == '_':
+            varName = varName[1:]
+        return varName

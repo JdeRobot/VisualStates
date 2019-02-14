@@ -23,13 +23,12 @@ from xml.dom import minidom
 
 from visualstates.gui.transition.transitiontype import TransitionType
 from visualstates.parsers.cppparser import CPPParser
-from visualstates.generators.base_generator import BaseGenerator
+from visualstates.generators.basegenerator import BaseGenerator
 
 
 class CppRosGenerator(BaseGenerator):
-    def __init__(self, libraries, config, _interfaceHeaders, states, globalNamespace):
+    def __init__(self, libraries, config, states, globalNamespace):
         BaseGenerator.__init__(self, libraries, config, states, globalNamespace)
-        self.interfaceHeaders = _interfaceHeaders
 
     def generate(self, projectPath, projectName):
         # create source dir if not exists

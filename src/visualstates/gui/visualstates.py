@@ -26,12 +26,11 @@ from ..core.namespace import Namespace
 from .transition.timerdialog import TimerDialog
 from .dialogs.namespacedialog import NamespaceDialog
 from .dialogs.librariesdialog import LibrariesDialog
-from .dialogs.configdialog import ConfigDialog
-from ..configs.interfaces import Interfaces
-from ..configs.config import RosConfig, ROS
+from .dialogs.rosconfigdialog import RosConfigDialog
+from ..configs.rosconfig import RosConfig
 from ..generators.cpprosgenerator import CppRosGenerator
 from ..generators.pythonrosgenerator import PythonRosGenerator
-from ..configs.package_path import get_package_path
+from ..configs.rospackage import getPackagePath
 from .dialogs.aboutdialog import AboutDialog
 
 
@@ -55,7 +54,7 @@ class VisualStates(QMainWindow):
         statusBar = self.statusBar()
         logo = QLabel()
         logo.setAlignment(Qt.AlignHCenter)
-        logoPixmap = QPixmap(get_package_path() + '/resources/jderobot.png')
+        logoPixmap = QPixmap(getPackagePath() + '/resources/jderobot.png')
         logo.setPixmap(logoPixmap)
         statusBar.addWidget(logo)
 
@@ -72,7 +71,6 @@ class VisualStates(QMainWindow):
 
         self.libraries = []
         self.config = None
-        self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
         # create actions
@@ -137,20 +135,15 @@ class VisualStates(QMainWindow):
         librariesAction.setStatusTip('Add additional libraries')
         librariesAction.triggered.connect(self.librariesAction)
 
-        configFileAction = QAction('&Config File', self)
-        configFileAction.setShortcut('Ctrl+C')
-        configFileAction.setStatusTip('Edit configuration file')
+        configFileAction = QAction('&ROS Config', self)
+        configFileAction.setShortcut('Ctrl+R')
+        configFileAction.setStatusTip('Edit ROS configuration')
         configFileAction.triggered.connect(self.configFileAction)
 
         generateCppAction = QAction('&Generate C++', self)
         generateCppAction.setShortcut('Ctrl+G')
         generateCppAction.setStatusTip('Generate C++ code')
         generateCppAction.triggered.connect(self.generateCppAction)
-
-        # compileCppAction = QAction('&Compile C++', self)
-        # compileCppAction.setShortcut('Ctrl+P')
-        # compileCppAction.setStatusTip('Compile generated C++ code')
-        # compileCppAction.triggered.connect(self.compileCppAction)
 
         generatePythonAction = QAction('&Generate Python', self)
         generatePythonAction.setShortcut('Ctrl+Y')
@@ -299,8 +292,9 @@ class VisualStates(QMainWindow):
         librariesDialog.exec_()
 
     def configFileAction(self):
-        self.configDialog = ConfigDialog('Config', self.config)
-        self.configDialog.configChanged.connect(self.configChanged)
+        if self.config is None:
+            self.config = RosConfig()
+        self.configDialog = RosConfigDialog('Config', self.config)
         self.configDialog.exec_()
 
     def showWarning(self, title, msg):
@@ -315,8 +309,7 @@ class VisualStates(QMainWindow):
             self.getStateList(self.rootState, stateList)
             if self.config is None:
                 self.config = RosConfig()
-            if self.config.type == ROS:
-                generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.globalNamespace)
+            generator = CppRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
         else:
@@ -332,8 +325,7 @@ class VisualStates(QMainWindow):
             self.getStateList(self.rootState, stateList)
             if self.config is None:
                 self.config = RosConfig()
-            if self.config.type == ROS:
-                generator = PythonRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
+            generator = PythonRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:
@@ -450,10 +442,6 @@ class VisualStates(QMainWindow):
 
     def librariesChanged(self, libraries):
         self.libraries = libraries
-
-    def configChanged(self):
-        if self.configDialog:
-            self.config = self.configDialog.getConfig()
 
     def globalNamespaceChanged(self):
         if self.globalNamespaceDialog:
