@@ -366,6 +366,7 @@ class VisualStates(QMainWindow):
         self.automataScene.activeNamespaceChanged.connect(self.activeNamespaceChanged)
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.stateRemoved.connect(self.stateRemoved)
+        self.automataScene.stateImported.connect(self.stateImported)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
@@ -388,6 +389,9 @@ class VisualStates(QMainWindow):
             self.treeModel.removeState(state.stateData, parent)
         else:
             self.treeModel.removeState(state.stateData)
+
+    def stateImported(self):
+        self.importAction()
 
     def transitionInserted(self, tran):
         # print('transition inserted:' + tran.transitionData.name)
