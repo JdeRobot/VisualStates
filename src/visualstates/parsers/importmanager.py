@@ -40,7 +40,7 @@ class ImportManager():
 
     def updateAuxiliaryData(self, file, klass):
         """Wrapper upon all update functions"""
-        importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.activeState)
+        importedState = self.updateActiveState(file[0], klass.automataScene.stateIndex, klass.activeState)
         config = self.updateConfigs(file[1], klass.config)
         libraries = self.updateLibraries(file[2], klass.libraries)
         globalNamespace = self.updateNamespace(file[3], klass.globalNamespace)
@@ -66,9 +66,7 @@ class ImportManager():
         if newConfig:
             if config is None:
                 config = RosConfig()
-
             config.updateROSConfig(newConfig)
-
         return config
 
     def updateActiveState(self, importState, stateID, activeState):
@@ -89,6 +87,5 @@ class ImportManager():
     def updateStateIDs(self, importState, stateID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
-            child.setID(stateID)
-            stateID += 1
+            child.setID(stateID + child.getID())
             self.updateStateIDs(child, stateID)
