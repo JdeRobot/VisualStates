@@ -171,3 +171,9 @@ class Transition:
         destinationId = int(transitionElement.getElementsByTagName('destinationid')[0].childNodes[0].nodeValue)
         self.addDestinationState(statesById[destinationId])
         self.isPosChanged = True
+
+    def setID(self, id):
+        self.id = id
+
+    def getID(self):
+        return self.id
