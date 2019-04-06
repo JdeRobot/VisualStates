@@ -72,7 +72,9 @@ class WorkspaceTab(QWidget):
 
     def addWorkspace(self):
         newDir = self.dirLabel.text()
-        if self.isValidWorkspace(newDir):
+        if newDir == '':
+            QMessageBox.warning(self, 'Invalid Workspace', 'This is not a catkin workspace or specified path was not found')
+        elif self.isValidWorkspace(newDir):
             workspaces = readWorkspaces()
             workspaces.append(newDir)
             writeWorkspaces(workspaces)

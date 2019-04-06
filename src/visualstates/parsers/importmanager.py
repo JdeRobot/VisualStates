@@ -40,7 +40,7 @@ class ImportManager():
 
     def updateAuxiliaryData(self, file, klass):
         """Wrapper upon all update functions"""
-        importedState = self.updateActiveState(file[0], klass.automataScene.stateIndex, klass.activeState)
+        importedState = self.updateActiveState(file[0], klass.automataScene.stateIndex, klass.automataScene.transitionIndex, klass.activeState)
         config = self.updateConfigs(file[1], klass.config)
         libraries = self.updateLibraries(file[2], klass.libraries)
         globalNamespace = self.updateNamespace(file[3], klass.globalNamespace)
@@ -69,9 +69,9 @@ class ImportManager():
             config.updateROSConfig(newConfig)
         return config
 
-    def updateActiveState(self, importState, stateID, activeState):
+    def updateActiveState(self, importState, stateID, transitionID, activeState):
         """Updates Parent State with States to be imported"""
-        importState = self.updateIDs(importState, stateID)
+        importState = self.updateIDs(importState, stateID, transitionID)
         for state in importState.getChildren():
             activeState.addChild(state)
             state.setParent(activeState)
@@ -79,9 +79,10 @@ class ImportManager():
         activeState.setNamespace(updatedParentNamespace)
         return importState
 
-    def updateIDs(self, importState, stateID):
+    def updateIDs(self, importState, stateID, transitionID):
         """ Wrapper upon UpdateStateIDs """
         self.updateStateIDs(importState, stateID)
+        self.updateTranIDs(importState, transitionID)
         return importState
 
     def updateStateIDs(self, importState, stateID):
@@ -89,3 +90,8 @@ class ImportManager():
         for child in importState.getChildren():
             child.setID(stateID + child.getID())
             self.updateStateIDs(child, stateID)
+
+    def updateTranIDs(self, importState, transitionID):
+        for child in importState.getChildrenTransitions():
+            child.setID(transitionID + child.getID())
+
