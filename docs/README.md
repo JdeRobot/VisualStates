@@ -3,7 +3,7 @@
 VisualStates is a tool for programming robot behaviors with automata (Finite State Machines, even Hierarchical ones). 
 
 <p align="center">
-  <img width="500" src="https://jderobot.github.io/VisualStates/gui-states.png"></img>
+  <img width="600" src="https://jderobot.github.io/VisualStates/gui-states.png"></img>
 </p>
 
 It represents visually the robot's behavior as a graph on a canvas composed of **states** (nodes,vertices) 
@@ -70,7 +70,7 @@ To run an example behavior please check the examples repository here: [VisualSta
 The VisualStates GUI has four sections: an upper menu bar, a treeView, SchemaView and dialogs for code and configs.
 
 <p align="center">
-  <img width="500" src="https://jderobot.github.io/VisualStates/visualstates-gui.png"></img>
+  <img width="600" src="https://jderobot.github.io/VisualStates/visualstates-gui.png">
 </p>
 
 The menu bars contains the main buttons, which will allow you to do most of the actions. This buttons are:
