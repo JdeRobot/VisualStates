@@ -3,7 +3,7 @@
 VisualStates is a tool for programming robot behaviors with automata (Finite State Machines, even Hierarchical ones). 
 
 <p align="center">
-  <img width="500" src="https://github.com/JdeRobot/VisualStates/blob/master/docs/gui-states.png">
+  <img width="500" src="https://jderobot.github.io/VisualStates/gui-states.png"></img>
 </p>
 
 It represents visually the robot's behavior as a graph on a canvas composed of **states** (nodes,vertices) 
@@ -25,10 +25,45 @@ state every time, for debugging.
 | ROS friendly                    |
 | optional runtime GUI            | 
 
+## Table of Contents
+1. [Installation](#installation)
+2. [Manual](#manual)
+3. [Examples](#examples)
+4. [Development challenges](#development-challenges)
 
-# 1. Installation
 
-# 2. Manual
+# Installation
+
+## Installation from Ubuntu ROS package
+If you have already installed ROS on your system, you can install visualstates with the following command.
+```
+sudo apt install ros-kinetic-visualstates
+```
+To run the visualstates run the following command
+```
+rosrun visualstates main.py
+```
+
+## Installation from Source
+
+### Install Dependencies
+```
+sudo apt install ros-kinetic-desktop
+sudo apt install python-pyqt5
+sudo apt install python-pyqt5.qsci
+```
+
+### Install VisualStates in catkin_ws
+The VisualStates tool is distributed as a ROS package. You can directly clone this repository in an active catkin workspace. After copying the repository as ROS package. You can run visualstates following these steps.
+```
+catkin_make
+rosrun visualstates main.py
+```
+
+To run an example behavior please check the examples repository here: [VisualStates-examples](https://github.com/JdeRobot/VisualStates-examples)
+
+
+# Manual
 
 ## Using VisualStates
 
@@ -88,18 +123,18 @@ The navigation is similar to the navigation in the visualStates GUI. You can go 
 When you press on generate python code, an executable python script and the .yml file will be created. Again, if you execute the script with the argument --displaygui=true, then a GUI window will be shown. The behaviour of this GUI is the same as it was in the C++ GUI. The way of navigating using the Tree or the Schema is the same.
 
 
-# 3. Examples
+# Examples
 
 * Basic example with TurtleBot robot
 
-[![turtlebot](https://github.com/JdeRobot/VisualStates/blob/master/docs/gui-states.png)](https://www.youtube.com/watch?v=AyDBIZC3P2A&feature=youtu.be)
+[![turtlebot](https://jderobot.github.io/VisualStates/gui-states.png)](https://www.youtube.com/watch?v=AyDBIZC3P2A&feature=youtu.be)
 
 
 * Hierarchical example Prius
 
-[![prius](https://github.com/JdeRobot/VisualStates/blob/master/docs/gui-states.png)](https://www.youtube.com/watch?v=1iYlJLJkESU&feature=youtu.be)
+[![prius](https://jderobot.github.io/VisualStates/gui-states.png)](https://www.youtube.com/watch?v=1iYlJLJkESU&feature=youtu.be)
 
-# 4. Development Challenges
+# Development Challenges
 
 ## Adding full compatibility with ROS
 
