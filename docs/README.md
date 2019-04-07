@@ -69,6 +69,10 @@ To run an example behavior please check the examples repository here: [VisualSta
 
 The VisualStates GUI has four sections: an upper menu bar, a treeView, SchemaView and dialogs for code and configs.
 
+<p align="center">
+  <img width="500" src="https://jderobot.github.io/VisualStates/visualstates-gui.png"></img>
+</p>
+
 The menu bars contains the main buttons, which will allow you to do most of the actions. This buttons are:
 
 #### File button
@@ -127,12 +131,12 @@ When you press on generate python code, an executable python script and the .yml
 
 * Basic example with TurtleBot robot
 
-[![turtlebot](https://jderobot.github.io/VisualStates/gui-states.png)](https://www.youtube.com/watch?v=AyDBIZC3P2A&feature=youtu.be)
+[![turtlebot](https://jderobot.github.io/VisualStates/example-turtlebot.png)](https://www.youtube.com/watch?v=o-SAe_qwOMc)
 
 
 * Hierarchical example Prius
 
-[![prius](https://jderobot.github.io/VisualStates/gui-states.png)](https://www.youtube.com/watch?v=1iYlJLJkESU&feature=youtu.be)
+[![prius](https://jderobot.github.io/VisualStates/example-prius.png)](https://www.youtube.com/watch?v=1iYlJLJkESU)
 
 # Development Challenges
 
