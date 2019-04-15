@@ -304,8 +304,10 @@ class VisualStates(QMainWindow):
         QMessageBox.information(self, title, msg)
 
     def generateCppAction(self):
+        self.showInfo('C++ Code Generation', 'The program generates the source file in the directory of the behaviour. It will now save the behaviour.')
+        self.saveAction()
         stateList = []
-        if self.fileManager.hasFile():
+        if len(self.fileManager.getFileName()) != 0:
             self.getStateList(self.rootState, stateList)
             if self.config is None:
                 self.config = RosConfig()
@@ -320,8 +322,10 @@ class VisualStates(QMainWindow):
     #     pass
 
     def generatePythonAction(self):
+        self.showInfo('Python Code Generation', 'The program generates the source file in the directory of the behaviour. It will now save the behaviour.')
+        self.saveAction()
         stateList = []
-        if self.fileManager.hasFile():
+        if len(self.fileManager.getFileName()) != 0:
             self.getStateList(self.rootState, stateList)
             if self.config is None:
                 self.config = RosConfig()
