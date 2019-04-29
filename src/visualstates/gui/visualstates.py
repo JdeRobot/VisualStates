@@ -27,6 +27,7 @@ from .transition.timerdialog import TimerDialog
 from .dialogs.namespacedialog import NamespaceDialog
 from .dialogs.librariesdialog import LibrariesDialog
 from .dialogs.rosconfigdialog import RosConfigDialog
+from .dialogs.selectstatesdialog import SelectStatesDialog
 from ..configs.rosconfig import RosConfig
 from ..generators.cpprosgenerator import CppRosGenerator
 from ..generators.pythonrosgenerator import PythonRosGenerator
@@ -263,6 +264,10 @@ class VisualStates(QMainWindow):
             if self.activeState.getInitialChild() is not None:
                 for childState in file[0].getChildren():
                     childState.setInitial(False)
+
+            selectStates = SelectStatesDialog('Import VisualStates File', file)
+            if not selectStates.exec_():
+                file = selectStates.file
 
             # Update importing Namespaces
             importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
