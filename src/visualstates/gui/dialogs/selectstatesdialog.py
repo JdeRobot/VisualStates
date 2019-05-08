@@ -71,11 +71,14 @@ class SelectStatesDialog(QDialog):
             self.loadStates(item, child)
 
     def removeStates(self, parentState):
+        remList = []
         for child in parentState.getChildren():
             if self.list[child.id - 1].checkState(0) == Qt.Unchecked:
-                parentState.removeChild(child)
+                remList.append(child)
             else:
                 self.removeStates(child)
+        for child in remList:
+            parentState.removeChild(child)
 
     def buttonClicked(self, event):
         self.removeStates(self.file[0])
