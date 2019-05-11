@@ -304,6 +304,10 @@ class VisualStates(QMainWindow):
         QMessageBox.information(self, title, msg)
 
     def generateCppAction(self):
+        if len(self.fileManager.getFileName()) == 0:
+            self.showInfo('C++ Code Generation',
+                      'The program generates the source file in the directory of the behaviour. It will now save the behaviour.')
+        self.saveAction()
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)

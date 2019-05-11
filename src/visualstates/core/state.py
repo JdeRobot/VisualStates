@@ -79,7 +79,10 @@ class State:
 
     def removeChild(self, child):
         if child in self.children:
+            for transition in child.getDestTransitions():
+                transition.origin.removeOriginTransition(transition)
             self.children.remove(child)
+
 
     def getChildren(self):
         return self.children
