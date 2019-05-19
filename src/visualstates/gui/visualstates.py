@@ -189,6 +189,8 @@ class VisualStates(QMainWindow):
         self.automataScene.clearScene()
         self.treeModel.removeAll()
 
+        self.fileManager.setPath("")
+
         # create new root state
         self.globalNamespace = Namespace('', '')
         self.localNamespace = Namespace('', '')
