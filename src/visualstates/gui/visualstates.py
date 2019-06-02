@@ -189,6 +189,8 @@ class VisualStates(QMainWindow):
         self.automataScene.clearScene()
         self.treeModel.removeAll()
 
+        self.fileManager.setPath("")
+
         # create new root state
         self.globalNamespace = Namespace('', '')
         self.localNamespace = Namespace('', '')
@@ -257,7 +259,7 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             tempPath = self.fileManager.getFullPath()
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            self.fileManager.setFullPath(tempPath)
+            self.fileManager.setPath(tempPath)
             # if the current active state already has an initial state make sure that
             # there will not be any initial state in the imported state
             if self.activeState.getInitialChild() is not None:
