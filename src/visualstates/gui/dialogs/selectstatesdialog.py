@@ -78,6 +78,8 @@ class SelectStatesDialog(QDialog):
             else:
                 self.removeStates(child)
         for child in remList:
+            for transition in child.getDestTransitions():
+                transition.origin.removeOriginTransition(transition)
             parentState.removeChild(child)
 
     def buttonClicked(self, event):
