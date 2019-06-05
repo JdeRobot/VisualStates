@@ -1,21 +1,12 @@
 # VisualStates
+{: .fs-9 }
+
 
 VisualStates is a tool for programming robot behaviors with automata (Finite State Machines, even Hierarchical ones). 
 
 <p align="center">
   <img width="600" src="https://jderobot.github.io/VisualStates/gui-states.png"></img>
 </p>
-
-It represents visually the robot's behavior as a graph on a canvas composed of **states** (nodes,vertices) 
-and **transitions** (edges, links). When the automaton is in a certain state it will pass from one state
-to another depending on the conditions established in the transitions. This graphical representation allows 
-a higher level of abstraction for the programmer. 
-
-It combines a graphical language to specify the states and the transitions with a text language (Python or C++)
-to detail the behavior on each state or the conditions in the transitions.
-
-VisualStates generates a ROS node which implements the automata and shows a GUI at runtime with the active 
-state every time, for debugging.
 
 | Main features                   | 
 | ------------------------------- | 
