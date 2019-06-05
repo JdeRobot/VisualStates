@@ -48,6 +48,15 @@ class VisualStates(QMainWindow):
         self.activeState = self.rootState
         self.activeNamespace = self.localNamespace
 
+        # create status bar
+        # remove border around the widget added to the status bar
+
+        self.setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
+        statusBar = self.statusBar()
+        logo = QLabel()
+        logo.setAlignment(Qt.AlignHCenter)
+        statusBar.addWidget(logo)
+
         self.createMenu()
         self.createTreeView()
         self.createStateCanvas()
