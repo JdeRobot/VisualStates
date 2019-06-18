@@ -116,7 +116,7 @@ class VisualStates(QMainWindow):
         globalNamespaceAction.triggered.connect(self.globalNamespaceAction)
 
         stateNamespaceAction = QAction('&State Namespace', self)
-        stateNamespaceAction.setShortcut('Ctrl+G')
+        stateNamespaceAction.setShortcut('Ctrl+T')
         stateNamespaceAction.setStatusTip('Open State Namespace')
         stateNamespaceAction.triggered.connect(self.localNamespaceAction)
 
@@ -132,7 +132,7 @@ class VisualStates(QMainWindow):
         configFileAction.triggered.connect(self.configFileAction)
 
         generateCppAction = QAction('&Generate C++', self)
-        generateCppAction.setShortcut('Ctrl+G')
+        generateCppAction.setShortcut('Ctrl+U')
         generateCppAction.setStatusTip('Generate C++ code')
         generateCppAction.triggered.connect(self.generateCppAction)
 
