@@ -67,8 +67,10 @@ class FileManager():
         return stateElement
 
     def open(self, fullPath):
-        self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
+        if len(doc.getElementsByTagName('VisualStates')) == 0:
+            return None, None, None, None
+        self.setFullPath(fullPath)
 
         globalNamespaceNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('global_namespace')[0]
         globalNamespace = Namespace('', '')

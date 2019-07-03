@@ -205,13 +205,18 @@ class VisualStates(QMainWindow):
             self.openFile(fileDialog.selectedFiles()[0])
 
     def openFile(self, fileName):
-        (self.rootState, self.config, self.libraries, self.globalNamespace) = self.fileManager.open(fileName)
-        self.automataPath = self.fileManager.fullPath
-        self.treeModel.removeAll()
-        self.treeModel.loadFromRoot(self.rootState)
-        # set the active state as the loaded state
-        self.automataScene.setActiveState(self.rootState)
-        self.automataScene.setLastIndexes(self.rootState)
+        (rootState, config, libraries, globalNamespace) = self.fileManager.open(fileName)
+        if rootState is not None:
+            (self.rootState, self.config, self.libraries, self.globalNamespace) = (rootState, config, libraries, globalNamespace)
+            self.automataPath = self.fileManager.fullPath
+            self.treeModel.removeAll()
+            self.treeModel.loadFromRoot(self.rootState)
+            # set the active state as the loaded state
+            self.automataScene.setActiveState(self.rootState)
+            self.automataScene.setLastIndexes(self.rootState)
+        else:
+            self.showWarning("Wrong file selected",
+                             "The selected file is not a valid VisualStates file")
 
 
     def saveAction(self):
@@ -250,18 +255,22 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             tempPath = self.fileManager.getFullPath()
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            self.fileManager.setPath(tempPath)
-            # if the current active state already has an initial state make sure that
-            # there will not be any initial state in the imported state
-            if self.activeState.getInitialChild() is not None:
-                for childState in file[0].getChildren():
-                    childState.setInitial(False)
+            if file[0] is not None:
+                self.fileManager.setPath(tempPath)
+                # if the current active state already has an initial state make sure that
+                # there will not be any initial state in the imported state
+                if self.activeState.getInitialChild() is not None:
+                    for childState in file[0].getChildren():
+                        childState.setInitial(False)
 
-            # Update importing Namespaces
-            importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
-            self.treeModel.loadFromRoot(importedState, self.activeState)
-            self.automataScene.displayState(self.activeState)
-            self.automataScene.setLastIndexes(self.rootState)
+                # Update importing Namespaces
+                importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
+                self.treeModel.loadFromRoot(importedState, self.activeState)
+                self.automataScene.displayState(self.activeState)
+                self.automataScene.setLastIndexes(self.rootState)
+            else:
+                self.showWarning("Wrong file selected",
+                                 "The selected file is not a valid VisualStates file")
 
     def timerAction(self):
         if self.activeState is not None:
