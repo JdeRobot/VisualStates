@@ -19,7 +19,7 @@
   '''
 import sys
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QComboBox, QHBoxLayout, QPushButton, \
-    QApplication, QLabel, QScrollArea, QBoxLayout
+    QApplication, QLabel, QScrollArea, QBoxLayout, QMessageBox
 from PyQt5.QtCore import Qt
 from visualstates.configs.rospackage import getAllPackages
 
@@ -103,6 +103,11 @@ class PackageTab(QWidget):
             layout = self.buildLayout
             dependency = self.buildDependenciesCb.currentText()
             if len(dependency) > 0:
+                for buildDependency in self.buildDependencies:
+                    if buildDependency == dependency:
+                        QMessageBox.information(self, "Dependency present",
+                                                "This dependency is already present in the Build Dependencies list")
+                        return
                 removeCallback = self.removeBuildDependency
                 dependenciesUI = self.buildDependenciesUI
                 self.buildDependencies.append(dependency)
@@ -110,6 +115,11 @@ class PackageTab(QWidget):
             layout = self.runLayout
             dependency = self.runDependenciesCb.currentText()
             if len(dependency) > 0:
+                for runDependency in self.runDependencies:
+                    if runDependency == dependency:
+                        QMessageBox.information(self, "Dependency present",
+                                                "This dependency is already present in the Run Dependencies list")
+                        return
                 removeCallback = self.removeRunDependency
                 dependenciesUI = self.runDependenciesUI
                 self.runDependencies.append(dependency)
