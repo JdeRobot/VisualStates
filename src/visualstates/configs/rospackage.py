@@ -148,7 +148,8 @@ def getPackages(workspaceDir):
     for pkgFile in packageFiles:
         doc = minidom.parse(pkgFile)
         nameElement = doc.getElementsByTagName('package')[0].getElementsByTagName('name')[0]
-        packageNames.append(nameElement.childNodes[0].nodeValue)
+        if len(nameElement.childNodes) > 0:
+            packageNames.append(nameElement.childNodes[0].nodeValue)
     return packageNames
 
 

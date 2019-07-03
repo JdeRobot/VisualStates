@@ -91,7 +91,8 @@ class FileManager():
         if len(libraryElements) > 0:
             libraryElements = libraryElements[0].getElementsByTagName('library')
             for libElement in libraryElements:
-                libraries.append(libElement.childNodes[0].nodeValue)
+                if len(libElement.childNodes) > 0:
+                    libraries.append(libElement.childNodes[0].nodeValue)
 
         return rootState, config, libraries, globalNamespace
 

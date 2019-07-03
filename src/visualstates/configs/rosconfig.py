@@ -143,13 +143,15 @@ class RosConfig(object):
         self.buildDependencies = []
         bDependencies = node.getElementsByTagName('buildDependencies')[0]
         for bDependency in bDependencies.getElementsByTagName('dependency'):
-            self.buildDependencies.append(bDependency.childNodes[0].nodeValue)
+            if len(bDependency.childNodes) > 0:
+                self.buildDependencies.append(bDependency.childNodes[0].nodeValue)
             # print('bdepend:' + bDependency.childNodes[0].nodeValue)
 
         self.runDependencies = []
         rDependencies = node.getElementsByTagName('runDependencies')[0]
         for rDependency in rDependencies.getElementsByTagName('dependency'):
-            self.runDependencies.append(rDependency.childNodes[0].nodeValue)
+            if len(rDependency.childNodes) > 0:
+                self.runDependencies.append(rDependency.childNodes[0].nodeValue)
             # print('rdepend:' + rDependency.childNodes[0].nodeValue)
 
         self.topics = []
