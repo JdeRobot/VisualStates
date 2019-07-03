@@ -19,7 +19,7 @@
   '''
 import sys
 from PyQt5.QtWidgets import QDialog, \
-    QLineEdit, QPushButton, \
+    QLineEdit, QPushButton, QMessageBox, \
     QWidget, QApplication, QLabel, QGridLayout
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase
@@ -81,11 +81,14 @@ class LibrariesDialog(QDialog):
         self.librariesChanged.emit(self.libraries)
 
     def addClicked(self):
-        self.libraries.append(self.libraryNameEdit.text())
+        input = self.libraryNameEdit.text().strip()
+        for library in self.libraries:
+            if library == input:
+                QMessageBox.warning(self, "Library Present", "Library already present in the list")
+                return
+        self.libraries.append(input)
         self.drawWindow()
         self.librariesChanged.emit(self.libraries)
-
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
