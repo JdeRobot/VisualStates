@@ -84,7 +84,7 @@ class LibrariesDialog(QDialog):
         input = self.libraryNameEdit.text().strip()
         for library in self.libraries:
             if library == input:
-                QMessageBox.warning(self, "Library Present", "Library already present in the list")
+                QMessageBox.information(self, "Library Present", "Library already present in the list")
                 return
         self.libraries.append(input)
         self.drawWindow()
