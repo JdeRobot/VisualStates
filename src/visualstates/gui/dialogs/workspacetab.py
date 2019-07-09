@@ -76,10 +76,9 @@ class WorkspaceTab(QWidget):
             QMessageBox.warning(self, 'Invalid Workspace', 'This is not a catkin workspace or specified path was not found')
         elif self.isValidWorkspace(newDir):
             workspaces = readWorkspaces()
-            for workspace in workspaces:
-                if workspace == newDir:
-                    QMessageBox.information(self, 'Workspace present', 'The workspace entered is already present in the list')
-                    return
+            if newDir in workspaces:
+                QMessageBox.information(self, 'Workspace present', 'The workspace entered is already present in the list')
+                return
             workspaces.append(newDir)
             writeWorkspaces(workspaces)
             self.drawWorkspaces(workspaces)

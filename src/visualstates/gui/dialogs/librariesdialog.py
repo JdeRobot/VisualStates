@@ -81,12 +81,11 @@ class LibrariesDialog(QDialog):
         self.librariesChanged.emit(self.libraries)
 
     def addClicked(self):
-        input = self.libraryNameEdit.text().strip()
-        for library in self.libraries:
-            if library == input:
-                QMessageBox.information(self, "Library Present", "Library already present in the list")
-                return
-        self.libraries.append(input)
+        libraryInp = self.libraryNameEdit.text().strip()
+        if libraryInp in self.libraries:
+            QMessageBox.information(self, "Library Present", "Library already present in the list")
+            return
+        self.libraries.append(libraryInp)
         self.drawWindow()
         self.librariesChanged.emit(self.libraries)
 
