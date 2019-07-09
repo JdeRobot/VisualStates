@@ -86,7 +86,7 @@ class VisualStates(QMainWindow):
         saveAction.triggered.connect(self.saveAction)
 
         saveAsAction = QAction('&Save As', self)
-        saveAsAction.setShortcut('Ctrl+S')
+        saveAsAction.setShortcut('Ctrl+Shift+S')
         saveAsAction.setStatusTip('Save Visual States as New One')
         saveAsAction.triggered.connect(self.saveAsAction)
 
