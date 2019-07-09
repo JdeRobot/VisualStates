@@ -160,11 +160,10 @@ class Transition:
             self.setTemporalTime(int(transitionElement.getElementsByTagName('time')[0].childNodes[0].nodeValue))
         elif self.transitionType == TransitionType.CONDITIONAL:
             self.setCondition(transitionElement.getElementsByTagName('condition')[0].childNodes[0].nodeValue)
-        try:
+        if len(transitionElement.getElementsByTagName('name')[0].childNodes) > 0:
             self.name = transitionElement.getElementsByTagName('name')[0].childNodes[0].nodeValue
-        except IndexError:
-            self.name=""
-            pass
+        else:
+            self.name = ""
         self.x = float(transitionElement.getElementsByTagName('posx')[0].childNodes[0].nodeValue)
         self.y = float(transitionElement.getElementsByTagName('posy')[0].childNodes[0].nodeValue)
         # parse optinal code tag
