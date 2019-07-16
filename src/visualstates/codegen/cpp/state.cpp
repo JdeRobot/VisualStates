@@ -45,6 +45,14 @@ void State::init() {
         gui->emitRunningStateById(id);
     }
 
+    // re-set the initial state as the current state
+    for (unsigned int i = 0; i < states.size(); i++) {
+        if (states.at(i)->initial) {
+            currentState = states.at(i);
+            break;
+        }
+    }
+
     if (currentState != NULL) {
         currentState->init();
     }

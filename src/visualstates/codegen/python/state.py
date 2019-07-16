@@ -49,7 +49,11 @@ class State():
         if self.gui is not None:
             self.gui.emitRunningStateById(self.id)
 
-        # also init children
+        # reset the currentState as the initial state
+        for state in self.states:
+            if state.initial:
+                self.currentState = state
+                break
         if self.currentState is not None:
             self.currentState.init()
 
