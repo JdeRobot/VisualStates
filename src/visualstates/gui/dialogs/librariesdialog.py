@@ -19,10 +19,9 @@
   '''
 import sys
 from PyQt5.QtWidgets import QDialog, \
-    QLineEdit, QPushButton, \
-    QWidget, QApplication, QLabel, QGridLayout, \
+    QLineEdit, QPushButton, QApplication, \
     QScrollArea, QVBoxLayout, QGroupBox, QHBoxLayout, \
-    QBoxLayout
+    QBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal, Qt
 from visualstates.gui.util.editablestringwidget import EditableStringWidget
 
@@ -92,7 +91,11 @@ class LibrariesDialog(QDialog):
             self.librariesChanged.emit(self.libraries)
 
     def addClicked(self):
-        if self.libraryNameEdit.text():
+        libraryInp = self.libraryNameEdit.text().strip()
+        if libraryInp in self.libraries:
+            QMessageBox.information(self, "Library Present", "Library already present in the list")
+            return
+        if libraryInp:
             self.libraries.append(self.libraryNameEdit.text())
             self.librariesChanged.emit(self.libraries)
             self.addLibraryItem(self.libraryNameEdit.text())
@@ -104,7 +107,6 @@ class LibrariesDialog(QDialog):
         libRow.removed.connect(self.removed)
         libRow.updated.connect(self.updated)
         self.groupLayout.addWidget(libRow)
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
