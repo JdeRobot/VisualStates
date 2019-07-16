@@ -22,6 +22,7 @@ from visualstates.core.state import State
 from visualstates.core.namespace import Namespace
 from visualstates.configs.rosconfig import RosConfig
 import os
+import xml
 
 class FileManager():
     def __init__(self):
@@ -67,7 +68,11 @@ class FileManager():
         return stateElement
 
     def open(self, fullPath):
-        doc = minidom.parse(fullPath)
+        try:
+            doc = minidom.parse(fullPath)
+        except xml.parsers.expat.ExpatError:
+            return None, None, None, None
+
         if len(doc.getElementsByTagName('VisualStates')) == 0:
             return None, None, None, None
         self.setFullPath(fullPath)
