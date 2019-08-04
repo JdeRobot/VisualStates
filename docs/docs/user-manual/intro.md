@@ -10,7 +10,7 @@ nav_order: 1
 The VisualStates GUI has four sections: an upper menu bar, a treeView, SchemaView and dialogs for code and configs.
 
 <p align="center">
-  <img width="600" src="https://jderobot.github.io/VisualStates/visualstates-gui.png">
+  <img width="600" src="/VisualStates/docs/assets/images/visualstates-gui.png">
 </p>
 
 The menu bars contains the main buttons, which will allow you to do most of the actions. These buttons are:
