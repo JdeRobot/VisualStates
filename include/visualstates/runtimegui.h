@@ -20,12 +20,15 @@
 #ifndef RUNTIMEGUI_H
 #define RUNTIMEGUI_H
 
-#include <ros/ros.h>
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
+
 
 class RunTimeGui {
 protected:
-    ros::NodeHandle nh;
-    ros::Publisher runningStatePublisher;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr runningStatePublisher;
+    //ros::NodeHandle nh;
+    //ros::Publisher runningStatePublisher;
 
 public:
     RunTimeGui();

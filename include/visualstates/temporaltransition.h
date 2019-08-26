@@ -17,9 +17,6 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
 */
-#ifndef TEMPORALTRANSITION_H
-#define TEMPORALTRANSITION_H
-
 #include "transition.h"
 
 class TemporalTransition : public Transition {
@@ -38,4 +35,3 @@ public:
 };
 
 
-#endif

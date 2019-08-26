@@ -18,9 +18,9 @@
 
   '''
 
-from visualstates.generators.pythonrosgenerator import PythonRosGenerator
+from visualstates.generators.pythonros2generator import PythonRos2Generator
 
-class RosConfig(object):
+class Ros2Config(object):
 
     PUBLISH = 'Publish'
     SUBSCRIBE = 'Subscribe'
@@ -30,7 +30,7 @@ class RosConfig(object):
         self.buildDependencies = []
         self.runDependencies = []
 
-    def updateROSConfig(self, newConfig):
+    def updateROS2Config(self, newConfig):
         self.updateTopics(newConfig.topics)
         self.updateBuildDependencies(newConfig.buildDependencies)
         self.updateRunDependencies(newConfig.runDependencies)
@@ -48,9 +48,9 @@ class RosConfig(object):
     def addTopic(self, id, topic):
         newTopic = {}
         newTopic['id'] = id
-        if topic['opType'] == RosConfig.PUBLISH:
+        if topic['opType'] == Ros2Config.PUBLISH:
             newTopic['methodname'] = topic['methodname']
-        elif topic['opType'] == RosConfig.SUBSCRIBE:
+        elif topic['opType'] == Ros2Config.SUBSCRIBE:
             newTopic['variablename'] = topic['variablename']
         newTopic['name'] = topic['name']
         newTopic['type'] = topic['type']
@@ -115,11 +115,11 @@ class RosConfig(object):
         for t in self.topics:
             tElement = doc.createElement('topic')
             tElement.setAttribute('id', str(t['id']))
-            if t['opType'] == RosConfig.PUBLISH:
+            if t['opType'] == Ros2Config.PUBLISH:
                 methodElement = doc.createElement('methodname')
                 methodElement.appendChild(doc.createTextNode(t['methodname']))
                 tElement.appendChild(methodElement)
-            elif t['opType'] == RosConfig.SUBSCRIBE:
+            elif t['opType'] == Ros2Config.SUBSCRIBE:
                 varElement = doc.createElement('variablename')
                 varElement.appendChild(doc.createTextNode(t['variablename']))
                 tElement.appendChild(varElement)
@@ -162,13 +162,13 @@ class RosConfig(object):
             topic['name'] = t.getElementsByTagName('name')[0].childNodes[0].nodeValue
             topic['type'] = t.getElementsByTagName('type')[0].childNodes[0].nodeValue
             topic['opType'] = t.getElementsByTagName('opType')[0].childNodes[0].nodeValue
-            if topic['opType'] == RosConfig.PUBLISH:
+            if topic['opType'] == Ros2Config.PUBLISH:
                 methodnames = t.getElementsByTagName('methodname')
                 if len(methodnames) > 0:
                     topic['methodname'] = methodnames[0].childNodes[0].nodeValue
                 else:
                     topic['methodname'] = self.getVarName(topic['name'])
-            elif topic['opType'] == RosConfig.SUBSCRIBE:
+            elif topic['opType'] == Ros2Config.SUBSCRIBE:
                 varnames = t.getElementsByTagName('variablename')
                 if len(varnames) > 0:
                     topic['variablename'] = varnames[0].childNodes[0].nodeValue

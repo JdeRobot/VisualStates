@@ -25,7 +25,7 @@
 #include "conditionaltransition.h"
 #include "interfaces.h"
 
-#include <jderobot/motors.h>
+#include </opt/jderobot/include/jderobot/motors.h>
 
 class State0 : public State {
 public:

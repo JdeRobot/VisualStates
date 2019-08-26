@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from visualstates.configs.rospackage import getPackagePath
+from visualstates.configs.ros2package import getPackagePath
 
 
 class AboutDialog(QDialog):
@@ -51,7 +51,7 @@ class AboutDialog(QDialog):
         explanation.setStyleSheet("QLabel {font-size:14pt; padding:10px; background-color:#FEFFA8;}")
         explanation.setText("JdeRobot VisualStates is an open source visual tool to develop reactive robot behaviors. "
                             "The behaviors are represented by hierarchical finite state machines. "
-                            "The tool generates a ROS package that is ready to be run.")
+                            "The tool generates a ROS2 package that is ready to be run.")
         mainLayout.addWidget(explanation)
 
         githubLink = QLabel()

@@ -21,8 +21,8 @@ import sys
 from PyQt5.QtWidgets import QDialog, QFormLayout, QLabel, QLineEdit, QComboBox, \
     QPushButton, QApplication, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
-from visualstates.configs.rosconfig import RosConfig
-from visualstates.configs.rospackage import getAllTypes
+from visualstates.configs.ros2config import Ros2Config
+from visualstates.configs.ros2package import getAllTypes
 
 
 class PubSubDialog(QDialog):
@@ -124,7 +124,7 @@ class PubSubDialog(QDialog):
             if not newTopic:
                 if self.topic['id'] == topic['id']:
                     continue
-            if topic['opType'] == RosConfig.PUBLISH:
+            if topic['opType'] == Ros2Config.PUBLISH:
                 if self.isPublisher:
                     if methodname == topic['methodname']:
                         QMessageBox.information(self, "Method name present",
@@ -152,10 +152,10 @@ class PubSubDialog(QDialog):
 
         if self.isPublisher:
             self.topic['methodname'] = methodname
-            self.topic['opType'] = RosConfig.PUBLISH
+            self.topic['opType'] = Ros2Config.PUBLISH
         else:
             self.topic['variablename'] = methodname
-            self.topic['opType'] = RosConfig.SUBSCRIBE
+            self.topic['opType'] = Ros2Config.SUBSCRIBE
         self.topic['name'] = name
         self.topic['type'] = type
 

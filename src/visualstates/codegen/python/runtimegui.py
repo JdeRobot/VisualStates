@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, 
 from visualstates.gui.tree.treemodel import TreeModel
 from visualstates.core.state import State
 from visualstates.core.transition import Transition
-from visualstates.configs.rospackage import getPackagePath
+from visualstates.configs.ros2package import getPackagePath
 
 
 class RunTimeGui(QMainWindow):

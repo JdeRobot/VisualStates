@@ -17,20 +17,28 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
 */
-#include <visualstates/runtimegui.h>
+
+#include "../../../../include/visualstates/runtimegui.h"
 #include <sstream>
-#include <std_msgs/String.h>
+#include "std_msgs/msg/string.hpp"
+
+using namespace std::chrono_literals;
+
 
 RunTimeGui::RunTimeGui() {
-    runningStatePublisher = nh.advertise<std_msgs::String>("/runtime_gui", 100);
+    rclcpp::Node::SharedPtr node;
+    runningStatePublisher = node->create_publisher<std_msgs::msg::String>("/runtime_gui", 100);
+
+    //runningStatePublisher = node->advertise<std_msgs::msg::String>("/runtime_gui", 100);
 }
 
 void RunTimeGui::emitRunningStateById(int id) {
-    std_msgs::String runningStateMsg;
+    //std_msgs::msg::String runningStateMsg;
+    auto runningStateMsg = std::make_shared<std_msgs::msg::String>();
     std::stringstream ss;
     ss << id;
-    runningStateMsg.data = ss.str();
-    runningStatePublisher.publish(runningStateMsg);
+    runningStateMsg->data = ss.str();
+    runningStatePublisher->publish(runningStateMsg);
 }
 
 void RunTimeGui::emitLoadFromRoot() {

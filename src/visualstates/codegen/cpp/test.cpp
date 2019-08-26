@@ -17,9 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
 */
-#include <visualstates/test.h>
+#include "../../../../include/visualstates/test.h"
 #include <iostream>
-#include <easyiceconfig/EasyIce.h>
+//#include <easyiceconfig/EasyIce.h>
 #include <string>
 #include <visualstates/runtimegui.h>
 

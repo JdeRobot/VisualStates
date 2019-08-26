@@ -20,13 +20,13 @@
 import sys
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, \
     QApplication, QTabWidget
-from visualstates.configs.rosconfig import RosConfig
+from visualstates.configs.ros2config import Ros2Config
 from visualstates.gui.dialogs.packagetab import PackageTab
 from visualstates.gui.dialogs.topicstab import TopicsTab
 from visualstates.gui.dialogs.workspacetab import WorkspaceTab
 
 
-class RosConfigDialog(QDialog):
+class Ros2ConfigDialog(QDialog):
 
     def __init__(self, name, config):
         super(QDialog, self).__init__()
@@ -49,9 +49,9 @@ class RosConfigDialog(QDialog):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    config = RosConfig()
+    config = Ros2Config()
 
-    dialog = RosConfigDialog('Config')
+    dialog = Ros2ConfigDialog('Config')
     dialog.setConfig(config)
 
     dialog.exec_()

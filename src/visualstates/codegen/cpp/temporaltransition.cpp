@@ -17,7 +17,7 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
 */
-#include <visualstates/temporaltransition.h>
+#include "../../../../include/visualstates/temporaltransition.h"
 #include <sys/time.h>
 
 TemporalTransition::TemporalTransition(int id, int destinationId, int elapsedTime):

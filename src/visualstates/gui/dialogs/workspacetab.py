@@ -21,8 +21,8 @@ import sys, os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QPushButton, \
     QApplication, QLabel, QScrollArea, QBoxLayout, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
-from visualstates.configs.rospackage import readWorkspaces
-from visualstates.configs.rospackage import writeWorkspaces
+from visualstates.configs.ros2package import readWorkspaces
+from visualstates.configs.ros2package import writeWorkspaces
 
 
 class WorkspaceTab(QWidget):

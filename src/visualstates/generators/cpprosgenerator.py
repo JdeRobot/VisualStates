@@ -26,7 +26,7 @@ from visualstates.parsers.cppparser import CPPParser
 from visualstates.generators.basegenerator import BaseGenerator
 
 
-class CppRosGenerator(BaseGenerator):
+class CppRos2Generator(BaseGenerator):
     def __init__(self, libraries, config, states, globalNamespace):
         BaseGenerator.__init__(self, libraries, config, states, globalNamespace)
 
@@ -85,21 +85,22 @@ class CppRosGenerator(BaseGenerator):
         headers.append('#ifndef ' + projectName + '_H\n')
         headers.append('#define ' + projectName + '_H\n\n')
 
-        headers.append('#include <ros/ros.h>\n')
-        headers.append('#include <visualstates/state.h>\n')
-        headers.append('#include <visualstates/temporaltransition.h>\n')
-        headers.append('#include <visualstates/conditionaltransition.h>\n')
+        #Check into absolute path solution by linking header files properly in ROS2
+        headers.append('#include "rclcpp/rclcpp.h"\n')
+        headers.append('#include "../../../../include/visualstates/state.h"\n')
+        headers.append('#include "../../../../include/visualstates/temporaltransition.h"\n')
+        headers.append('#include "../../../../include/visualstates/conditionaltransition.h"\n')
 
         for lib in self.libraries:
             headers.append('#include <')
             headers.append(lib.strip('\n'))
             headers.append('>\n')
 
-        # generate ros message headers
+        # generate ros2 message headers
         typeSet = {''} # create set
         for topic in self.config.getTopics():
             if topic['type'] not in typeSet:
-                headers.append('#include <' + topic['type'] + '.h>\n')
+                headers.append('#include "' + topic['type'] + '.hpp"\n') #Ex: Earlier it was "std_msgs/String.h" --> "std_msgs/msg/string.hpp"
                 typeSet.add(topic['type'])
 
         headers.append('\n')
@@ -109,8 +110,8 @@ class CppRosGenerator(BaseGenerator):
     def generateGlobalNamespaceClass(self, classStr, config, globalNamespace):
         classStr.append('class GlobalNamespace {\n')
         classStr.append('private:\n')
-        classStr.append('\tros::NodeHandle nh;\n')
-        classStr.append('\tros::Rate rate;\n')
+        classStr.append('\trclcpp::Publisher' + topic['type']+ '::SharedPtr publisher_ ;\n' )    #Correct use of topic ??           #classStr.append('\tros::NodeHandle nh;\n')
+        classStr.append('\trclcpp::Rate rate;\n')
         classStr.append('\tpthread_t thread;\n\n')
 
         for topic in config.getTopics():

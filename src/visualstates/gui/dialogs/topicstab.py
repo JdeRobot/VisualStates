@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, \
     QVBoxLayout, QHBoxLayout, QLabel,  \
     QGroupBox, QScrollArea, QBoxLayout
 from PyQt5.QtCore import Qt
-from visualstates.configs.rosconfig import RosConfig
+from visualstates.configs.ros2config import Ros2Config
 from visualstates.gui.dialogs.pubsubdialog import PubSubDialog
 
 
@@ -176,10 +176,10 @@ class TopicsTab(QWidget):
         rowLayout.addWidget(removeBtn)
         UIs = [nameLbl, topicLbl, typeLbl, editBtn, removeBtn, rowLayout]
         self.topicUIs[topic['id']] = UIs
-        if topic['opType'] == RosConfig.PUBLISH:
+        if topic['opType'] == Ros2Config.PUBLISH:
             nameLbl.setText(topic['methodname'])
             self.pubScrollVlayout.addLayout(rowLayout)
-        elif topic['opType'] == RosConfig.SUBSCRIBE:
+        elif topic['opType'] == Ros2Config.SUBSCRIBE:
             nameLbl.setText(topic['variablename'])
             self.subsScrollVlayout.addLayout(rowLayout)
 
@@ -196,9 +196,9 @@ class TopicsTab(QWidget):
                 editTopic = topic
                 break
         if editTopic is not None:
-            if editTopic['opType'] == RosConfig.PUBLISH:
+            if editTopic['opType'] == Ros2Config.PUBLISH:
                 dialog = PubSubDialog(topic=editTopic, config=self.config, isPublisher=True)
-            elif editTopic['opType'] == RosConfig.SUBSCRIBE:
+            elif editTopic['opType'] == Ros2Config.SUBSCRIBE:
                 dialog = PubSubDialog(topic=editTopic, config=self.config, isPublisher=False)
             dialog.topicUpdated.connect(self.topicUpdatedHandler)
             dialog.exec_()
@@ -212,9 +212,9 @@ class TopicsTab(QWidget):
 
         if updatedTopic is not None:
             UIs = self.topicUIs[updatedID]
-            if updatedTopic['opType'] == RosConfig.PUBLISH:
+            if updatedTopic['opType'] == Ros2Config.PUBLISH:
                 UIs[0].setText(updatedTopic['methodname'])
-            elif updatedTopic['opType'] == RosConfig.SUBSCRIBE:
+            elif updatedTopic['opType'] == Ros2Config.SUBSCRIBE:
                 UIs[0].setText(updatedTopic['variablename'])
 
             UIs[1].setText(updatedTopic['name'])

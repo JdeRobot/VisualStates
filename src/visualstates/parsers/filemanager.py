@@ -20,7 +20,7 @@
 from xml.dom import minidom
 from visualstates.core.state import State
 from visualstates.core.namespace import Namespace
-from visualstates.configs.rosconfig import RosConfig
+from visualstates.configs.ros2config import Ros2Config
 import os
 import xml
 
@@ -89,7 +89,7 @@ class FileManager():
         config = None
         if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')) > 0:
             configElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')[0]
-            config = RosConfig()
+            config = Ros2Config()
             config.loadNode(configElement)
 
         libraries = []
