@@ -1,19 +1,33 @@
 <?xml version="1.0" ?>
-<package>
-  <name>visualstates</name>
-  <version>0.2.2</version>
+  <package format="2">
+  <name>visualstatesros2</name>
+  <version>1.0.0</version>
   <description>The VisualStates is reactive hierarchical visual robot planning tool.</description>
   <maintainer email="asik.okan@gmail.com">Okan Aşık</maintainer>
   <license>GPLv3</license>
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+
+
+  <build_depend>rclcpp</build_depend>
+  <build_depend>rclpy</build_depend>
   <build_depend>std_msgs</build_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>python-rospkg</run_depend>
-  <run_depend>python-qt5-bindings</run_depend>
-  <run_depend>python-qt5-bindings-qsci</run_depend>
-  <export/>
+  <build_depend>rosidl_default_generators</build_depend>
+
+
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <exec_depend>builtin_interfaces</exec_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <exec_depend>python-ros2pkg</exec_depend>
+
+  <exec_depend>python-qt5-bindings</exec_depend>
+  <exec_depend>python-qt5-bindings-qsci</exec_depend>
+  
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

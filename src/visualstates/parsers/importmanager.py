@@ -18,7 +18,7 @@
 
   '''
 
-from visualstates.configs.rosconfig import RosConfig
+from visualstates.configs.ros2config import Ros2Config
 
 class ImportManager():
     """
@@ -65,8 +65,8 @@ class ImportManager():
         """Updates Existing Configurations with imported Configurations"""
         if newConfig:
             if config is None:
-                config = RosConfig()
-            config.updateROSConfig(newConfig)
+                config = Ros2Config()
+            config.updateROS2Config(newConfig)
         return config
 
     def updateActiveState(self, importState, stateID, transitionID, activeState):

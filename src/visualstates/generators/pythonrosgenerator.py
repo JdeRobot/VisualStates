@@ -22,7 +22,7 @@ import shutil
 from xml.dom import minidom
 
 from visualstates.gui.transition.transitiontype import TransitionType
-from visualstates.configs.rospackage import getPackagePath
+from visualstates.configs.ros2package import getPackagePath
 from visualstates.generators.basegenerator import BaseGenerator
 
 
@@ -61,7 +61,7 @@ class PythonRosGenerator(BaseGenerator):
     def generateImports(self, importStr):
         mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys, threading, time, rospy, signal
+import sys, threading, time, rclpy, signal
 '''
         importStr.append(mystr)
 
@@ -150,19 +150,31 @@ from PyQt5.QtWidgets import QApplication
     def generateGlobalNamespace(self, globalNamespaceStr, projectName):
         globalNamespaceStr.append('class GlobalNamespace():\n')
         globalNamespaceStr.append('\tdef __init__(self):\n')
-        globalNamespaceStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True, disable_signals=True)\n\n')
+        #rclpy.init(args=sys.argv)
+        globalNamespaceStr.append('\t\trclpy.init()\n\n')
+        #node = rclpy.create_node("' + projectName + '")
+        globalNamespaceStr.append('\t\tnode = rclpy.create_node("' + projectName + '") \n\n')
+        #globalNamespaceStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True, disable_signals=True)\n\n')
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                globalNamespaceStr.append('\t\tself.' + topic['methodname'] + 'Pub = rospy.Publisher("' +
-                              topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
+                # pub = node.create_publisher(String, 'chatter')
+                globalNamespaceStr.append('\t\tself.' + topic['methodname'] + 'Pub = node.create_publisher("' +
+                               types[1] + '", '  +topic['name'] ', 10)\n')
+                #globalNamespaceStr.append('\t\tself.' + topic['methodname'] + 'Pub = rospy.Publisher("' +
+                #              topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
             elif topic['opType'] == 'Subscribe':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + 'Sub = rospy.Subscriber("' +
-                                  topic['name'] + '", ' + types[1] + ', self.' + topic['variablename'] + 'Callback)\n')
-                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + ' = ' + types[1] + '()\n')
+                #subscription = g_node.create_subscription(String, 'topic', chatter_callback, 10)
+                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + 'Sub = node.create_subscription("' +
+                                types[1] + '", ' + topic['name'] + '", ' + types[1] + ', self.' + topic['variablename'] + 
+                                topic['variablename'] + 'Callback'+', 10)\n')
+                #globalNamespaceStr.append('\t\tself.' + topic['variablename'] + 'Sub = rospy.Subscriber("' +
+                #                  topic['name'] + '", ' + types[1] + ', self.' + topic['variablename'] + 'Callback)\n')
+                #####Is line below required??#####
+                #globalNamespaceStr.append('\t\tself.' + topic['variablename'] + ' = ' + types[1] + '()\n')
 
         # add state variables as part of ros node
         variables = self.globalNamespace.getVariables()
@@ -174,7 +186,7 @@ from PyQt5.QtWidgets import QApplication
         globalNamespaceStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
 
         globalNamespaceStr.append('\tdef stop(self):\n')
-        globalNamespaceStr.append('\t\trospy.signal_shutdown("exit ROS node")\n\n')
+        globalNamespaceStr.append('\t\trclpy.shutdown()\n\n')
 
         # define publisher methods and subscriber callbacks
         for topic in self.config.getTopics():
@@ -313,15 +325,17 @@ def runGui():
         cmakeStr.append(projectName)
         cmakeStr.append(')\n\n')
 
-        cmakeStr.append('cmake_minimum_required(VERSION 2.8.3)\n\n')
+        cmakeStr.append('cmake_minimum_required(VERSION 3.5)\n\n')
 
-        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS visualstates\n')
+        cmakeStr.append('find_package(ament_cmake REQUIRED COMPONENTS visualstates\n')
         for dep in self.config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
         cmakeStr.append(')\n\n')
-        cmakeStr.append('catkin_package()\n')
-        cmakeStr.append('include_directories(${catkin_INCLUDE_DIRS})\n')
-        cmakeStr.append('install(PROGRAMS ' + projectName + '.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n')
+        cmakeStr.append('ament_package()\n')
+        cmakeStr.append('include_directories(${rclcpp_INCLUDE_DIRS} ${rmw_implementation_INCLUDE_DIRS} ${std_msgs_INCLUDE_DIRS} )\n')
+        #cmakeStr.append('install(PROGRAMS ' + projectName + '.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n')
+        cmakeStr.append('install(TARGETS ' + projectName + 'RUNTIME DESTINATION bin)\n')
+
         return cmakeStr
 
     def generatePackageXml(self, config, projectName):
@@ -344,7 +358,7 @@ def runGui():
         licenseElement.appendChild(doc.createTextNode('TODO (choose one: BSD, MIT, GPLv2, GPLv3 LGPLv3)'))
         root.appendChild(licenseElement)
         btoolDepElement = doc.createElement('buildtool_depend')
-        btoolDepElement.appendChild(doc.createTextNode('catkin'))
+        #btoolDepElement.appendChild(doc.createTextNode('catkin'))
         root.appendChild(btoolDepElement)
         for bdep in ['visualstates']+config.getBuildDependencies():
             bdepElement = doc.createElement('build_depend')
@@ -352,12 +366,12 @@ def runGui():
             root.appendChild(bdepElement)
 
         for rdep in ['visualstates']+config.getRunDependencies():
-            rdepElement = doc.createElement('run_depend')
+            rdepElement = doc.createElement('exec_depend')
             rdepElement.appendChild(doc.createTextNode(rdep))
             root.appendChild(rdepElement)
 
         # system dependencies
-        rdepElement = doc.createElement('run_depend')
+        rdepElement = doc.createElement('exec_depend')
         rdepElement.appendChild(doc.createTextNode('python-qt5-bindings'))
         root.appendChild(rdepElement)
 
@@ -375,6 +389,6 @@ def runGui():
         if os.path.exists(projectPath + '/core'):
             shutil.rmtree(projectPath + '/core')
 
-        shutil.copytree(getPackagePath() + '/lib/python2.7/codegen', projectPath + '/codegen')
-        shutil.copytree(getPackagePath() + '/lib/python2.7/gui', projectPath + '/gui')
-        shutil.copytree(getPackagePath() + '/lib/python2.7/core', projectPath + '/core')
+        shutil.copytree(getPackagePath() + '/lib/python3.5/codegen', projectPath + '/codegen')
+        shutil.copytree(getPackagePath() + '/lib/python3.5/gui', projectPath + '/gui')
+        shutil.copytree(getPackagePath() + '/lib/python3.5/core', projectPath + '/core')

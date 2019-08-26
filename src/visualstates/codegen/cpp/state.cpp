@@ -17,7 +17,7 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
 */
-#include <visualstates/state.h>
+#include "../../../../include/visualstates/state.h"
 #include <unistd.h>
 #include <sys/time.h>
 #include <iostream>
@@ -43,14 +43,6 @@ void State::init() {
 
     if (gui != NULL) {
         gui->emitRunningStateById(id);
-    }
-
-    // re-set the initial state as the current state
-    for (unsigned int i = 0; i < states.size(); i++) {
-        if (states.at(i)->initial) {
-            currentState = states.at(i);
-            break;
-        }
     }
 
     if (currentState != NULL) {

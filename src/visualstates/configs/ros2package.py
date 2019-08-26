@@ -17,15 +17,15 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-import rospkg
+import ros2pkg
 import os
 from xml.dom import minidom
 from PyQt5.QtCore import QCoreApplication, QSettings
 
 # we keep module variables not to calculate these lists every time gui needs them
-rospackmodule = None
-rosTypes = None
-rosPackages = None
+ros2packmodule = None
+ros2Types = None
+ros2Packages = None
 
 
 def setupSettings():
@@ -47,26 +47,26 @@ def readWorkspaces():
 
 
 def writeWorkspaces(workspaces):
-    global rosPackages
-    global rosTypes
+    global ros2Packages
+    global ros2Types
     settings = setupSettings()
     settings.beginWriteArray('workspaces')
     for i in range(len(workspaces)):
         settings.setArrayIndex(i)
         settings.setValue('dir', workspaces[i])
     settings.endArray()
-    rosTypes = None
-    rosPackages = None
+    ros2Types = None
+    ros2Packages = None
 
 
-def getRosMessageTypes(rosDir=None):
+def getRos2MessageTypes(ros2Dir=None):
     if rosDir is None:
         if 'ROS_DISTRO' in os.environ:
-            rosDir = '/opt/ros/' + os.environ['ROS_DISTRO']
+            ros2Dir = '/opt/ros/' + os.environ['ROS_DISTRO']
         else:
-            rosDir = '/opt/ros/kinetic'
+            ros2Dir = '/opt/ros/dashing'
 
-    messageDir = rosDir + '/include'
+    messageDir = ros2Dir + '/include'
     if os.path.exists(messageDir):
         allContents = os.listdir(messageDir)
         messages = []
@@ -91,45 +91,45 @@ def getRosMessageTypes(rosDir=None):
 
 
 def getPackagePath():
-    global rospackmodule
-    if rospackmodule is None:
-        rospackmodule = rospkg.RosPack()
-    return rospackmodule.get_path('visualstates')
+    global ros2packmodule
+    if ros2packmodule is None:
+        ros2packmodule = ros2pkg.Ros2Pack()
+    return ros2packmodule.get_path('visualstates')
 
 
 def getAllPackages():
-    global rospackmodule
-    global rosPackages
-    if rosPackages is None:
-        if rospackmodule is None:
-            rospackmodule = rospkg.RosPack()
-        rosPackages = rospackmodule.list()
+    global ros2packmodule
+    global ros2Packages
+    if ros2Packages is None:
+        if ros2packmodule is None:
+            ros2packmodule = ros2pkg.Ros2Pack()
+        ros2Packages = ros2packmodule.list()
 
         workspaces = readWorkspaces()
         for dir in workspaces:
             packages = getPackages(dir)
-            rosPackages += packages
+            ros2Packages += packages
 
-    return rosPackages
+    return ros2Packages
 
 
 def getAllTypes():
-    global rosTypes
-    if rosTypes is None:
-        messageTypes = getRosMessageTypes()
+    global ros2Types
+    if ros2Types is None:
+        messageTypes = getRos2MessageTypes()
 
         workspaces = readWorkspaces()
         for dir in workspaces:
-            messageTypes += getRosMessageTypes(dir + '/devel')
+            messageTypes += getRos2MessageTypes(dir + '/devel')
 
         concatTypes = []
         for type in messageTypes:
             concatType = type['typeDir'] + '/' + type['type']
             concatTypes.append(concatType)
 
-        rosTypes = sorted(concatTypes)
+        ros2Types = sorted(concatTypes)
 
-    return rosTypes
+    return ros2Types
 
 
 def getPackages(workspaceDir):

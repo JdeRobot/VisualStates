@@ -21,7 +21,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QComboBox, QHBoxLayout, QPushButton, \
     QApplication, QLabel, QScrollArea, QBoxLayout, QMessageBox
 from PyQt5.QtCore import Qt
-from visualstates.configs.rospackage import getAllPackages
+from visualstates.configs.ros2package import getAllPackages
 
 
 class PackageTab(QWidget):
