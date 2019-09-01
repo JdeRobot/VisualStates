@@ -19,73 +19,94 @@
   '''
 import sys
 from PyQt5.QtWidgets import QDialog, \
-    QLineEdit, QPushButton, \
-    QWidget, QApplication, QLabel, QGridLayout
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QFontDatabase
+    QLineEdit, QPushButton, QApplication, \
+    QScrollArea, QVBoxLayout, QGroupBox, QHBoxLayout, \
+    QBoxLayout, QMessageBox
+from PyQt5.QtCore import pyqtSignal, Qt
+from visualstates.gui.util.editablestringwidget import EditableStringWidget
 
 
 class LibrariesDialog(QDialog):
+
     librariesChanged = pyqtSignal(list)
 
     def __init__(self, name, libraries):
         super(QDialog, self).__init__()
         self.setWindowTitle(name)
-        self.resize(300, 100)
+        self.setMinimumHeight(500)
+        self.setMinimumWidth(500)
         self.libraries = libraries
-        self.libraryNameEdit = None
-        self.addButton = None
-
-        self.drawWindow()
-
-    def drawWindow(self):
-        if self.layout() is not None:
-            tempWidget = QWidget()
-            tempWidget.setLayout(self.layout())
-
-        gridLayout = QGridLayout()
-
-        # add header
-        gridLayout.addWidget(QLabel('Libraries'), 0, 0)
-        gridLayout.addWidget(QLabel(''), 0, 1)
-
-        # add new library edit box
         self.libraryNameEdit = QLineEdit()
-        fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.libraryNameEdit.setFont(fixedWidthFont)
-        gridLayout.addWidget(self.libraryNameEdit, 1, 0)
-        self.addButton = QPushButton('Add')
+        self.addButton = QPushButton("Add")
+        self.addButton.setMinimumWidth(100)
+
+        # create gui of
+        verticalLayout = QVBoxLayout()
+        self.setLayout(verticalLayout)
+        scrollArea = QScrollArea()
+        scrollArea.setMinimumHeight(400)
+        scrollArea.setWidgetResizable(True)
+        scrollArea.setStyleSheet('QScrollArea {border: 0;}')
+        verticalLayout.addWidget(scrollArea)
+        groupBox = QGroupBox("Libraries")
+        scrollArea.setWidget(groupBox)
+        self.groupLayout = QVBoxLayout()
+        self.groupLayout.setDirection(QBoxLayout.TopToBottom)
+        self.groupLayout.setAlignment(Qt.AlignTop)
+        groupBox.setLayout(self.groupLayout)
+
+        # add row to group layout
+        rowLayout = QHBoxLayout()
+        self.groupLayout.addLayout(rowLayout)
+        rowLayout.addWidget(self.libraryNameEdit)
+        rowLayout.addWidget(self.addButton)
         self.addButton.clicked.connect(self.addClicked)
-        gridLayout.addWidget(self.addButton, 1, 1)
 
-        self.buttons = {}
+        self.libraryUIs = {}
 
-        row = 2
-        for lib in self.libraries:
-            gridLayout.addWidget(QLabel(lib), row, 0)
-            deleteButton = QPushButton()
-            deleteButton.setObjectName(lib)
-            deleteButton.setText('Delete')
-            deleteButton.clicked.connect(self.deleteButtonClicked)
-            gridLayout.addWidget(deleteButton, row, 1)
-            row += 1
-            self.buttons[deleteButton] = lib
+        # add libraries to the ui
+        for libraryName in self.libraries:
+            self.addLibraryItem(libraryName)
 
-        self.resize(300, 100)
-        self.setLayout(gridLayout)
+    def removed(self, libraryName):
+        if libraryName in self.libraryUIs:
+            libRow = self.libraryUIs[libraryName]
+            libRow.disconnect()
+            self.groupLayout.removeWidget(libRow)
+            del self.libraryUIs[libraryName]
+            libRow.deleteLater()
+            self.libraries.remove(libraryName)
+            self.librariesChanged.emit(self.libraries)
 
-
-    def deleteButtonClicked(self):
-        self.libraries.remove(self.sender().objectName())
-        self.drawWindow()
-        self.librariesChanged.emit(self.libraries)
+    def updated(self, oldLibraryName, newLibraryName):
+        if oldLibraryName in self.libraryUIs:
+            libRow = self.libraryUIs[oldLibraryName]
+            del self.libraryUIs[oldLibraryName]
+            self.libraryUIs[newLibraryName] = libRow
+            # update library list
+            for i in range(len(self.libraries)):
+                if self.libraries[i] == oldLibraryName:
+                    self.libraries[i] = newLibraryName
+                    break
+            self.librariesChanged.emit(self.libraries)
 
     def addClicked(self):
-        self.libraries.append(self.libraryNameEdit.text())
-        self.drawWindow()
-        self.librariesChanged.emit(self.libraries)
+        libraryInp = self.libraryNameEdit.text().strip()
+        if libraryInp in self.libraries:
+            QMessageBox.information(self, "Library Present", "Library already present in the list")
+            return
+        if libraryInp:
+            self.libraries.append(self.libraryNameEdit.text())
+            self.librariesChanged.emit(self.libraries)
+            self.addLibraryItem(self.libraryNameEdit.text())
+            self.libraryNameEdit.setText('')
 
-
+    def addLibraryItem(self, libraryName):
+        libRow = EditableStringWidget(libraryName)
+        self.libraryUIs[libraryName] = libRow
+        libRow.removed.connect(self.removed)
+        libRow.updated.connect(self.updated)
+        self.groupLayout.addWidget(libRow)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -51,16 +51,7 @@ class VisualStates(QMainWindow):
         self.activeState = self.rootState
         self.activeNamespace = self.localNamespace
 
-        # create status bar
-        # remove border around the widget added to the status bar
-        self.setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
-        statusBar = self.statusBar()
-        logo = QLabel()
-        logo.setAlignment(Qt.AlignHCenter)
-        logoPixmap = QPixmap(getPackagePath() + '/resources/jderobot.png')
-        logo.setPixmap(logoPixmap)
-        statusBar.addWidget(logo)
-
+        self.statusBar()
         self.createMenu()
         self.createTreeView()
         self.createStateCanvas()
@@ -98,7 +89,7 @@ class VisualStates(QMainWindow):
         saveAction.triggered.connect(self.saveAction)
 
         saveAsAction = QAction('&Save As', self)
-        saveAsAction.setShortcut('Ctrl+S')
+        saveAsAction.setShortcut('Ctrl+Shift+S')
         saveAsAction.setStatusTip('Save Visual States as New One')
         saveAsAction.triggered.connect(self.saveAsAction)
 
@@ -135,7 +126,7 @@ class VisualStates(QMainWindow):
         globalNamespaceAction.triggered.connect(self.globalNamespaceAction)
 
         stateNamespaceAction = QAction('&State Namespace', self)
-        stateNamespaceAction.setShortcut('Ctrl+G')
+        stateNamespaceAction.setShortcut('Ctrl+T')
         stateNamespaceAction.setStatusTip('Open State Namespace')
         stateNamespaceAction.triggered.connect(self.localNamespaceAction)
 
@@ -151,7 +142,7 @@ class VisualStates(QMainWindow):
         configFileAction.triggered.connect(self.configFileAction)
 
         generateCppAction = QAction('&Generate C++', self)
-        generateCppAction.setShortcut('Ctrl+G')
+        generateCppAction.setShortcut('Ctrl+U')
         generateCppAction.setStatusTip('Generate C++ code')
         generateCppAction.triggered.connect(self.generateCppAction)
 
@@ -224,13 +215,18 @@ class VisualStates(QMainWindow):
             self.openFile(fileDialog.selectedFiles()[0])
 
     def openFile(self, fileName):
-        (self.rootState, self.config, self.libraries, self.globalNamespace) = self.fileManager.open(fileName)
-        self.automataPath = self.fileManager.fullPath
-        self.treeModel.removeAll()
-        self.treeModel.loadFromRoot(self.rootState)
-        # set the active state as the loaded state
-        self.automataScene.setActiveState(self.rootState)
-        self.automataScene.setLastIndexes(self.rootState)
+        (rootState, config, libraries, globalNamespace) = self.fileManager.open(fileName)
+        if rootState is not None:
+            (self.rootState, self.config, self.libraries, self.globalNamespace) = (rootState, config, libraries, globalNamespace)
+            self.automataPath = self.fileManager.fullPath
+            self.treeModel.removeAll()
+            self.treeModel.loadFromRoot(self.rootState)
+            # set the active state as the loaded state
+            self.automataScene.setActiveState(self.rootState)
+            self.automataScene.setLastIndexes(self.rootState)
+        else:
+            self.showWarning("Wrong file selected",
+                             "The selected file is not a valid VisualStates file")
 
 
     def saveAction(self):
@@ -269,7 +265,6 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             tempPath = self.fileManager.getFullPath()
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            self.fileManager.setFullPath(tempPath)
             self.importFile(file)
 
     def importFile(self, file):
@@ -278,6 +273,7 @@ class VisualStates(QMainWindow):
             if self.activeState.getInitialChild() is not None:
                 for childState in file[0].getChildren():
                     childState.setInitial(False)
+            self.fileManager.setFullPath(tempPath)
 
             displayParamDialog = ImportDialog("Imported States and Parameters", file)
             if displayParamDialog.exec_():

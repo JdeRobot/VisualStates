@@ -19,7 +19,7 @@
   '''
 import sys
 from PyQt5.QtWidgets import QDialog, QFormLayout, QLabel, QLineEdit, QComboBox, \
-    QPushButton, QApplication, QHBoxLayout
+    QPushButton, QApplication, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from visualstates.configs.rosconfig import RosConfig
 from visualstates.configs.rospackage import getAllTypes
@@ -110,16 +110,54 @@ class PubSubDialog(QDialog):
     def saveClicked(self):
         newTopic = False
         if self.topic is None:
-            self.topic = {}
             newTopic = True
+
+        methodname = self.methodNameEdit.text()
+        name = self.topicEdit.text()
+        type = self.typeCb.currentText()
+        if methodname == "" or name == "" or type == "" :
+            QMessageBox.warning(self, "Fields empty",
+                                    "One or more fields are empty and are required")
+            return
+
+        for topic in self.config.topics:
+            if not newTopic:
+                if self.topic['id'] == topic['id']:
+                    continue
+            if topic['opType'] == RosConfig.PUBLISH:
+                if self.isPublisher:
+                    if methodname == topic['methodname']:
+                        QMessageBox.information(self, "Method name present",
+                                                "Method name is already present in the publishers list")
+                        return
+                else:
+                    if methodname == topic['methodname']:
+                        QMessageBox.information(self, "Variable name present",
+                                                "Variable name is already present in the publishers list as a method name")
+                        return
+            else:
+                if self.isPublisher:
+                    if methodname == topic['variablename']:
+                        QMessageBox.information(self, "Method name present",
+                                                "Method name is already present in the subscribers list as a variable name")
+                        return
+                else:
+                    if methodname == topic['variablename']:
+                        QMessageBox.information(self, "Variable name present",
+                                                "Variable name is already present in the subscribers list")
+                        return
+
+        if newTopic:
+            self.topic = {}
+
         if self.isPublisher:
-            self.topic['methodname'] = self.methodNameEdit.text()
+            self.topic['methodname'] = methodname
             self.topic['opType'] = RosConfig.PUBLISH
         else:
-            self.topic['variablename'] = self.methodNameEdit.text()
+            self.topic['variablename'] = methodname
             self.topic['opType'] = RosConfig.SUBSCRIBE
-        self.topic['name'] = self.topicEdit.text()
-        self.topic['type'] = self.typeCb.currentText()
+        self.topic['name'] = name
+        self.topic['type'] = type
 
         if newTopic:
             self.topic['id'] = self.config.getTopicID()

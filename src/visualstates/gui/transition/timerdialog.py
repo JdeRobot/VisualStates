@@ -20,7 +20,7 @@
 import sys
 from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
-    QWidget, QApplication
+    QWidget, QApplication, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase
 
@@ -66,9 +66,11 @@ class TimerDialog(QDialog):
         self.close()
 
     def acceptClicked(self):
-        #todo: make sure that provided value is integer
-        self.timeChanged.emit(int(self.lineEdit.text()))
-        self.close()
+        if self.lineEdit.text().isdigit():
+            self.timeChanged.emit(int(self.lineEdit.text()))
+            self.close()
+        else:
+            QMessageBox.warning(self, 'Input Error', 'Please input an integer in the box')
         pass
 
 if __name__ == '__main__':

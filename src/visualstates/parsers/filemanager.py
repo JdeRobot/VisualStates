@@ -22,6 +22,7 @@ from visualstates.core.state import State
 from visualstates.core.namespace import Namespace
 from visualstates.configs.rosconfig import RosConfig
 import os
+import xml
 
 class FileManager():
     def __init__(self):
@@ -92,8 +93,14 @@ class FileManager():
         return stateElement
 
     def open(self, fullPath):
+        try:
+            doc = minidom.parse(fullPath)
+        except xml.parsers.expat.ExpatError:
+            return None, None, None, None
+
+        if len(doc.getElementsByTagName('VisualStates')) == 0:
+            return None, None, None, None
         self.setFullPath(fullPath)
-        doc = minidom.parse(fullPath)
 
         globalNamespaceNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('global_namespace')[0]
         globalNamespace = Namespace('', '', [])
@@ -144,7 +151,8 @@ class FileManager():
         if len(libraryElements) > 0:
             libraryElements = libraryElements[0].getElementsByTagName('library')
             for libElement in libraryElements:
-                libraries.append(libElement.childNodes[0].nodeValue)
+                if len(libElement.childNodes) > 0:
+                    libraries.append(libElement.childNodes[0].nodeValue)
 
         return rootState, config, libraries, globalNamespace
 
