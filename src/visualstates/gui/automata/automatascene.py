@@ -225,7 +225,7 @@ class AutomataScene(QGraphicsScene):
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 # Create New Namespace for State
-                namespace = Namespace('', '')
+                namespace = Namespace('', '', [])
                 sIndex = self.getStateIndex()
                 state = State(sIndex, 'state' + str(sIndex), False, namespace, self.activeState)
                 state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),

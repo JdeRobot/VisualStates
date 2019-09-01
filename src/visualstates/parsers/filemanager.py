@@ -32,7 +32,7 @@ class FileManager():
 
     def setFullPath(self, path):
         # check for the xml extensition if missing add the extension
-        if path.rfind('.xml') < 0:
+        if path.rfind('.xml') < 0 and not path=='':
             path += '.xml'
         self.fullPath = path
 
@@ -62,6 +62,31 @@ class FileManager():
         with open(self.fullPath, 'w') as f:
             f.write(xmlStr)
 
+    def generateXml(self, rootState, config, libraries, globalNamespace):
+        doc = minidom.Document()
+        root = doc.createElement('VisualStates')
+        doc.appendChild(root)
+
+        # save config data
+        if config is not None:
+            root.appendChild(config.createNode(doc))
+
+        # save global namespace
+        globalNamespaceElement = globalNamespace.createNode(doc, globalNamespace=True)
+        root.appendChild(globalNamespaceElement)
+
+        # save libraries
+        libraryElement = doc.createElement('libraries')
+        for lib in libraries:
+            libElement = doc.createElement('library')
+            libElement.appendChild(doc.createTextNode(lib))
+            libraryElement.appendChild(libElement)
+        root.appendChild(libraryElement)
+
+        root.appendChild(self.createDocFromState(rootState, doc))
+        xmlStr = doc.toprettyxml(indent='  ')
+        return xmlStr
+
     def createDocFromState(self, state, doc):
         stateElement = state.createElement(doc)
         return stateElement
@@ -69,6 +94,34 @@ class FileManager():
     def open(self, fullPath):
         self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
+
+        globalNamespaceNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('global_namespace')[0]
+        globalNamespace = Namespace('', '', [])
+        globalNamespace.parse(globalNamespaceNode)
+
+        rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
+        rootState = State(0, 'root', True, None)
+        rootState.parse(rootNode)
+
+        # parse configs
+        config = None
+        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')) > 0:
+            configElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')[0]
+            config = RosConfig()
+            config.loadNode(configElement)
+
+        libraries = []
+        # parse libraries
+        libraryElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('libraries')
+        if len(libraryElements) > 0:
+            libraryElements = libraryElements[0].getElementsByTagName('library')
+            for libElement in libraryElements:
+                libraries.append(libElement.childNodes[0].nodeValue)
+
+        return rootState, config, libraries, globalNamespace
+
+    def parse(self, fileStr):
+        doc = minidom.parseString(fileStr)
 
         globalNamespaceNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('global_namespace')[0]
         globalNamespace = Namespace('', '')
