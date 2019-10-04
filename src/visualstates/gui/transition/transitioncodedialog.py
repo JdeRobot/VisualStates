@@ -60,11 +60,7 @@ class TransitionCodeDialog(QDialog):
         self.codeEdit.setIndentationGuides(True)
         self.codeEdit.setTabIndents(True)
         self.codeEdit.setAutoIndent(True)
-
-        self.cancelButton = QPushButton('Cancel')
-        self.cancelButton.clicked.connect(self.cancel)
-        self.acceptButton = QPushButton('Accept')
-        self.acceptButton.clicked.connect(self.accept)
+        self.codeEdit.textChanged.connect(self.codeChangedListener)
 
         self.language = 'python'
         self.pythonButton = QRadioButton('Python')
@@ -93,6 +89,8 @@ class TransitionCodeDialog(QDialog):
 
         self.transitionTypeCode = QTextEdit()
         self.transitionTypeCode.setFont(fixedWidthFont)
+        self.transitionTypeCode.textChanged.connect(self.transitionTypeCodeChanged)
+
         self.transitionGroupBox = QGroupBox()
         self.transitionGroupBox.setTitle('Temporal (number in ms)')
         h3Layout = QHBoxLayout()
@@ -109,14 +107,6 @@ class TransitionCodeDialog(QDialog):
         verticalLayout.addWidget(typeContainer)
         verticalLayout.addWidget(codeLanguageContainer)
         verticalLayout.addWidget(self.codeEdit)
-
-        container = QWidget()
-        hLayout =QHBoxLayout()
-        hLayout.addWidget(self.cancelButton)
-        hLayout.addWidget(self.acceptButton)
-        container.setLayout(hLayout)
-
-        verticalLayout.addWidget(container)
         self.setLayout(verticalLayout)
 
         if self.transition.getType() == TransitionType.CONDITIONAL:
@@ -126,37 +116,37 @@ class TransitionCodeDialog(QDialog):
             self.temporalButton.setChecked(True)
             self.temporalToggled()
 
-    def cancel(self):
-        self.close()
-
-    def accept(self):
-        type = None
-        typeValue = None
-
+    def codeChangedListener(self):
+        transitionType = TransitionType.CONDITIONAL
         if self.temporalButton.isChecked():
-            if not self.transitionTypeCode.toPlainText().isdigit():
+            transitionType = TransitionType.TEMPORAL
+
+        self.codeChanged.emit(transitionType, self.transitionTypeCode.toPlainText(), self.codeEdit.text())
+
+    def transitionTypeCodeChanged(self):
+        # validate the input
+        typeCode = self.transitionTypeCode.toPlainText()
+        transitionType = TransitionType.CONDITIONAL
+        if self.temporalButton.isChecked():
+            transitionType = TransitionType.TEMPORAL
+            if typeCode and not typeCode.isdigit():
                 QMessageBox.warning(self, 'Input Error', 'Please input an integer in the Temporal box')
                 return
-            type = int(TransitionType.TEMPORAL)
-            typeValue = self.transitionTypeCode.toPlainText()
-        elif self.conditionalButton.isChecked():
-            type = int(TransitionType.CONDITIONAL)
-            typeValue = self.transitionTypeCode.toPlainText()
-
-        self.codeChanged.emit(type, typeValue, self.codeEdit.text())
-        self.close()
+        if not typeCode:
+            typeCode = '0'
+        self.codeChanged.emit(transitionType, typeCode, self.codeEdit.text())
 
     def temporalToggled(self):
         if (self.temporalButton.isChecked()):
             self.transitionGroupBox.setTitle('Temporal (number in ms)')
             self.transitionTypeCode.setPlainText(str(self.transition.getTemporalTime()))
-            # print('temporal toggled')
+            self.codeChanged.emit(TransitionType.TEMPORAL, self.transitionTypeCode.toPlainText(), self.codeEdit.text())
 
     def conditionalToggled(self):
         if (self.conditionalButton.isChecked()):
             self.transitionGroupBox.setTitle('Condition (evaluates to true or false)')
             self.transitionTypeCode.setPlainText(self.transition.getCondition())
-            # print('conditional toggled')
+            self.codeChanged.emit(TransitionType.CONDITIONAL, self.transitionTypeCode.toPlainText(), self.codeEdit.text())
 
     def pythonClicked(self):
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
