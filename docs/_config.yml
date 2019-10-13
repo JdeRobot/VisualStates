@@ -36,5 +36,7 @@ color_scheme: nil
 # e.g, UA-1234567-89
 # ga_tracking: UA-2709176-10
 
+theme: minimal-mistakes-jekyll
+
 plugins:
   - jekyll-seo-tag
