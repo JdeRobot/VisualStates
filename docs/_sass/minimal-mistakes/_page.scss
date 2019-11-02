@@ -53,6 +53,7 @@
 }
 
 .page__title {
+  font-color: #5d913a;
   margin-top: 0;
   line-height: 1;
 
@@ -164,7 +165,7 @@
     animation-delay: 0.25s;
 
     a {
-      color: #fff;
+      color: #5d913a;
     }
 
     .wrapper {
@@ -180,19 +181,21 @@
     .page__meta,
     .page__lead,
     .btn {
-      color: #fff;
+      color: #5d913a;
       text-shadow: 1px 1px 4px rgba(#000, 0.5);
     }
 
     .page__lead {
       max-width: $medium;
+      color: #5d913a;
     }
 
     .page__title {
       font-size: $type-size-2;
-
+      color: #5d913a;
       @include breakpoint($small) {
         font-size: $type-size-1;
+        color: #5d913a;
       }
     }
   }
@@ -210,7 +213,7 @@
   right: 0;
   margin: 0 auto;
   padding: 2px 5px;
-  color: #fff;
+  color: #5d913a;
   font-family: $caption-font-family;
   font-size: $type-size-7;
   background: #000;
@@ -224,7 +227,7 @@
   }
 
   a {
-    color: #fff;
+    color: #5d913a;
     text-decoration: none;
   }
 }

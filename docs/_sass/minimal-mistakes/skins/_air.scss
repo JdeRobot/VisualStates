@@ -18,6 +18,9 @@ $navicon-link-color-hover: mix(#fff, $text-color, 80%) !default;
   color: #fff !important; // override
 }
 
+.page__title {
+  color: #5d913a important;
+}
 .page__footer-follow .social-icons .svg-inline--fa {
   color: inherit;
 }
