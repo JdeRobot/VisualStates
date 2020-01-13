@@ -1,0 +1,12 @@
+Source: ros-melodic-visualstates
+Section: misc
+Priority: optional
+Maintainer: Okan Aşık <asik.okan@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-roscpp, ros-melodic-rospy, ros-melodic-std-msgs
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-melodic-visualstates
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, pyqt5-dev, python-pyqt5, python-pyqt5.qsci, python-pyqt5.qtsvg, python-rospkg, python-sip-dev, qtbase5-dev, ros-melodic-roscpp, ros-melodic-rospy, ros-melodic-std-msgs
+Description: The VisualStates is reactive hierarchical visual robot planning tool.
