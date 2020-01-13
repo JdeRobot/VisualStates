@@ -17,19 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-class Transition(object):
-    def __init__(self, id, destinationId):
-        self.id = id
-        self.destinationId = destinationId
+import rospkg
 
-    def init(self):
-        pass
 
-    def runCode(self):
-        pass
-
-    def checkCondition(self):
-        return False
-
-    def getDestinationId(self):
-        return self.destinationId
+def get_package_path():
+    rospack = rospkg.RosPack()
+    return rospack.get_path('visualstates')

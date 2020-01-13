@@ -23,7 +23,7 @@ from PyQt5.Qsci import QsciScintilla, QsciLexerPython, QsciLexerCPP
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase, QFontMetrics, QColor
 from PyQt5.QtWidgets import QDialog, QTextEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QApplication, \
-    QRadioButton, QGroupBox, QMessageBox
+    QRadioButton, QGroupBox
 
 from visualstates.gui.transition.transitiontype import TransitionType
 
@@ -134,9 +134,6 @@ class TransitionCodeDialog(QDialog):
         typeValue = None
 
         if self.temporalButton.isChecked():
-            if not self.transitionTypeCode.toPlainText().isdigit():
-                QMessageBox.warning(self, 'Input Error', 'Please input an integer in the Temporal box')
-                return
             type = int(TransitionType.TEMPORAL)
             typeValue = self.transitionTypeCode.toPlainText()
         elif self.conditionalButton.isChecked():

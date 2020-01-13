@@ -22,8 +22,8 @@ import shutil
 from xml.dom import minidom
 
 from visualstates.gui.transition.transitiontype import TransitionType
-from visualstates.configs.rospackage import getPackagePath
-from visualstates.generators.basegenerator import BaseGenerator
+from visualstates.configs.package_path import get_package_path
+from visualstates.generators.base_generator import BaseGenerator
 
 
 class PythonRosGenerator(BaseGenerator):
@@ -33,7 +33,6 @@ class PythonRosGenerator(BaseGenerator):
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateImports(stringList)
-        self.generateSignalHandling(stringList)
         self.generateGlobalNamespace(stringList, projectName)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
@@ -61,7 +60,7 @@ class PythonRosGenerator(BaseGenerator):
     def generateImports(self, importStr):
         mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys, threading, time, rospy, signal
+import sys, threading, time, rospy
 '''
         importStr.append(mystr)
 
@@ -91,25 +90,6 @@ from PyQt5.QtWidgets import QApplication
         importStr.append('\n')
 
         return importStr
-
-    def generateSignalHandling(self, signalStr):
-        rootState = self.getRootState()
-        signalStr.append('globalNamespace = None\n')
-        signalStr.append('state' + str(rootState.id) + ' = None\n')
-        signalStr.append('app = None\n\n')
-        signalStr.append('def stopRecursive(state):\n')
-        signalStr.append('\tstate.stop()\n')
-        signalStr.append('\tfor childState in state.states:\n')
-        signalStr.append('\t\tstopRecursive(childState)\n\n')
-        signalStr.append('def sigintHandler(signal, frame):\n')
-        signalStr.append('\tglobal globalNamespace\n')
-        signalStr.append('\tglobal state' + str(rootState.id) + '\n')
-        signalStr.append('\tglobal app\n')
-        signalStr.append('\tif app is not None:')
-        signalStr.append('\t\tapp.quit()\n')
-        signalStr.append('\tstopRecursive(state' + str(rootState.id) + ')\n')
-        signalStr.append('\tglobalNamespace.stop()\n\n')
-        signalStr.append('signal.signal(signal.SIGINT, sigintHandler)\n\n')
 
     def generateStateClasses(self, stateStr):
         for state in self.getAllStates():
@@ -150,19 +130,19 @@ from PyQt5.QtWidgets import QApplication
     def generateGlobalNamespace(self, globalNamespaceStr, projectName):
         globalNamespaceStr.append('class GlobalNamespace():\n')
         globalNamespaceStr.append('\tdef __init__(self):\n')
-        globalNamespaceStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True, disable_signals=True)\n\n')
+        globalNamespaceStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                globalNamespaceStr.append('\t\tself.' + topic['methodname'] + 'Pub = rospy.Publisher("' +
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub = rospy.Publisher("' +
                               topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
             elif topic['opType'] == 'Subscribe':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + 'Sub = rospy.Subscriber("' +
-                                  topic['name'] + '", ' + types[1] + ', self.' + topic['variablename'] + 'Callback)\n')
-                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + ' = ' + types[1] + '()\n')
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Sub = rospy.Subscriber("' +
+                                  topic['name'] + '", ' + types[1] + ', self.'+self.getVarName(topic['name'])+'Callback)\n')
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + types[1] + '()\n')
 
         # add state variables as part of ros node
         variables = self.globalNamespace.getVariables()
@@ -179,11 +159,11 @@ from PyQt5.QtWidgets import QApplication
         # define publisher methods and subscriber callbacks
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
-                globalNamespaceStr.append('\tdef ' + topic['methodname'] + '(self, _' + topic['methodname'] + '):\n')
-                globalNamespaceStr.append('\t\tself.' + topic['methodname'] + 'Pub.publish(_' + topic['methodname'] + ')\n\n')
+                globalNamespaceStr.append('\tdef publish' + self.getVarName(topic['name']) + '(self, ' + self.getVarName(topic['name']) + '):\n')
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub.publish(' + self.getVarName(topic['name']) + ')\n\n')
             elif topic['opType'] == 'Subscribe':
-                globalNamespaceStr.append('\tdef ' + topic['variablename'] + 'Callback(self, _' + topic['variablename'] + '):\n')
-                globalNamespaceStr.append('\t\tself.' + topic['variablename'] + ' = _' + topic['variablename'] + '\n')
+                globalNamespaceStr.append('\tdef ' + self.getVarName(topic['name']) + 'Callback(self, ' + self.getVarName(topic['name']) + '):\n')
+                globalNamespaceStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + self.getVarName(topic['name']) + '\n')
             globalNamespaceStr.append('\n\n')
 
         # define user functions as part of rosnode
@@ -199,15 +179,16 @@ from PyQt5.QtWidgets import QApplication
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
                 tranStr.append('\tdef __init__(self, id, destinationId, globalNamespace, namespace):\n')
-                tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId, globalNamespace, namespace)\n')
+                tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
+                tranStr.append('\t\tself.globalNamespace = globalNamespace\n')
+                tranStr.append('\t\tself.namespace = namespace\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
                     tranStr.append('\t\t' + checkLine + '\n')
                 tranStr.append('\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 tranStr.append('class Tran' + str(tran.id) + '(TemporalTransition):\n\n')
-                tranStr.append('\tdef __init__(self, id, destinationId, elapsedTime, globalNamespace, namespace):\n')
-                tranStr.append('\t\tTemporalTransition.__init__(self, id, destinationId, elapsedTime, globalNamespace, namespace)\n')
+
             tranStr.append('\tdef runCode(self):\n')
             if len(tran.getCode()) > 0:
                 for codeLine in tran.getCode().split('\n'):
@@ -234,7 +215,6 @@ def readArgs():
 \t\t\t\tprint('runtime gui disabled')
 
 def runGui():
-\tglobal app
 \tglobal gui
 \tapp = QApplication(sys.argv)
 \tgui = RunTimeGui()
@@ -290,23 +270,34 @@ def runGui():
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.TEMPORAL:
                 mainStr.append('\ttran' + str(tran.id) + ' = Tran' + str(tran.id) +
-                               '(' + str(tran.id) + ', ' + str(tran.destination.id) +
-                               ', ' + str(tran.getTemporalTime()) + ', globalNamespace, namespace'
-                               + str(tran.origin.parent.id) + ')\n')
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ')\n')
             elif tran.getType() == TransitionType.CONDITIONAL:
                 mainStr.append('\ttran' + str(tran.id) + ' = Tran' + str(tran.id) +
                                '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', globalNamespace, namespace' + str(tran.origin.parent.id) + ')\n')
 
             mainStr.append('\tstate' + str(tran.origin.id) + '.addTransition(tran' + str(tran.id) + ')\n\n')
 
+        mainStr.append('\ttry:\n')
         # start threads
         for state in self.states:
-            mainStr.append('\tstate' + str(state.id) + '.startThread()\n')
+            mainStr.append('\t\tstate' + str(state.id) + '.startThread()\n')
+        # join threads
+        for state in self.states:
+            mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
 
-        mainStr.append('\n')
-        rootState = self.getRootState()
-        mainStr.append('\twhile state' + str(rootState.id) + '.running:\n')
-        mainStr.append('\t\ttime.sleep(0.01)\n\n')
+        mainStr.append('\t\tglobalNamespace.stop()\n')
+        mainStr.append('\t\tsys.exit(0)\n')
+        mainStr.append('\texcept:\n')
+        for state in self.states:
+            mainStr.append('\t\tstate' + str(state.id) + '.stop()\n')
+        mainStr.append('\t\tif displayGui:\n')
+        mainStr.append('\t\t\tgui.close()\n')
+        mainStr.append('\t\t\tguiThread.join()\n\n')
+        # join threads
+        for state in self.states:
+            mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
+        mainStr.append('\t\tglobalNamespace.stop()\n')
+        mainStr.append('\t\tsys.exit(1)\n')
 
     def generateCmake(self, cmakeStr, projectName):
         cmakeStr.append('project(')
@@ -375,6 +366,12 @@ def runGui():
         if os.path.exists(projectPath + '/core'):
             shutil.rmtree(projectPath + '/core')
 
-        shutil.copytree(getPackagePath() + '/lib/python2.7/codegen', projectPath + '/codegen')
-        shutil.copytree(getPackagePath() + '/lib/python2.7/gui', projectPath + '/gui')
-        shutil.copytree(getPackagePath() + '/lib/python2.7/core', projectPath + '/core')
+        shutil.copytree(get_package_path() + '/lib/python2.7/codegen', projectPath + '/codegen')
+        shutil.copytree(get_package_path() + '/lib/python2.7/gui', projectPath + '/gui')
+        shutil.copytree(get_package_path() + '/lib/python2.7/core', projectPath + '/core')
+
+    def getVarName(self, varName):
+        varName = varName.replace('/', '_')
+        if varName[0] == '_':
+            varName = varName[1:]
+        return varName

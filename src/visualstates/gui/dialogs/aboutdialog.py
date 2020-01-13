@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from visualstates.configs.rospackage import getPackagePath
+from visualstates.configs.package_path import get_package_path
 
 
 class AboutDialog(QDialog):
@@ -33,7 +33,7 @@ class AboutDialog(QDialog):
         mainLayout = QVBoxLayout()
         headerLayout = QHBoxLayout()
         logo = QLabel()
-        logoPixmap = QPixmap(getPackagePath() + '/resources/jderobot_big.png')
+        logoPixmap = QPixmap(get_package_path()+ '/resources/jderobot_big.png')
         logo.setPixmap(logoPixmap)
         logo.setStyleSheet("QLabel {background-color:white; padding:10px;}")
         logo.setFixedWidth(160)

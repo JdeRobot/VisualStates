@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, 
 from visualstates.gui.tree.treemodel import TreeModel
 from visualstates.core.state import State
 from visualstates.core.transition import Transition
-from visualstates.configs.rospackage import getPackagePath
+from visualstates.configs.package_path import get_package_path
 
 
 class RunTimeGui(QMainWindow):
@@ -70,7 +70,7 @@ class RunTimeGui(QMainWindow):
         self.treeView.setModel(self.treeModel)
 
         self.logo = QLabel()
-        logoPixmap = QPixmap(getPackagePath() + '/share/resources/jderobot.png')
+        logoPixmap = QPixmap(get_package_path() + '/share/resources/jderobot.png')
         self.logo.setPixmap(logoPixmap)
 
         self.upButton = QPushButton()

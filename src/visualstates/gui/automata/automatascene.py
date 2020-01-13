@@ -37,7 +37,6 @@ class AutomataScene(QGraphicsScene):
     # signals
     stateInserted = pyqtSignal('QGraphicsItem')
     stateRemoved = pyqtSignal('QGraphicsItem')
-    stateImported = pyqtSignal()
     transitionInserted = pyqtSignal('QGraphicsItem')
     transitionRemoved = pyqtSignal('QGraphicsItem')
     stateNameChangedSignal = pyqtSignal('QGraphicsItem')
@@ -93,9 +92,6 @@ class AutomataScene(QGraphicsScene):
         self.pasteStateAction = QAction('Paste', self)
         self.pasteStateAction.triggered.connect(self.pasteState)
 
-        self.importStateAction = QAction('Import', self)
-        self.importStateAction.triggered.connect(self.importState)
-
         # transition actions
         self.renameTransitionAction = QAction('Rename', self)
         self.renameTransitionAction.triggered.connect(self.renameTransition)
@@ -139,12 +135,6 @@ class AutomataScene(QGraphicsScene):
 
     def removeState(self):
         self.removeStateItem(self.selectedState)
-
-    def importState(self):
-        item = self.getParentItem(self.selectedState)
-        if isinstance(item, StateGraphicsItem):
-            self.setActiveState(item.stateData)
-        self.stateImported.emit()
 
     def renameTransition(self):
         dialog = RenameDialog('Rename', self.selectedTransition.transitionData.name)
@@ -213,6 +203,17 @@ class AutomataScene(QGraphicsScene):
 
         self.stateRemoved.emit(stateItem)
 
+    """
+    def importItems(self, stateItem):
+        transitions = []
+        for child in stateItem.getChildren():
+            self.addStateItem(child.getGraphicsItem())
+            transitions += child.getOriginTransitions()
+
+        for tran in transitions:
+            self.addTransitionItem(tran.getGraphicsItem(),False)
+    """
+
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         # if we were editing the state text next mouse release should disable text editing
         # and should not add a new state or transition
@@ -255,6 +256,15 @@ class AutomataScene(QGraphicsScene):
             else:
                 self.origin = None
 
+        # Feature to add? While clicking on the active state paste all the states
+
+        elif self.operationType == OpType.IMPORTSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
+            selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
+            if len(selectedItems) == 0:
+                self.importItems(self.operationData)
+                self.setLastIndexes(self.activeState)
+            self.operationData = None
+
         else:
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
@@ -294,7 +304,6 @@ class AutomataScene(QGraphicsScene):
         cMenu.addAction(self.makeInitialAction)
         cMenu.addAction(self.copyStateAction)
         cMenu.addAction(self.removeStateAction)
-        cMenu.addAction(self.importStateAction)
         self.selectedState = stateItem
         self.contextPosition = qEvent.screenPos()
         action = cMenu.exec_(qEvent.screenPos())

@@ -26,11 +26,12 @@ from ..core.namespace import Namespace
 from .transition.timerdialog import TimerDialog
 from .dialogs.namespacedialog import NamespaceDialog
 from .dialogs.librariesdialog import LibrariesDialog
-from .dialogs.rosconfigdialog import RosConfigDialog
-from ..configs.rosconfig import RosConfig
+from .dialogs.configdialog import ConfigDialog
+from ..configs.interfaces import Interfaces
+from ..configs.config import RosConfig, ROS
 from ..generators.cpprosgenerator import CppRosGenerator
 from ..generators.pythonrosgenerator import PythonRosGenerator
-from ..configs.rospackage import getPackagePath
+from ..configs.package_path import get_package_path
 from .dialogs.aboutdialog import AboutDialog
 
 
@@ -48,7 +49,16 @@ class VisualStates(QMainWindow):
         self.activeState = self.rootState
         self.activeNamespace = self.localNamespace
 
-        self.statusBar()
+        # create status bar
+        # remove border around the widget added to the status bar
+        self.setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
+        statusBar = self.statusBar()
+        logo = QLabel()
+        logo.setAlignment(Qt.AlignHCenter)
+        logoPixmap = QPixmap(get_package_path() + '/resources/jderobot.png')
+        logo.setPixmap(logoPixmap)
+        statusBar.addWidget(logo)
+
         self.createMenu()
         self.createTreeView()
         self.createStateCanvas()
@@ -62,6 +72,7 @@ class VisualStates(QMainWindow):
 
         self.libraries = []
         self.config = None
+        self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
         # create actions
@@ -86,7 +97,7 @@ class VisualStates(QMainWindow):
         saveAction.triggered.connect(self.saveAction)
 
         saveAsAction = QAction('&Save As', self)
-        saveAsAction.setShortcut('Ctrl+Shift+S')
+        saveAsAction.setShortcut('Ctrl+S')
         saveAsAction.setStatusTip('Save Visual States as New One')
         saveAsAction.triggered.connect(self.saveAsAction)
 
@@ -116,7 +127,7 @@ class VisualStates(QMainWindow):
         globalNamespaceAction.triggered.connect(self.globalNamespaceAction)
 
         stateNamespaceAction = QAction('&State Namespace', self)
-        stateNamespaceAction.setShortcut('Ctrl+T')
+        stateNamespaceAction.setShortcut('Ctrl+G')
         stateNamespaceAction.setStatusTip('Open State Namespace')
         stateNamespaceAction.triggered.connect(self.localNamespaceAction)
 
@@ -126,15 +137,20 @@ class VisualStates(QMainWindow):
         librariesAction.setStatusTip('Add additional libraries')
         librariesAction.triggered.connect(self.librariesAction)
 
-        configFileAction = QAction('&ROS Config', self)
-        configFileAction.setShortcut('Ctrl+R')
-        configFileAction.setStatusTip('Edit ROS configuration')
+        configFileAction = QAction('&Config File', self)
+        configFileAction.setShortcut('Ctrl+C')
+        configFileAction.setStatusTip('Edit configuration file')
         configFileAction.triggered.connect(self.configFileAction)
 
         generateCppAction = QAction('&Generate C++', self)
-        generateCppAction.setShortcut('Ctrl+U')
+        generateCppAction.setShortcut('Ctrl+G')
         generateCppAction.setStatusTip('Generate C++ code')
         generateCppAction.triggered.connect(self.generateCppAction)
+
+        # compileCppAction = QAction('&Compile C++', self)
+        # compileCppAction.setShortcut('Ctrl+P')
+        # compileCppAction.setStatusTip('Compile generated C++ code')
+        # compileCppAction.triggered.connect(self.compileCppAction)
 
         generatePythonAction = QAction('&Generate Python', self)
         generatePythonAction.setShortcut('Ctrl+Y')
@@ -180,8 +196,6 @@ class VisualStates(QMainWindow):
         self.automataScene.clearScene()
         self.treeModel.removeAll()
 
-        self.fileManager.setPath("")
-
         # create new root state
         self.globalNamespace = Namespace('', '')
         self.localNamespace = Namespace('', '')
@@ -205,18 +219,13 @@ class VisualStates(QMainWindow):
             self.openFile(fileDialog.selectedFiles()[0])
 
     def openFile(self, fileName):
-        (rootState, config, libraries, globalNamespace) = self.fileManager.open(fileName)
-        if rootState is not None:
-            (self.rootState, self.config, self.libraries, self.globalNamespace) = (rootState, config, libraries, globalNamespace)
-            self.automataPath = self.fileManager.fullPath
-            self.treeModel.removeAll()
-            self.treeModel.loadFromRoot(self.rootState)
-            # set the active state as the loaded state
-            self.automataScene.setActiveState(self.rootState)
-            self.automataScene.setLastIndexes(self.rootState)
-        else:
-            self.showWarning("Wrong file selected",
-                             "The selected file is not a valid VisualStates file")
+        (self.rootState, self.config, self.libraries, self.globalNamespace) = self.fileManager.open(fileName)
+        self.automataPath = self.fileManager.fullPath
+        self.treeModel.removeAll()
+        self.treeModel.loadFromRoot(self.rootState)
+        # set the active state as the loaded state
+        self.automataScene.setActiveState(self.rootState)
+        self.automataScene.setLastIndexes(self.rootState)
 
 
     def saveAction(self):
@@ -255,22 +264,18 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             tempPath = self.fileManager.getFullPath()
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            if file[0] is not None:
-                self.fileManager.setPath(tempPath)
-                # if the current active state already has an initial state make sure that
-                # there will not be any initial state in the imported state
-                if self.activeState.getInitialChild() is not None:
-                    for childState in file[0].getChildren():
-                        childState.setInitial(False)
+            self.fileManager.setFullPath(tempPath)
+            # if the current active state already has an initial state make sure that
+            # there will not be any initial state in the imported state
+            if self.activeState.getInitialChild() is not None:
+                for childState in file[0].getChildren():
+                    childState.setInitial(False)
 
-                # Update importing Namespaces
-                importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
-                self.treeModel.loadFromRoot(importedState, self.activeState)
-                self.automataScene.displayState(self.activeState)
-                self.automataScene.setLastIndexes(self.rootState)
-            else:
-                self.showWarning("Wrong file selected",
-                                 "The selected file is not a valid VisualStates file")
+            # Update importing Namespaces
+            importedState, self.config, self.libraries, self.globalNamespace = self.importManager.updateAuxiliaryData(file, self)
+            self.treeModel.loadFromRoot(importedState, self.activeState)
+            self.automataScene.displayState(self.activeState)
+            self.automataScene.setLastIndexes(self.rootState)
 
     def timerAction(self):
         if self.activeState is not None:
@@ -294,9 +299,8 @@ class VisualStates(QMainWindow):
         librariesDialog.exec_()
 
     def configFileAction(self):
-        if self.config is None:
-            self.config = RosConfig()
-        self.configDialog = RosConfigDialog('Config', self.config)
+        self.configDialog = ConfigDialog('Config', self.config)
+        self.configDialog.configChanged.connect(self.configChanged)
         self.configDialog.exec_()
 
     def showWarning(self, title, msg):
@@ -310,8 +314,9 @@ class VisualStates(QMainWindow):
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
             if self.config is None:
-                self.config = RosConfig()
-            generator = CppRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
+                self.Config = RosConfig()
+            if self.config.type == ROS:
+                generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.globalNamespace)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
         else:
@@ -327,7 +332,8 @@ class VisualStates(QMainWindow):
             self.getStateList(self.rootState, stateList)
             if self.config is None:
                 self.config = RosConfig()
-            generator = PythonRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
+            if self.config.type == ROS:
+                generator = PythonRosGenerator(self.libraries, self.config, stateList, self.globalNamespace)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:
@@ -368,7 +374,6 @@ class VisualStates(QMainWindow):
         self.automataScene.activeNamespaceChanged.connect(self.activeNamespaceChanged)
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.stateRemoved.connect(self.stateRemoved)
-        self.automataScene.stateImported.connect(self.stateImported)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
@@ -391,9 +396,6 @@ class VisualStates(QMainWindow):
             self.treeModel.removeState(state.stateData, parent)
         else:
             self.treeModel.removeState(state.stateData)
-
-    def stateImported(self):
-        self.importAction()
 
     def transitionInserted(self, tran):
         # print('transition inserted:' + tran.transitionData.name)
@@ -448,6 +450,10 @@ class VisualStates(QMainWindow):
 
     def librariesChanged(self, libraries):
         self.libraries = libraries
+
+    def configChanged(self):
+        if self.configDialog:
+            self.config = self.configDialog.getConfig()
 
     def globalNamespaceChanged(self):
         if self.globalNamespaceDialog:

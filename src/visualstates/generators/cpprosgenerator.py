@@ -23,12 +23,13 @@ from xml.dom import minidom
 
 from visualstates.gui.transition.transitiontype import TransitionType
 from visualstates.parsers.cppparser import CPPParser
-from visualstates.generators.basegenerator import BaseGenerator
+from visualstates.generators.base_generator import BaseGenerator
 
 
 class CppRosGenerator(BaseGenerator):
-    def __init__(self, libraries, config, states, globalNamespace):
+    def __init__(self, libraries, config, _interfaceHeaders, states, globalNamespace):
         BaseGenerator.__init__(self, libraries, config, states, globalNamespace)
+        self.interfaceHeaders = _interfaceHeaders
 
     def generate(self, projectPath, projectName):
         # create source dir if not exists
@@ -53,6 +54,7 @@ class CppRosGenerator(BaseGenerator):
         self.generateTranMethods(stringList)
         self.generateGlobalNamespaceMethods(stringList, self.config, self.globalNamespace)
         self.generateStateNamespaceMethods(stringList)
+        self.generateReadArgs(stringList, projectName)
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
 
@@ -136,8 +138,7 @@ class CppRosGenerator(BaseGenerator):
         classStr.append('\tvoid startThread();\n')
         classStr.append('\tstatic void* threadRunner(void*);\n')
         classStr.append('\tvoid run();\n')
-        classStr.append('\tvoid join();\n')
-        classStr.append('\tvoid stop();\n\n')
+        classStr.append('\tvoid join();\n\n')
 
         for topic in config.getTopics():
             varName = topic['name'].replace('/', '_')
@@ -312,10 +313,6 @@ stateNamespace = _stateNamespace;}\n')
         rosStr.append('\tpthread_join(thread, NULL);\n')
         rosStr.append('}\n\n')
 
-        rosStr.append('void GlobalNamespace::stop() {\n')
-        rosStr.append('\tnh.shutdown();\n')
-        rosStr.append('}\n\n')
-
         for topic in config.getTopics():
             varName = topic['name'].replace('/', '_')
             if varName[0] == '_':
@@ -364,6 +361,40 @@ stateNamespace = _stateNamespace;}\n')
                 strList.append(codes[i])
                 strList.append('\n\n')
 
+    def generateReadArgs(self, argStr, projectName):
+        mystr = '''
+pthread_t guiThread;
+RunTimeGui* runTimeGui = NULL;
+bool displayGui = false;
+
+void readArgs(int *argc, char* argv[]) {
+\tint i;
+\tstd::string splitedArg;
+
+\tfor(i = 0; i < *argc; i++) {
+\t\tsplitedArg = strtok(argv[i], "=");
+\t\tif (splitedArg.compare("--displaygui") == 0){
+\t\t\tsplitedArg = strtok(NULL, "=");
+\t\t\tif (splitedArg.compare("true") == 0 || splitedArg.compare("True") == 0){
+\t\t\t\tdisplayGui = true;
+\t\t\t\tstd::cout << "displayGui ENABLED" << std::endl;
+\t\t\t}else{
+\t\t\t\tdisplayGui = false;
+\t\t\t\tstd::cout << "displayGui DISABLED" << std::endl;
+\t\t\t}
+\t\t}
+\t\tif(i == *argc -1){
+\t\t\t(*argc)--;
+\t\t}
+\t}
+}
+
+'''
+        argStr.append(mystr)
+        argStr.append('void* runGui(void*) {\n')
+        argStr.append('\tsystem("rosrun ' + projectName + ' ' + projectName + '_runtime.py");\n')
+        argStr.append('}\n\n')
+
     def parentString(self, state):
         if state.parent is None:
             return 'NULL'
@@ -371,32 +402,38 @@ stateNamespace = _stateNamespace;}\n')
             return 'state'+str(state.parent.id)
 
     def generateMain(self, mainStr, projectName):
-        for state in self.states:
-            mainStr.append('State* state' + str(state.id) + ' = NULL;\n')
-        mainStr.append('GlobalNamespace* globalNamespace = NULL;\n\n')
+        myStr = '''
+void signalCallback(int signum)
+{
+   std::cout << "Caught signal: " << signum << std::endl;
+   // Cleanup and close up stuff here
+   // Terminate program
+   exit(signum);
+}
 
-        mainStr.append('void signalCallback(int signum) {\n')
-        for state in self.states:
-            mainStr.append('\tstate' + str(state.id) + '->stop();\n')
-        mainStr.append('\tglobalNamespace->stop();\n')
-        mainStr.append('}\n\n')
-
+'''
+        mainStr.append(myStr)
         mainStr.append('int main(int argc, char* argv[]) {\n')
         mainStr.append('\tros::init(argc, argv,"' + projectName + '_node");\n')
-        mainStr.append('\tRunTimeGui* runTimeGui = new RunTimeGui();\n\n')
-        mainStr.append('\tglobalNamespace = new GlobalNamespace(100);\n')
-        mainStr.append('\tglobalNamespace->startThread();\n\n')
+        mainStr.append('\tGlobalNamespace globalNamespace(10);\n')
+        mainStr.append('\tglobalNamespace.startThread();\n')
+        mainStr.append('\treadArgs(&argc, argv);\n\n')
+        mainStr.append('\tif (displayGui) {\n')
+        mainStr.append('\t\tpthread_create(&guiThread, NULL, &runGui, NULL);\n')
+        mainStr.append('\t\trunTimeGui = new RunTimeGui();\n\n')
+        mainStr.append('\t}\n')
+
         # create state instances
         for state in self.getAllStates():
-            mainStr.append('\tNamespace' + str(state.id) + ' stateNamespace' + str(state.id) + '(globalNamespace);\n')
+            mainStr.append('\tNamespace' + str(state.id) + ' stateNamespace' + str(state.id) + '(&globalNamespace);\n')
             if state.parent is not None:
                 mainStr.append('\tState* state' + str(state.id) + ' = new State' + str(state.id) + '(' +
-                               str(state.id) + ', ' + str(state.initial).lower() + ', globalNamespace, &stateNamespace' + str(state.parent.id) + ', ' + str(
+                               str(state.id) + ', ' + str(state.initial).lower() + ', &globalNamespace, &stateNamespace' + str(state.parent.id) + ', ' + str(
                     state.getTimeStep()) +
                                ', ' + self.parentString(state) + ', runTimeGui);\n')
             else:
-                mainStr.append('\tstate' + str(state.id) + ' = new State' + str(state.id) + '(' +
-                               str(state.id) + ', ' + str(state.initial).lower() + ', globalNamespace, ' + str(state.getTimeStep()) +
+                mainStr.append('\tState* state' + str(state.id) + ' = new State' + str(state.id) + '(' +
+                               str(state.id) + ', ' + str(state.initial).lower() + ', &globalNamespace, ' + str(state.getTimeStep()) +
                                ', ' + self.parentString(state) + ', runTimeGui);\n')
         mainStr.append('\n')
 
@@ -404,7 +441,7 @@ stateNamespace = _stateNamespace;}\n')
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) + '(' + str(tran.id) +
-                           ', ' + str(tran.destination.id) + ', globalNamespace, &stateNamespace'+str(tran.origin.parent.id)+');\n')
+                           ', ' + str(tran.destination.id) + ', &globalNamespace, &stateNamespace'+str(tran.origin.parent.id)+');\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) + '(' + str(tran.id) +
                                ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ');\n')
@@ -420,7 +457,6 @@ stateNamespace = _stateNamespace;}\n')
 
         for state in self.states:
             mainStr.append('\tstate' + str(state.id) + '->join();\n')
-        mainStr.append('\tglobalNamespace->join();\n')
         mainStr.append('}\n')
 
     def generateRunTimeGui(self, guiStr):
@@ -477,7 +513,7 @@ stateNamespace = _stateNamespace;}\n')
 
         cmakeStr.append('cmake_minimum_required(VERSION 2.8.3)\n\n')
 
-        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS roscpp visualstates\n')
+        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS visualstates\n')
         for dep in config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
         cmakeStr.append(')\n\n')
