@@ -2,8 +2,8 @@
 Changelog for package visualstates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.3 (2020-01-27)
+------------------
 * 0.2.2
 * have a new informative about dialog
 * fixes an import bug

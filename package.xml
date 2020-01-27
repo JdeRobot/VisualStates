@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <package>
   <name>visualstates</name>
-  <version>0.2.2</version>
+  <version>0.2.3</version>
   <description>The VisualStates is reactive hierarchical visual robot planning tool.</description>
   <maintainer email="asik.okan@gmail.com">Okan Aşık</maintainer>
   <maintainer email="katarapushkal@gmail.com">Pushkal Katara</maintainer>
