@@ -37,4 +37,4 @@ VisualStates is a tool for programming robot behaviors using automata. It combin
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/vUFg1aTA7-k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-#### Interested in the tool? Learn about [VisualStates](/features/usage) and try out some [examples](/examples/prius_in_the_city)
+#### Interested in the tool? Learn about [VisualStates](https://jderobot.github.io/VisualStates/features/usage) and try out some [examples](https://jderobot.github.io/VisualStates/examples/prius_in_the_city)
