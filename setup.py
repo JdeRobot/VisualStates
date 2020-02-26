@@ -9,7 +9,7 @@ d = generate_distutils_setup(
              'visualstates.codegen', 'visualstates.codegen.python', 'visualstates.configs', \
              'visualstates.core', 'visualstates.generators', 'visualstates.gui.automata', \
              'visualstates.gui.dialogs', 'visualstates.gui.state', 'visualstates.gui.transition', \
-             'visualstates.gui.tree', 'visualstates.parsers'],
+             'visualstates.gui.tree', 'visualstates.gui.util', 'visualstates.parsers'],
    package_dir={'': 'src'}
 )
 
