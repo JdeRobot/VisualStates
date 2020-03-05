@@ -54,11 +54,7 @@ class CodeDialog(QDialog):
         self.codeEdit.setIndentationGuides(True)
         self.codeEdit.setTabIndents(True)
         self.codeEdit.setAutoIndent(True)
-
-        self.cancelButton = QPushButton('Cancel')
-        self.cancelButton.clicked.connect(self.cancel)
-        self.acceptButton = QPushButton('Accept')
-        self.acceptButton.clicked.connect(self.accept)
+        self.codeEdit.textChanged.connect(self.codeChangedListener)
 
         self.pythonButton = QRadioButton('Python')
         self.pythonButton.setChecked(True)
@@ -75,24 +71,12 @@ class CodeDialog(QDialog):
         verticalLayout = QVBoxLayout()
         verticalLayout.addWidget(container0)
         verticalLayout.addWidget(self.codeEdit)
-
-        container = QWidget()
-        hLayout =QHBoxLayout()
-        hLayout.addWidget(self.cancelButton)
-        hLayout.addWidget(self.acceptButton)
-        container.setLayout(hLayout)
-
-        verticalLayout.addWidget(container)
         self.setLayout(verticalLayout)
 
         self.language = 'python'
 
-    def cancel(self):
-        self.close()
-
-    def accept(self):
+    def codeChangedListener(self):
         self.codeChanged.emit(self.codeEdit.text())
-        self.close()
 
     def pythonClicked(self):
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
