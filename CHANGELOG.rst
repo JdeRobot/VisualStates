@@ -2,8 +2,8 @@
 Changelog for package visualstates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.4 (2020-04-12)
+------------------
 * Merge pull request `#151 <https://github.com/JdeRobot/VisualStates/issues/151>`_ from JdeRobot/dependabot/bundler/docs/rake-tw-12.3
   Update rake requirement from ~> 10.0 to ~> 12.3 in /docs
 * Update rake requirement from ~> 10.0 to ~> 12.3 in /docs
