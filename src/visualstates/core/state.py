@@ -152,7 +152,7 @@ class State:
         self.code = self.parseElement('code', stateElement)
         self.timeStepDuration = int((self.parseElement('timestep', stateElement)))
 
-        namespace = Namespace('', '')
+        namespace = Namespace('', '', [])
         namespace.parse(stateElement.getElementsByTagName('namespace')[0])
         self.namespace = namespace
         # recursive child state parsing

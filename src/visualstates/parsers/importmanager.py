@@ -49,9 +49,13 @@ class ImportManager():
     def updateNamespace(self, newNamespace, namespace):
         newFunctions = newNamespace.getFunctions()
         newVariables = newNamespace.getVariables()
-        if newFunctions and newVariables:
+        newParams = newNamespace.getParams()
+        if newFunctions:
             namespace.addFunctions(newFunctions)
+        if newVariables:
             namespace.addVariables(newVariables)
+        if newParams:
+            namespace.addParams(newParams)
         return namespace
 
     def updateLibraries(self, newLibraries, libraries):
@@ -94,4 +98,3 @@ class ImportManager():
     def updateTranIDs(self, importState, transitionID):
         for child in importState.getChildrenTransitions():
             child.setID(transitionID + child.getID())
-

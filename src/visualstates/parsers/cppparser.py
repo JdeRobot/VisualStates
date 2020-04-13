@@ -18,6 +18,7 @@
 
   '''
 
+
 class CPPParser():
 
     def __init__(self):
@@ -29,7 +30,7 @@ class CPPParser():
         funcNames = []
         codes = []
         funcExists = True
-        while funcExists and len(funcStr) > 0 and funcStr.index('{') >= 0:
+        while funcExists and len(funcStr) > 0 and funcStr.find('{') >= 0:
             funcStr = funcStr.strip()
             funcStartIndex = funcStr.index('{')
             funcSignature = funcStr[0:funcStartIndex].strip()
@@ -56,11 +57,11 @@ class CPPParser():
             # print(firstCurlyIndex)
             # print(lastCurlyIndex)
             # print(funcStr[firstCurlyIndex:lastCurlyIndex+1])
-            codes.append(funcStr[firstCurlyIndex:lastCurlyIndex+1])
+            codes.append(funcStr[firstCurlyIndex:lastCurlyIndex + 1])
             funcExists = False
 
             # check whether there is any other function
-            funcStr = funcStr[lastCurlyIndex+1:].strip()
+            funcStr = funcStr[lastCurlyIndex + 1:].strip()
             if len(funcStr) > 0 and funcStr.index('{') >= 0:
                 funcExists = True
 
@@ -69,9 +70,8 @@ class CPPParser():
         # print(funcName)
         return returnTypes, funcNames, codes
 
-
     @staticmethod
-    def parseVariables(variableStr):
+    def parseVariables(variableStr, params=[]):
         types = []
         varNames = []
         initialValues = []
@@ -87,14 +87,37 @@ class CPPParser():
             initialValue = None
             if varLine.find('=') >= 0:
                 # if there is initial value
-                varName = varLine[varLine.find(' ')+1:varLine.find('=')].strip()
-                initialValue = varLine[varLine.find('=')+1:].strip()
+                varName = varLine[varLine.find(' ') + 1:varLine.find('=')].strip()
+                initialValue = varLine[varLine.find('=') + 1:].strip()
             else:
-                varName = varLine[varLine.find(' ')+1:].strip()
+                varName = varLine[varLine.find(' ') + 1:].strip()
 
             types.append(varType)
             varNames.append(varName)
             initialValues.append(initialValue)
+
+        for param in params:
+            varType = param.type
+            if varType == 'String':
+                varType = 'string'
+                varValue = "\"" + param.value + "\""
+            elif varType == 'Character':
+                varType = 'char'
+                varValue = "\'" + param.value + "\'"
+            elif varType == 'Boolean':
+                varType = 'bool'
+                varValue = param.value.lower()
+            elif varType == 'Float':
+                varType = 'float'
+                varValue = param.value
+            elif varType == 'Integer':
+                varType = 'int'
+                varValue = param.value
+            else:
+                varValue=param.value
+            types.append(varType)
+            varNames.append(param.name)
+            initialValues.append(varValue)
 
         return types, varNames, initialValues
 
@@ -147,4 +170,3 @@ void myF2 ( int b ){
         print(types[i])
         print(varNames[i])
         print(initialValues[i])
-

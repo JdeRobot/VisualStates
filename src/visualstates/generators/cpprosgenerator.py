@@ -42,10 +42,7 @@ class CppRosGenerator(BaseGenerator):
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         stringList.append('#endif')
-        sourceCode = ''.join(stringList)
-        fp = open(projectPath + os.sep + 'src' + os.sep + projectName + '.h', 'w')
-        fp.write(sourceCode)
-        fp.close()
+        headerSourceCode = ''.join(stringList)
 
         stringList = []
         self.generateHeadersForCpp(stringList, projectName)
@@ -56,28 +53,37 @@ class CppRosGenerator(BaseGenerator):
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
 
-        fp = open(projectPath + os.sep + 'src' + os.sep + projectName + '.cpp', 'w')
-        fp.write(sourceCode)
-        fp.close()
-
         stringList = []
         self.generateRunTimeGui(stringList)
-        sourceCode = ''.join(stringList)
-        fp = open(projectPath + os.sep + projectName + '_runtime.py', 'w')
-        fp.write(sourceCode)
-        fp.close()
-        # make runtime gui python file executable
-        os.chmod(projectPath + os.sep + projectName + '_runtime.py', stat.S_IEXEC | stat.S_IXOTH | stat.S_IWRITE | stat.S_IREAD)
+        guiSourceCode = ''.join(stringList)
 
         stringList = []
         self.generateCmake(stringList, projectName, self.config)
         cmakeString = ''.join(stringList)
+
+        xmlDoc = self.generatePackageXml(self.config, projectName)
+        xmlStr = xmlDoc.toprettyxml(indent='  ')
+
+        # writing to files
+        fp = open(projectPath + os.sep + 'src' + os.sep + projectName + '.h', 'w')
+        fp.write(headerSourceCode)
+        fp.close()
+
+
+        fp = open(projectPath + os.sep + 'src' + os.sep + projectName + '.cpp', 'w')
+        fp.write(sourceCode)
+        fp.close()
+
+        fp = open(projectPath + os.sep + projectName + '_runtime.py', 'w')
+        fp.write(guiSourceCode)
+        fp.close()
+        # make runtime gui python file executable
+        os.chmod(projectPath + os.sep + projectName + '_runtime.py', stat.S_IEXEC | stat.S_IXOTH | stat.S_IWRITE | stat.S_IREAD)
+
         fp = open(projectPath + os.sep + 'CMakeLists.txt', 'w')
         fp.write(cmakeString)
         fp.close()
 
-        xmlDoc = self.generatePackageXml(self.config, projectName)
-        xmlStr = xmlDoc.toprettyxml(indent='  ')
         with open(projectPath + os.sep + 'package.xml', 'w') as f:
             f.write(xmlStr)
 
@@ -177,7 +183,7 @@ class CppRosGenerator(BaseGenerator):
             classStr.append('class Namespace' + str(state.id) + ' {\n')
             classStr.append('public:\n')
             classStr.append('\tGlobalNamespace* globalNamespace;\n')
-            types, varNames, initialValues = CPPParser.parseVariables(state.getNamespace().variables)
+            types, varNames, initialValues = CPPParser.parseVariables(state.getNamespace().variables, state.getNamespace().params)
             for i in range(len(types)):
                 classStr.append(types[i] + ' ' + varNames[i] + ';\n')
             classStr.append('\n')

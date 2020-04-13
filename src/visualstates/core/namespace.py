@@ -17,10 +17,13 @@
    Authors : Pushkal Katara (katarapushkal@gmail.com)
 
   '''
+from visualstates.core.parameter import Parameter
+
 class Namespace:
-    def __init__(self, functions, variables):
+    def __init__(self, functions, variables, params=[]):
         self.functions = functions
         self.variables = variables
+        self.params = params
 
     def createNode(self, doc, globalNamespace=False):
         if globalNamespace:
@@ -33,6 +36,10 @@ class Namespace:
         variablesElement = doc.createElement('variables')
         variablesElement.appendChild(doc.createTextNode(self.variables))
         namespaceElement.appendChild(variablesElement)
+        paramsElement = doc.createElement('parameters')
+        for param in self.params:
+            paramsElement.appendChild(param.createDocFromParam(doc))
+        namespaceElement.appendChild(paramsElement)
         return namespaceElement
 
     def parseElement(self, elementName, parentElement):
@@ -42,9 +49,20 @@ class Namespace:
                 return elements[0].childNodes[0].nodeValue
         return ''
 
+    def parseParamElement(self, parentElement):
+        params = []
+        paramsElement = parentElement.getElementsByTagName('parameters')
+        if len(paramsElement) > 0:
+            for paramElement in paramsElement[0].getElementsByTagName('param'):
+                param = Parameter()
+                param.parseElement(paramElement)
+                params.append(param)
+        return params
+
     def parse(self, namespaceElement):
         self.functions = self.parseElement('functions', namespaceElement)
         self.variables = self.parseElement('variables', namespaceElement)
+        self.params = self.parseParamElement(namespaceElement)
 
     def getVariables(self):
         return self.variables
@@ -80,3 +98,12 @@ class Namespace:
 
     def setFunctions(self, functions):
         self.functions = functions
+
+    def addParams(self, params):
+        self.params += params
+
+    def getParams(self):
+        return self.params
+
+    def setParams(self, params):
+        self.params = params
